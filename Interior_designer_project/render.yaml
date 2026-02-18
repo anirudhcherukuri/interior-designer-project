@@ -18,7 +18,7 @@ services:
         sync: false          # You will paste your Render static-site URL here
 
   # ─── Frontend: React Static Site ──────────────────────────────────────────
-  - type: web
+  - type: static
     name: interior-designer-frontend
     runtime: static
     rootDir: frontend
