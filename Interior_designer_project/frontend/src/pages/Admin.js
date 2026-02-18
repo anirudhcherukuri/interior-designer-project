@@ -116,7 +116,7 @@ function Admin() {
 
       {/* Dynamic Glows */}
       <div className="fixed top-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#C5A059]/15 rounded-full blur-[120px] pointer-events-none z-0"></div>
-      <div className="fixed bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none z-0"></div>
+      <div className="fixed bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent-500/5 rounded-full blur-[100px] pointer-events-none z-0"></div>
     </>
   );
 
@@ -310,7 +310,7 @@ function Admin() {
 
       {/* Cinematic Soft Background */}
       <div className="fixed top-[-20%] right-[-10%] w-[70%] h-[70%] bg-accent-500/5 rounded-full blur-[150px] pointer-events-none"></div>
-      <div className="fixed bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-50 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="fixed bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent-500/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       {/* Sidebar */}
       <aside className="w-80 bg-white border-r border-neutral-100 flex flex-col fixed h-full z-20 shadow-[0_0_60px_rgba(0,0,0,0.03)]">

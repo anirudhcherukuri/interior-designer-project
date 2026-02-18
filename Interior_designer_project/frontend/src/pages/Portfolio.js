@@ -40,11 +40,11 @@ const Portfolio = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-primary-50">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-24 bg-[#F8F9FA] text-primary-900 overflow-hidden border-b border-primary-100">
+      <section className="relative pt-32 pb-24 bg-primary-50 text-primary-900 overflow-hidden border-b border-primary-200">
         {/* Cinematic Bokeh Effect */}
-        <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[70%] bg-blue-100/40 rounded-full blur-[120px] pointer-events-none"></div>
-        <div className="absolute bottom-[-10%] right-[-5%] w-[30%] h-[60%] bg-[#C5A059]/10 rounded-full blur-[100px] pointer-events-none"></div>
-        <div className="absolute top-[20%] right-[10%] w-[20%] h-[40%] bg-blue-50/30 rounded-full blur-[80px] pointer-events-none"></div>
+        <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[70%] bg-accent-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="absolute bottom-[-10%] right-[-5%] w-[30%] h-[60%] bg-accent-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute top-[20%] right-[10%] w-[20%] h-[40%] bg-accent-500/5 rounded-full blur-[80px] pointer-events-none"></div>
 
         <div className="absolute inset-0 bg-luxury-pattern opacity-5" />
         <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
