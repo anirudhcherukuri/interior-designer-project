@@ -1,0 +1,303 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-luxury-gold: #D4AF37;
+  --color-luxury-cream: #FAFAF9;
+  --color-luxury-sand: #E7E5E4;
+  --color-luxury-dark: #0F172A;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #FAFAF9;
+  /* Warm Alabaster */
+  color: #0F172A;
+  /* Midnight Navy */
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.font-display {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.font-body {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+}
+
+.font-accent {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+/* Premium Luxury Button Styles - Enhanced Visibility */
+.btn-luxury {
+  @apply px-10 py-5 bg-gradient-to-r from-accent-600 via-accent-500 to-accent-600 text-white font-accent text-sm tracking-widest uppercase transition-all duration-500 hover:shadow-luxury-lg hover:scale-105 rounded-sm relative overflow-hidden font-bold;
+}
+
+.btn-luxury::before {
+  content: '';
+  @apply absolute inset-0 bg-white/10 transform -skew-x-12 -translate-x-full transition-transform duration-700;
+}
+
+.btn-luxury:hover::before {
+  @apply translate-x-full;
+}
+
+.btn-secondary {
+  @apply px-10 py-5 font-accent text-sm tracking-widest uppercase border-2 border-white/90 text-white bg-white/10 backdrop-blur-sm transition-all duration-500 hover:bg-white hover:text-primary-900 hover:border-white hover:shadow-luxury rounded-sm font-bold;
+}
+
+.btn-secondary-light {
+  @apply border-2 border-primary-300 text-primary-700 hover:bg-primary-100 hover:border-primary-400;
+}
+
+.btn-primary {
+  @apply inline-flex items-center px-10 py-5 bg-accent-500 text-white font-body font-semibold tracking-wide rounded-sm hover:bg-accent-600 transition-all duration-500 shadow-premium hover:shadow-luxury-lg hover:scale-105;
+}
+
+.glass-card {
+  @apply bg-cream-50/95 backdrop-blur-md border border-primary-200 shadow-premium hover:shadow-luxury transition-all duration-500;
+}
+
+.section-title {
+  @apply font-display text-5xl md:text-7xl font-bold text-primary-900 tracking-tight leading-tight;
+}
+
+.section-subtitle {
+  @apply text-xl md:text-2xl text-primary-700 leading-relaxed font-body;
+}
+
+.text-luxury {
+  @apply text-accent-500;
+}
+
+.luxury-divider {
+  @apply w-32 h-1 bg-gradient-to-r from-accent-500 to-accent-600 rounded-full;
+}
+
+.card-hover {
+  @apply hover:-translate-y-2 transition-all duration-500 hover:shadow-luxury;
+}
+
+/* Navigation link styles */
+.nav-link {
+  @apply relative font-body text-sm font-semibold text-primary-800 hover:text-accent-500 transition-colors duration-300;
+}
+
+.nav-link::after {
+  content: '';
+  @apply absolute left-0 -bottom-1 w-0 h-0.5 bg-accent-500 transition-all duration-300 rounded-full;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  @apply w-full;
+}
+
+/* Luxury Background Pattern */
+.bg-luxury-pattern {
+  background-color: #FAFAF9;
+  background-image:
+    radial-gradient(circle at 25px 25px, rgba(212, 175, 55, 0.08) 2%, transparent 0%),
+    radial-gradient(circle at 75px 75px, rgba(15, 23, 42, 0.03) 2%, transparent 0%);
+  background-size: 100px 100px;
+}
+
+.bg-luxury-gradient {
+  background: linear-gradient(135deg, #fdfcfb 0%, #f7f3ed 50%, #f0e9dd 100%);
+}
+
+/* Gold accent elements */
+.accent-line {
+  @apply h-1 w-24 bg-gradient-to-r from-accent-500 to-accent-600 rounded-full;
+}
+
+.bg-luxury-blue {
+  background: radial-gradient(circle at top right, #1e293b, #0f172a);
+}
+
+.luxury-pattern-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 50c0-11 9-20 20-20s20 9 20 20-9 20-20 20-20-9-20-20zm20-15c-8.3 0-15 6.7-15 15s6.7 15 15 15 15-6.7 15-15-6.7-15-15-15zm0 2c7.2 0 13 5.8 13 13s-5.8 13-13 13-13-5.8-13-13 5.8-13 13-13zm0 5c4.4 0 8 3.6 8 8s-3.6 8-8 8-8-3.6-8-8 3.6-8 8-8z' fill='%23d4af37' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+/* Premium headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-display font-semibold text-primary-900;
+  letter-spacing: -0.02em;
+}
+
+/* Transitions on elements only */
+.transition-luxury {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Premium Luxury Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAFAF9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B4941F;
+}
+
+/* Champagne Alabaster Theme Utilities */
+.bg-alabaster {
+  background-color: #F8F9FA;
+}
+
+.bg-champagne-card {
+  background-color: #FFFFFF;
+}
+
+.text-champagne-gold {
+  color: #C5A059;
+}
+
+.border-champagne {
+  border-color: rgba(197, 160, 89, 0.2);
+}
+
+.shadow-premium-light {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px border rgba(255, 255, 255, 0.3);
+}
+
+.soft-glow-gold {
+  box-shadow: 0 0 30px rgba(197, 160, 89, 0.15);
+}
+
+.refined-grain {
+  position: relative;
+}
+
+.refined-grain::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://www.transparenttextures.com/patterns/felt.png");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 100;
+}
+
+@keyframes float-slow {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float-slow 4s ease-in-out infinite;
+}
+
+/* Cinematic UI Utilities */
+.bg-obsidian-dark {
+  background-color: #05070A;
+}
+
+.bg-obsidian-card {
+  background-color: #0D1117;
+}
+
+.text-gold {
+  color: #D4AF37;
+}
+
+.border-gold {
+  border-color: rgba(212, 175, 55, 0.2);
+}
+
+.shadow-gold {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+}
+
+.grain-texture {
+  position: relative;
+}
+
+.grain-texture::after {
+  content: "";
+  position: fixed;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background-image: url("https://www.transparenttextures.com/patterns/carbon-fibre.png");
+  opacity: 0.015;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  background-size: 200% 100%;
+  animation: shimmer-animation 2s infinite;
+}
+
+@keyframes shimmer-animation {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.premium-blur {
+  backdrop-filter: blur(40px) saturate(180%);
+}
+
+.gold-glow {
+  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.3));
+}
