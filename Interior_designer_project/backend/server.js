@@ -65,6 +65,7 @@ app.use("/api/visitor", require("./routes/visitorRoutes"));
 app.use("/api/bookings", require("./routes/bookingRoutes"));
 app.use("/api/testimonials", require("./routes/testimonialRoutes"));
 app.use("/api/upload", require("./routes/uploadRoutes"));
+app.use("/api/seed", require("./routes/seedRoutes"));
 
 const PORT = process.env.PORT || 5000;
 
