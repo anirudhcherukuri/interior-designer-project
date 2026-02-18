@@ -1,0 +1,14 @@
+# Root .gitignore
+node_modules/
+.env
+*.log
+.DS_Store
+Thumbs.db
+
+# Backend local uploads (not committed - use cloud storage in production)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Frontend build artifacts
+frontend/build/
+frontend/dist/
