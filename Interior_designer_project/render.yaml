@@ -10,8 +10,6 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
       - key: SEED_SECRET
         value: seed-interior-2026
       - key: MONGO_URI
@@ -19,16 +17,22 @@ services:
       - key: FRONTEND_URL
         sync: false
 
-  # ─── Frontend: React App (Web Service with Node runtime for SPA fix) ──────
-  - type: web
+  # ─── Frontend: React App (Native Render Static Site) ──────────────────────
+  - type: static
     name: interior-designer-frontend
-    runtime: node
-    rootDir: frontend
     buildCommand: npm install && npm run build
-    startCommand: npm start
-    plan: free
+    staticPublishPath: build
+    rootDir: frontend
+    routes:
+      - type: rewrite
+        source: /gallery/*
+        destination: /gallery/*
+      - type: rewrite
+        source: /uploads/*
+        destination: /uploads/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
     envVars:
-      - key: PORT
-        value: 3000
       - key: REACT_APP_API_URL
         sync: false

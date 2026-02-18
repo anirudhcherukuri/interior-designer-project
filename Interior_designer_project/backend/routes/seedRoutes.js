@@ -180,13 +180,16 @@ router.get("/", async (req, res) => {
     }
     try {
         await Project.deleteMany({});
-        await Project.insertMany(seedProjects);
+        const result = await Project.insertMany(seedProjects);
+        console.log(`Seeded ${result.length} projects with local paths`);
         res.json({
             success: true,
-            message: `✅ Seeded ${seedProjects.length} projects successfully!`,
-            count: seedProjects.length,
+            message: `✅ Seeded ${result.length} projects successfully!`,
+            details: `First project: ${seedProjects[0].title}, Image[0]: ${seedProjects[0].images[0]}`,
+            count: result.length,
         });
     } catch (err) {
+        console.error("Seed error:", err);
         res.status(500).json({ error: err.message });
     }
 });
