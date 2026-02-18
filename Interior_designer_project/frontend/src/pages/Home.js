@@ -63,9 +63,10 @@ function Home() {
       <section className="relative min-h-screen flex items-center overflow-hidden">
         {/* Background Image with Overlay */}
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-bottom md:bg-center"
           style={{
             backgroundImage: "url('/gallery/bg.jpg')",
+            backgroundPosition: 'center 60%',
           }}
         ></div>
         <div className="absolute inset-0 bg-hero-overlay"></div>
@@ -73,7 +74,7 @@ function Home() {
         {/* Subtle pattern overlay */}
         <div className="absolute inset-0 bg-luxury-pattern opacity-15"></div>
 
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-24 md:py-32 relative z-10">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-32 relative z-10">
           <div className="max-w-5xl">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
