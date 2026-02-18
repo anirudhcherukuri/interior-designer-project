@@ -5,22 +5,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 function Home() {
   const services = [
     {
-      image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&q=80',
+      image: '/gallery/living_room1.jpeg',
       title: 'Residential Design',
       description: 'Transforming houses into dream homes with personalized interior solutions.',
     },
     {
-      image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80',
+      image: '/gallery/hall2.jpeg',
       title: 'Commercial Spaces',
       description: 'Creating productive and inspiring work environments for businesses.',
     },
     {
-      image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80',
+      image: '/gallery/living_room3.jpeg',
       title: 'Luxury Interiors',
       description: 'Bespoke high-end designs that reflect sophistication and elegance.',
     },
     {
-      image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=800&q=80', // Designer working
+      image: '/gallery/hall.jpeg',
       title: 'Design Consultation',
       description: 'Expert guidance to bring your vision to life with professional insights.',
     },
@@ -65,7 +65,7 @@ function Home() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1920&q=80')",
+            backgroundImage: "url('/gallery/living_room2.jpeg')",
           }}
         ></div>
         <div className="absolute inset-0 bg-hero-overlay"></div>
