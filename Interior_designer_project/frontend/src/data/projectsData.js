@@ -12,6 +12,7 @@ export const mockProjects = [
     roomType: 'Living Room',
     featured: true,
     images: [
+      '/gallery/bg.jpg',
       '/gallery/living_room1.jpeg',
       '/gallery/living_room2.jpeg',
       '/gallery/living_room3.jpeg',

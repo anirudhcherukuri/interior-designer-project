@@ -65,7 +65,7 @@ function Home() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/gallery/living_room2.jpeg')",
+            backgroundImage: "url('/gallery/bg.jpg')",
           }}
         ></div>
         <div className="absolute inset-0 bg-hero-overlay"></div>
