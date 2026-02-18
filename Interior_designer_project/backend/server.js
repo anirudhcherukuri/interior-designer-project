@@ -67,6 +67,10 @@ app.use("/api/testimonials", require("./routes/testimonialRoutes"));
 app.use("/api/upload", require("./routes/uploadRoutes"));
 app.use("/api/seed", require("./routes/seedRoutes"));
 
+app.get("/", (req, res) => {
+  res.send("<h1>Interior Designer API is Running</h1><p>Please visit the <a href='https://interior-designer-frontend-nyf6.onrender.com'>Main Website</a>.</p>");
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
