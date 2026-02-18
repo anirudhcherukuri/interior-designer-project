@@ -22,8 +22,8 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #FAFAF9;
-  /* Warm Alabaster */
+  background-color: #F8FAFC;
+  /* Cool Royal White */
   color: #0F172A;
   /* Midnight Navy */
   font-weight: 400;
@@ -51,7 +51,7 @@ body {
 
 /* Premium Luxury Button Styles - Enhanced Visibility */
 .btn-luxury {
-  @apply px-10 py-5 bg-gradient-to-r from-accent-600 via-accent-500 to-accent-600 text-white font-accent text-sm tracking-widest uppercase transition-all duration-500 hover:shadow-luxury-lg hover:scale-105 rounded-sm relative overflow-hidden font-bold;
+  @apply px-10 py-5 bg-gradient-to-r from-royal-600 via-royal-500 to-royal-600 text-white font-accent text-sm tracking-widest uppercase transition-all duration-500 hover:shadow-luxury-lg hover:scale-105 rounded-sm relative overflow-hidden font-bold;
 }
 
 .btn-luxury::before {
@@ -64,19 +64,19 @@ body {
 }
 
 .btn-secondary {
-  @apply px-10 py-5 font-accent text-sm tracking-widest uppercase border-2 border-white/90 text-white bg-white/10 backdrop-blur-sm transition-all duration-500 hover:bg-white hover:text-primary-900 hover:border-white hover:shadow-luxury rounded-sm font-bold;
+  @apply px-10 py-5 font-accent text-sm tracking-widest uppercase border-2 border-royal-200 text-royal-900 bg-royal-50/50 backdrop-blur-sm transition-all duration-500 hover:bg-white hover:text-royal-800 hover:border-royal-500 hover:shadow-luxury rounded-sm font-bold;
 }
 
 .btn-secondary-light {
-  @apply border-2 border-primary-300 text-primary-700 hover:bg-primary-100 hover:border-primary-400;
+  @apply border-2 border-royal-300 text-royal-700 hover:bg-royal-100 hover:border-royal-400;
 }
 
 .btn-primary {
-  @apply inline-flex items-center px-10 py-5 bg-accent-500 text-white font-body font-semibold tracking-wide rounded-sm hover:bg-accent-600 transition-all duration-500 shadow-premium hover:shadow-luxury-lg hover:scale-105;
+  @apply inline-flex items-center px-10 py-5 bg-royal-500 text-white font-body font-semibold tracking-wide rounded-sm hover:bg-royal-600 transition-all duration-500 shadow-premium hover:shadow-luxury-lg hover:scale-105;
 }
 
 .glass-card {
-  @apply bg-cream-50/95 backdrop-blur-md border border-primary-200 shadow-premium hover:shadow-luxury transition-all duration-500;
+  @apply bg-white/90 backdrop-blur-md border border-royal-100 shadow-premium hover:shadow-luxury transition-all duration-500;
 }
 
 .section-title {
@@ -88,11 +88,11 @@ body {
 }
 
 .text-luxury {
-  @apply text-accent-500;
+  @apply text-royal-500;
 }
 
 .luxury-divider {
-  @apply w-32 h-1 bg-gradient-to-r from-accent-500 to-accent-600 rounded-full;
+  @apply w-32 h-1 bg-gradient-to-r from-royal-500 to-royal-600 rounded-full;
 }
 
 .card-hover {
@@ -101,12 +101,12 @@ body {
 
 /* Navigation link styles */
 .nav-link {
-  @apply relative font-body text-sm font-semibold text-primary-800 hover:text-accent-500 transition-colors duration-300;
+  @apply relative font-body text-sm font-semibold text-primary-800 hover:text-royal-500 transition-colors duration-300;
 }
 
 .nav-link::after {
   content: '';
-  @apply absolute left-0 -bottom-1 w-0 h-0.5 bg-accent-500 transition-all duration-300 rounded-full;
+  @apply absolute left-0 -bottom-1 w-0 h-0.5 bg-royal-500 transition-all duration-300 rounded-full;
 }
 
 .nav-link:hover::after,
@@ -116,28 +116,28 @@ body {
 
 /* Luxury Background Pattern */
 .bg-luxury-pattern {
-  background-color: #FAFAF9;
+  background-color: #F8FAFC;
   background-image:
-    radial-gradient(circle at 25px 25px, rgba(212, 175, 55, 0.08) 2%, transparent 0%),
+    radial-gradient(circle at 25px 25px, rgba(14, 165, 233, 0.05) 2%, transparent 0%),
     radial-gradient(circle at 75px 75px, rgba(15, 23, 42, 0.03) 2%, transparent 0%);
   background-size: 100px 100px;
 }
 
 .bg-luxury-gradient {
-  background: linear-gradient(135deg, #fdfcfb 0%, #f7f3ed 50%, #f0e9dd 100%);
+  background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #BAE6FD 100%);
 }
 
 /* Gold accent elements */
 .accent-line {
-  @apply h-1 w-24 bg-gradient-to-r from-accent-500 to-accent-600 rounded-full;
+  @apply h-1 w-24 bg-gradient-to-r from-royal-500 to-royal-600 rounded-full;
 }
 
 .bg-luxury-blue {
-  background: radial-gradient(circle at top right, #1e293b, #0f172a);
+  background: radial-gradient(circle at top right, #0C4A6E, #082F49);
 }
 
 .luxury-pattern-overlay {
-  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 50c0-11 9-20 20-20s20 9 20 20-9 20-20 20-20-9-20-20zm20-15c-8.3 0-15 6.7-15 15s6.7 15 15 15 15-6.7 15-15-6.7-15-15-15zm0 2c7.2 0 13 5.8 13 13s-5.8 13-13 13-13-5.8-13-13 5.8-13 13-13zm0 5c4.4 0 8 3.6 8 8s-3.6 8-8 8-8-3.6-8-8 3.6-8 8-8z' fill='%23d4af37' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 50c0-11 9-20 20-20s20 9 20 20-9 20-20 20-20-9-20-20zm20-15c-8.3 0-15 6.7-15 15s6.7 15 15 15 15-6.7 15-15-6.7-15-15-15zm0 2c7.2 0 13 5.8 13 13s-5.8 13-13 13-13-5.8-13-13 5.8-13 13-13zm0 5c4.4 0 8 3.6 8 8s-3.6 8-8 8-8-3.6-8-8 3.6-8 8-8z' fill='%230EA5E9' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
 }
 
 /* Premium headings */

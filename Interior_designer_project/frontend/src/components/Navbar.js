@@ -16,11 +16,11 @@ function Navbar() {
   const isActive = (path) => location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-royal-50/95 backdrop-blur-md border-b border-royal-200 shadow-sm transition-all duration-300">
       <nav className="container mx-auto px-4 md:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="font-display text-3xl font-bold tracking-tight text-primary-900 hover:text-accent-500 transition-colors duration-300">
+          <Link to="/" className="font-display text-3xl font-bold tracking-tight text-primary-900 hover:text-royal-600 transition-colors duration-300">
             ARKA
           </Link>
 
@@ -30,12 +30,12 @@ function Navbar() {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`relative font-accent text-xs tracking-widest uppercase font-semibold transition-colors duration-300 ${isActive(link.to) ? 'text-accent-500' : 'text-primary-800 hover:text-accent-500'
+                className={`relative font-accent text-xs tracking-widest uppercase font-semibold transition-colors duration-300 ${isActive(link.to) ? 'text-royal-600' : 'text-primary-800 hover:text-royal-500'
                   }`}
               >
                 {link.label}
                 {isActive(link.to) && (
-                  <span className="absolute -bottom-2 left-0 right-0 h-0.5 bg-accent-500 rounded-full" />
+                  <span className="absolute -bottom-2 left-0 right-0 h-0.5 bg-royal-500 rounded-full" />
                 )}
               </Link>
             ))}
@@ -43,7 +43,7 @@ function Navbar() {
             {/* Admin Link */}
             <Link
               to="/admin"
-              className="px-4 py-2 border border-primary-200 text-primary-800 hover:text-white hover:bg-primary-900 hover:border-primary-900 transition-all font-accent text-xs tracking-widest uppercase font-bold rounded-sm ml-4"
+              className="px-4 py-2 border border-royal-200 text-royal-800 hover:text-white hover:bg-royal-700 hover:border-royal-700 transition-all font-accent text-xs tracking-widest uppercase font-bold rounded-sm ml-4"
             >
               Admin
             </Link>
@@ -53,7 +53,7 @@ function Navbar() {
           <button
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
-            className="md:hidden p-2 text-primary-800 hover:text-accent-500 transition-colors"
+            className="md:hidden p-2 text-primary-800 hover:text-royal-500 transition-colors"
             aria-label="Toggle menu"
           >
             {mobileOpen ? (
@@ -77,7 +77,7 @@ function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden overflow-hidden border-t border-primary-200/50 bg-cream-50"
+            className="md:hidden overflow-hidden border-t border-royal-200/50 bg-royal-50"
           >
             <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
               {links.map(({ to, label }) => (
@@ -86,8 +86,8 @@ function Navbar() {
                   to={to}
                   onClick={() => setMobileOpen(false)}
                   className={`font-accent text-sm tracking-widest uppercase font-semibold py-3 border-l-4 pl-4 ${isActive(to)
-                    ? 'border-accent-500 text-accent-500 bg-sand-100'
-                    : 'border-transparent text-primary-800 hover:border-accent-400 hover:text-accent-500 hover:bg-sand-50'
+                    ? 'border-royal-500 text-royal-600 bg-royal-100'
+                    : 'border-transparent text-primary-800 hover:border-royal-400 hover:text-royal-500 hover:bg-royal-50'
                     } transition-all duration-200`}
                 >
                   {label}
@@ -96,7 +96,7 @@ function Navbar() {
               <Link
                 to="/admin"
                 onClick={() => setMobileOpen(false)}
-                className="font-accent text-sm tracking-widest uppercase font-semibold py-3 border-l-4 pl-4 border-transparent text-primary-900 bg-primary-100 hover:bg-primary-200 transition-all duration-200 mt-2"
+                className="font-accent text-sm tracking-widest uppercase font-semibold py-3 border-l-4 pl-4 border-transparent text-royal-900 bg-royal-100 hover:bg-royal-200 transition-all duration-200 mt-2"
               >
                 Admin Panel
               </Link>
