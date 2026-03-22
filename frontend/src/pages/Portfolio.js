@@ -3,6 +3,16 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projectsAPI, formatUrl } from '../api/config';
 
+// ── Guaranteed Local Fallback Projects ──────────────────────────────────────
+const LOCAL_PROJECTS = [
+  { _id: 'local-1', title: 'Contemporary Italian Living', description: 'Emerald velvet and marble living space featuring bespoke lighting.', roomType: 'Living Room', location: 'Milan, Italy', images: ['/gallery/living_room_1.jpg'] },
+  { _id: 'local-2', title: 'Minimalist Master Suite', description: 'Serene minimal bedroom with warm wood floors and concrete accents.', roomType: 'Bedroom', location: 'Rome, Italy', images: ['/gallery/bedroom_1.jpg'] },
+  { _id: 'local-3', title: 'Gourmet Marble Kitchen', description: 'Chef-grade kitchen with massive marble island and sleek slate cabinets.', roomType: 'Kitchen', location: 'Florence, Italy', images: ['/gallery/kitchen_1.jpg'] },
+  { _id: 'local-4', title: 'The Crystal Dining Room', description: 'Grand dining with bespoke lighting and a magnificent oak table.', roomType: 'Dining Room', location: 'Venice, Italy', images: ['/gallery/hall2.jpeg'] },
+  { _id: 'local-5', title: 'Spa-Like Marble Retreat', description: 'Freestanding stone tub and marble finishes for the ultimate relaxation.', roomType: 'Bathroom', location: 'Naples, Italy', images: ['/gallery/bg.jpg'] },
+  { _id: 'local-6', title: 'Modern Industrial Loft', description: 'High ceilings, exposed brick, and modern luxury furnishings.', roomType: 'Living Room', location: 'Turin, Italy', images: ['/gallery/livingroom_9.jpg'] }
+];
+
 const Portfolio = () => {
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
@@ -19,11 +29,24 @@ const Portfolio = () => {
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const response = await projectsAPI.getAll();
-      setProjects(response.data || []);
-      setFilteredProjects(response.data || []);
+      const response = await projectsAPI.getAll().catch(() => ({ data: [] }));
+      const apiData = response.data || [];
+      
+      // Merge local fallback with API data (preventing duplicates if API is working)
+      const merged = [...LOCAL_PROJECTS];
+      apiData.forEach(p => {
+        if (!merged.find(m => m.title === p.title)) {
+          merged.push(p);
+        }
+      });
+
+      setProjects(merged);
+      setFilteredProjects(merged);
     } catch (error) {
       console.error('Error fetching projects:', error);
+      // Fallback if total failure
+      setProjects(LOCAL_PROJECTS);
+      setFilteredProjects(LOCAL_PROJECTS);
     } finally {
       setLoading(false);
     }

@@ -6,10 +6,10 @@ const auth = require('../middleware/authMiddleware');
 // GET all projects from Cloudinary as the source of truth
 router.get("/", async (req, res) => {
   try {
-    // Fetch resources with context from Cloudinary
+    // Fetch resources with context from Cloudinary (using prefix but without strict trailing slash)
     const result = await cloudinary.api.resources({
       type: 'upload',
-      prefix: 'interior-designer-portfolio/',
+      prefix: 'interior-designer-portfolio', 
       max_results: 100,
       context: true,
       tags: true
