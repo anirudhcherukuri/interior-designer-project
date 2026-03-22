@@ -157,11 +157,13 @@ function Admin() {
     } catch (err) { console.error(err); }
     setLoading(false);
     setInitialLoading(false);
-  }, [activeTab, projects.length, bookings.length, mediaFiles.length]);
+  }, [activeTab]); // Remove projects.length etc to break the feedback loop
 
   useEffect(() => {
-    if (isAuthenticated) fetchData(initialLoading);
-  }, [fetchData, isAuthenticated]);
+    if (isAuthenticated) {
+      fetchData(initialLoading);
+    }
+  }, [fetchData, isAuthenticated]); // Only run when auth status changes or tab changes
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);

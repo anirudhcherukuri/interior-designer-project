@@ -70,14 +70,18 @@ router.post('/', auth, upload.single('file'), async (req, res) => {
       const fileId = req.file.filename || req.file.public_id;
 
       if (title || roomType || description) {
-        await cloudinary.api.update(fileId, {
-          context: {
-            title: title || 'Untitled Project',
-            roomType: roomType || 'Gallery',
-            description: description || 'Luxury interior design.'
-          },
-          tags: ['featured', (roomType || 'gallery').toLowerCase()]
-        });
+        try {
+          await cloudinary.api.update(fileId, {
+            context: {
+              title: title || 'Untitled Project',
+              roomType: roomType || 'Gallery',
+              description: description || 'Luxury interior design.'
+            },
+            tags: ['featured', (roomType || 'gallery').toLowerCase()]
+          });
+        } catch (metaErr) {
+          console.warn('⚠️ Cloudinary Metadata update skipped:', metaErr.message);
+        }
       }
 
       return res.json({

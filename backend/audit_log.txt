@@ -1,0 +1,16 @@
+Ô£à Cloudinary Storage initialized
+Secure API server started on port 5000
+2026-03-22T10:42:58.356Z - POST /api/auth/login
+­ƒöÉ Admin password forcefully updated: italianinteriors93@gmail.com
+­ƒöÉ ADMIN LOGIN SUCCESSFUL
+2026-03-22T10:42:58.601Z - POST /api/upload
+2026-03-22T10:43:02.302Z - DELETE /api/upload/interior-designer-portfolio/rzqgsqxdzyh7hs9tvmh9
+2026-03-22T10:52:25.703Z - POST /api/auth/login
+­ƒöÉ Admin password forcefully updated: italianinteriors93@gmail.com
+­ƒöÉ ADMIN LOGIN SUCCESSFUL
+2026-03-22T10:53:09.153Z - POST /api/auth/login
+­ƒöÉ Admin password forcefully updated: italianinteriors93@gmail.com
+­ƒöÉ ADMIN LOGIN SUCCESSFUL
+2026-03-22T10:53:29.273Z - POST /api/auth/login
+­ƒöÉ Admin password forcefully updated: italianinteriors93@gmail.com
+­ƒöÉ ADMIN LOGIN SUCCESSFUL

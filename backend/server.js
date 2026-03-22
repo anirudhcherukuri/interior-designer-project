@@ -32,14 +32,7 @@ const allowedOrigins = [
   "https://interior-designer-frontend-nyf6.onrender.com"
 ];
 app.use(cors({
-  origin: (origin, callback) => {
-    // ALWAYS allow localhost and 127.0.0.1 for development
-    if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1') || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: true, // Allow all origins for local debugging
   credentials: true
 }));
 
@@ -74,6 +67,15 @@ app.use("/api/upload", require("./routes/uploadRoutes"));
 
 app.get("/", (req, res) => {
   res.send("<h1>Interior Designer Secure API is Running</h1>");
+});
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error("🚨 ERROR:", err.message);
+  res.status(err.status || 500).json({
+    success: false,
+    error: err.message || "Internal Server Error"
+  });
 });
 
 const PORT = process.env.PORT || 5000;

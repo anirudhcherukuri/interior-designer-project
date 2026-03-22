@@ -1,9 +1,8 @@
 import axios from 'axios';
 import { mockProjects } from '../data/projectsData';
 
-// In production, use the deployed backend URL from env variable
-// In development, fall back to localhost
-export const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+// Hardcoded for local debugging to ensure no environment mismatches
+export const API_URL = 'http://localhost:5000';
 
 export const formatUrl = (url) => {
   if (!url) return 'https://via.placeholder.com/800x600?text=Media+Path+Missing';
