@@ -1,8 +1,0 @@
-🧪 Starting 100% Cloudinary-Only (No DB) Unit Tests...
-
-Test 1: Backend Health Check... ✅ PASSED
-Test 2: Cloudinary Dynamic Assets Fetch... ❌ FAILED: Request failed with status code 500
-Test 3: Verify Cloudinary Config... ✅ PASSED
-
------------------------------------
-⚠️ 1 tests failed. Database removal may require server restart.
