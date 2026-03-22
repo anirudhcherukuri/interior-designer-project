@@ -99,16 +99,14 @@ function Home() {
     <div className="min-h-screen" style={{ background: '#EDE4D3' }}>
 
       {/* ══════════════════════════════════════════════════
-          HERO — keeps your bg.jpg image
+          HERO
       ══════════════════════════════════════════════════ */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         {/* Your actual background image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: projects.length > 0 
-              ? `url(${formatUrl(projects[0].imageUrl || projects[0].images?.[0])})` 
-              : "url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1920&q=80')",
+            backgroundImage: "url('/gallery/living_room_1.jpg')",
             backgroundPosition: 'center 60%',
           }}
         />
