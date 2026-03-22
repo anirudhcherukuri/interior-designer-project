@@ -5,32 +5,32 @@ import { projectsAPI, formatUrl } from '../api/config';
 
 // ── Guaranteed Local Fallback Projects ──────────────────────────────────────
 const LOCAL_PROJECTS = [
-  { _id: 'local-1', title: 'Contemporary Italian Living', imageUrl: '/gallery/living_room_1.jpg' },
-  { _id: 'local-2', title: 'Minimalist Master Suite', imageUrl: '/gallery/bedroom_1.jpg' },
-  { _id: 'local-3', title: 'Gourmet Marble Kitchen', imageUrl: '/gallery/kitchen_1.jpg' },
-  { _id: 'local-4', title: 'The Crystal Dining Room', imageUrl: '/gallery/hall2.jpeg' },
+  { _id: 'local-1', title: 'Contemporary Italian Living', imageUrl: '/gallery/living_room_8.jpg' },
+  { _id: 'local-2', title: 'Minimalist Master Suite', imageUrl: '/gallery/bedroom_27.jpg' },
+  { _id: 'local-3', title: 'Gourmet Marble Kitchen', imageUrl: '/gallery/kitchen_2.jpg' },
+  { _id: 'local-4', title: 'The Crystal Dining Room', imageUrl: '/gallery/bedroom_28.jpg' },
 ];
 
 function Home() {
   const [projects, setProjects] = useState([]);
   const [services, setServices] = useState([
     {
-      image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80', 
+      image: '/gallery/living_room_8.jpg', 
       title: 'Residential Design',
       description: 'Transforming houses into dream homes with personalized interior solutions.',
     },
     {
-      image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80', 
+      image: '/gallery/livingroom_13.jpg', 
       title: 'Commercial Spaces',
       description: 'Creating productive and inspiring work environments for businesses.',
     },
     {
-      image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80',
+      image: '/gallery/bedroom_27.jpg',
       title: 'Luxury Interiors',
       description: 'Bespoke high-end designs that reflect sophistication and elegance.',
     },
     {
-      image: 'https://images.unsplash.com/photo-1615876234886-fd9a39faa97f?auto=format&fit=crop&w=1200&q=80',
+      image: '/gallery/bedroom_28.jpg',
       title: 'Design Consultation',
       description: 'Expert guidance to bring your vision to life with professional insights.',
     },

@@ -7,9 +7,8 @@ const PORT = process.env.PORT || 3000;
 // Serve static files from the build folder
 app.use(express.static(path.join(__dirname, 'build')));
 
-// Support for Single Page Application (SPA) refresh
-// Handle all routes by serving index.html
-app.get('*', (req, res) => {
+// Handle SPA routing - send index.html for any request that isn't a static file
+app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 

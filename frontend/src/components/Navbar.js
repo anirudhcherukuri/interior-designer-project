@@ -96,7 +96,7 @@ function Navbar() {
               }}
               onMouseEnter={e => { e.currentTarget.style.background = '#C8963E'; e.currentTarget.style.color = '#2C1A0E'; e.currentTarget.style.borderColor = '#C8963E'; }}
               onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C8963E'; e.currentTarget.style.borderColor = 'rgba(200,150,62,0.4)'; }}>
-              LOGIN IN / SIGNUP
+              STUDIO LOGIN
             </Link>
           </div>
 
@@ -132,7 +132,7 @@ function Navbar() {
             </svg>
           </button>
 
-          {[...links, { label: 'LOGIN IN / SIGNUP', path: '/admin' }].map(link => (
+          {[...links, { label: 'STUDIO LOGIN', path: '/admin' }].map(link => (
             <Link key={link.path} to={link.path}
               style={{
                 fontFamily: "'Cormorant Garamond', serif",

@@ -45,6 +45,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/gallery", express.static(path.join(__dirname, "../frontend/public/gallery")));
 
 // Health Check
 app.get("/api/health", (req, res) => {
