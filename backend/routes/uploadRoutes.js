@@ -194,30 +194,42 @@ router.delete('/:fileId', auth, async (req, res) => {
 // ─── GET /api/upload (List All) ─────────────────────────────────────────────
 router.get('/', async (req, res) => {
   try {
-    if (!isCloudinaryConfigured()) return res.json([]);
+    if (isCloudinaryConfigured()) {
+      const result = await cloudinary.api.resources({
+        type: 'upload',
+        prefix: 'interior-designer-portfolio', 
+        max_results: 100,
+        context: true
+      });
 
-    const result = await cloudinary.api.resources({
-      type: 'upload',
-      prefix: 'interior-designer-portfolio', 
-      max_results: 100,
-      context: true
-    });
+      const files = result.resources.map(asset => {
+        const context = asset.context ? (asset.context.custom || asset.context) : {};
+        return {
+          fileId: asset.public_id,
+          name: asset.public_id.split('/').pop(),
+          url: asset.secure_url,
+          thumbnailUrl: asset.secure_url.replace('/upload/', '/upload/w_200,c_fill,g_auto/'),
+          category: context.roomType || 'General',
+          title: context.title || 'Portfolio Item'
+        };
+      });
+      return res.json(files);
+    }
 
-    const files = result.resources.map(asset => {
-      // Robust context extraction
-      const context = asset.context ? (asset.context.custom || asset.context) : {};
-      
-      return {
-        fileId: asset.public_id,
-        name: asset.public_id.split('/').pop(),
-        url: asset.secure_url,
-        thumbnailUrl: asset.secure_url.replace('/upload/', '/upload/w_200,c_fill,g_auto/'),
-        category: context.roomType || 'General',
-        title: context.title || 'Portfolio Item'
-      };
-    });
+    // Local Disk Fallback List
+    const uploadDir = path.join(__dirname, '../uploads');
+    if (!fs.existsSync(uploadDir)) return res.json([]);
 
-    res.json(files);
+    const localFiles = fs.readdirSync(uploadDir).map(file => ({
+      fileId: file,
+      name: file,
+      url: `/uploads/${file}`,
+      thumbnailUrl: `/uploads/${file}`,
+      category: 'Local',
+      title: file
+    }));
+
+    res.json(localFiles);
   } catch (err) {
     console.error('List Error:', err.message);
     res.status(500).json({ error: 'Could not fetch media list' });

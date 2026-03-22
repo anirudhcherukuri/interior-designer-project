@@ -23,10 +23,17 @@
     },
     {
       "username": "italianinteriors93@gmail.com",
-      "password": "$2b$10$zSt27vs73poP8EDPckRDfOGEbZlrKh9jkOgxhgrk2NxLgVZYXAfau",
+      "password": "$2b$10$z56ljMzQ5L7XHBLyld2n9ubdSZL3Y/vmKMR.OH1wRu0B3zL9g/PO.",
       "role": "admin",
-      "_id": "1774170527076",
-      "createdAt": "2026-03-22T09:08:47.076Z"
+      "_id": "user-1774171750024",
+      "createdAt": "2026-03-22T09:29:10.024Z"
+    },
+    {
+      "username": "admin",
+      "password": "$2b$10$oP3zrQIkWxV/9tU/9AG0r.hTsjM8Cwx5YFeAMGrZC7.bzC6olCt/C",
+      "role": "admin",
+      "_id": "admin-1774171750130",
+      "createdAt": "2026-03-22T09:29:10.130Z"
     }
   ],
   "enquiries": [
@@ -129,6 +136,7 @@
       "createdAt": "2026-03-17T08:36:58.298Z"
     }
   ],
+  "projects": [],
   "testimonials": [
     {
       "clientName": "Fake Customer",

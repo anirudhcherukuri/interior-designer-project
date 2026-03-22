@@ -33,8 +33,8 @@ const allowedOrigins = [
 ];
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow exact matches from allowedOrigins, or 127.0.0.1 strictly for local dev
-    if (!origin || allowedOrigins.includes(origin) || origin === "http://127.0.0.1:3000" || origin === "http://localhost:3000") {
+    // ALWAYS allow localhost and 127.0.0.1 for development
+    if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1') || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));

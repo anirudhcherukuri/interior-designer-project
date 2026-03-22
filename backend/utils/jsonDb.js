@@ -14,6 +14,7 @@ const getDefaultDb = () => ({
     users: [],
     enquiries: [],
     bookings: [],
+    projects: [],
     testimonials: [],
     visitors: { count: 125, sources: [], devices: [] }
 });
