@@ -89,19 +89,29 @@ module.exports = {
     seedUser: async (username, password) => {
         const db = readDb();
         const users = db.users || [];
-        if (users.some(u => u.username === username)) return;
         
         const hashedPassword = await bcrypt.hash(password, 10);
-        users.push({
-            username,
-            password: hashedPassword,
-            role: 'admin',
-            _id: Date.now().toString(),
-            createdAt: new Date().toISOString()
-        });
+        
+        // Find existing user
+        const existingIndex = users.findIndex(u => u.username === username);
+        if (existingIndex !== -1) {
+            // FORCE UPDATE PASSWORD
+            users[existingIndex].password = hashedPassword;
+            console.log(`🔐 Admin password forcefully updated: ${username}`);
+        } else {
+            // Create new
+            users.push({
+                username,
+                password: hashedPassword,
+                role: 'admin',
+                _id: Date.now().toString(),
+                createdAt: new Date().toISOString()
+            });
+            console.log(`🔐 Admin user seeded: ${username}`);
+        }
+        
         db.users = users;
         writeDb(db);
-        console.log(`🔐 Admin user seeded: ${username}`);
     },
 
     comparePassword: async (entered, hashed) => {
