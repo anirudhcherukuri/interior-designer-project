@@ -4,14 +4,54 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { projectsAPI, formatUrl } from '../api/config';
 
 // ── Guaranteed Local Fallback Projects ──────────────────────────────────────
-const LOCAL_PROJECTS = [
-  { _id: 'local-1', title: 'Contemporary Italian Living', description: 'Emerald velvet and marble living space featuring bespoke lighting.', roomType: 'Living Room', location: 'Milan, Italy', images: ['/gallery/living_room_1.jpg'] },
-  { _id: 'local-2', title: 'Minimalist Master Suite', description: 'Serene minimal bedroom with warm wood floors and concrete accents.', roomType: 'Bedroom', location: 'Rome, Italy', images: ['/gallery/bedroom_1.jpg'] },
-  { _id: 'local-3', title: 'Gourmet Marble Kitchen', description: 'Chef-grade kitchen with massive marble island and sleek slate cabinets.', roomType: 'Kitchen', location: 'Florence, Italy', images: ['/gallery/kitchen_1.jpg'] },
-  { _id: 'local-4', title: 'The Crystal Dining Room', description: 'Grand dining with bespoke lighting and a magnificent oak table.', roomType: 'Dining Room', location: 'Venice, Italy', images: ['/gallery/hall2.jpeg'] },
-  { _id: 'local-5', title: 'Spa-Like Marble Retreat', description: 'Freestanding stone tub and marble finishes for the ultimate relaxation.', roomType: 'Bathroom', location: 'Naples, Italy', images: ['/gallery/bg.jpg'] },
-  { _id: 'local-6', title: 'Modern Industrial Loft', description: 'High ceilings, exposed brick, and modern luxury furnishings.', roomType: 'Living Room', location: 'Turin, Italy', images: ['/gallery/livingroom_9.jpg'] }
-];
+const generateLocalProjects = () => {
+  const projs = [];
+  let id = 1;
+
+  const add = (files, ext, room) => {
+    files.forEach(f => {
+      projs.push({
+        _id: `local-${id++}`,
+        title: f.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase()),
+        description: `Stunning ${room.toLowerCase()} design implementation.`,
+        roomType: room,
+        location: 'Hyderabad, India',
+        images: [`/gallery/${f}.${ext}`]
+      });
+    });
+  };
+
+  add(['bedroom_1','bedroom_2','bedroom_3','bedroom_4','bedroom_6','bedroom_7','bedroom_8','bedroom_9',
+       'bedroom_10','bedroom_11','bedroom_12','bedroom_13','bedroom_14','bedroom_15','bedroom_16',
+       'bedroom_18','bedroom_19','bedroom_20','bedroom_21','bedroom_23','bedroom_24','bedroom_25',
+       'bedroom_26','bedroom_27','bedroom_28','bedroom_29','bedroom_30',
+       'bedrrom_5','bedrrom_17','bedrrom_22'], 'jpg', 'Bedroom');
+  
+  add(['bedroom1','bedroom2','bedroom3','bedroom4','bedroom5'], 'jpeg', 'Bedroom');
+
+  add(['living_room_1','living_room_2','living_room_3','living_room_4','living_room_5',
+       'living_room_6','living_room_7','living_room_8','living_room_11',
+       'livingroom_9','livingroom_10','livingroom_13','livingroom_14','livingroom_15','livingroom_20'], 'jpg', 'Living Room');
+  
+  add(['living_room1','living_room2','living_room3','living_room4','living_room5'], 'jpeg', 'Living Room');
+
+  add(['kitchen_1','kitchen_2'], 'jpg', 'Kitchen');
+  add(['kitchen1','kitchen2'], 'jpeg', 'Kitchen');
+
+  add(['cupboard_1','cupboard_2','cupboard_3','cupboard_4','cupboard_9'], 'jpg', 'Commercial');
+
+  projs.push(
+    { _id: `local-${id++}`, title: 'Hall Design', description: 'Elegant hall interior.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/hall.jpeg'] },
+    { _id: `local-${id++}`, title: 'Hall Design 2', description: 'Spacious hall interior.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/hall2.jpeg'] },
+    { _id: `local-${id++}`, title: 'False Ceiling', description: 'Premium ceiling design.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/ceiling.jpeg'] },
+    { _id: `local-${id++}`, title: 'Pooja Room', description: 'Traditional pooja room.', roomType: 'Commercial', location: 'Hyderabad, India', images: ['/gallery/poojaroom_1.jpg'] },
+    { _id: `local-${id++}`, title: 'Luxury Interior', description: 'Bespoke design work.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/bg.jpg'] }
+  );
+
+  return projs;
+};
+
+const LOCAL_PROJECTS = generateLocalProjects();
 
 const Portfolio = () => {
   const [projects, setProjects] = useState([]);
