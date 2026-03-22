@@ -1,0 +1,35 @@
+services:
+  # ─── Backend: Node.js / Express API ───────────────────────────────────────
+  - type: web
+    name: interior-designer-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free # Note: Free plan has ephemeral storage (JSON DB will reset on restart)
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: PORT
+        value: 5000
+
+  # ─── Frontend: React App (Native Render Static Site) ──────────────────────
+  - type: static
+    name: interior-designer-frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
+    rootDir: frontend
+    # Standard SPA fallback is handled via public/_redirects for static sites.
+    # If the _redirects file is used, it acts as a fallthrough (only rewrites if file not found).
+    # Explicit routes in render.yaml are often too greedy and can block JS/CSS files.
+    envVars:
+      - key: REACT_APP_API_URL
+        sync: false

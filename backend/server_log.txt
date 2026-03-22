@@ -1,0 +1,8 @@
+✅ Cloudinary Storage initialized
+Server started on port 5000
+2026-03-16T16:44:04.182Z - GET /api/projects
+2026-03-16T16:44:19.872Z - GET /api/projects
+2026-03-16T16:44:30.806Z - GET /api/projects
+2026-03-16T16:44:39.994Z - GET /api/health
+2026-03-16T16:44:40.005Z - GET /api/projects
+2026-03-16T16:44:41.716Z - GET /api/upload/test
