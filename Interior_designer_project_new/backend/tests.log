@@ -1,0 +1,236 @@
+FAIL tests/api.test.js (36.22 s)
+  ÔùÅ Database, API & Form Edge Cases Tests ÔÇ║ Form Testing & Input Validation (Enquiry) ÔÇ║ should create an Enquiry with valid inputs
+
+    MongoParseError: options usenewurlparser, useunifiedtopology are not supported
+
+      20 |     mongoServer = await MongoMemoryServer.create();
+      21 |     const uri = mongoServer.getUri();
+    > 22 |     await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+         |                    ^
+      23 |   });
+      24 |
+      25 |   afterAll(async () => {
+
+      at parseOptions (node_modules/mongodb/src/connection_string.ts:364:11)
+      at new MongoClient (node_modules/mongodb/src/mongo_client.ts:421:32)
+      at NativeConnection.createClient (node_modules/mongoose/lib/drivers/node-mongodb-native/connection.js:334:14)
+      at NativeConnection.openUri (node_modules/mongoose/lib/connection.js:1074:34)
+      at Mongoose.connect (node_modules/mongoose/lib/mongoose.js:469:15)
+      at Object.connect (tests/api.test.js:22:20)
+
+  ÔùÅ Database, API & Form Edge Cases Tests ÔÇ║ Form Testing & Input Validation (Enquiry) ÔÇ║ should create an Enquiry with valid inputs
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      29 |   });
+      30 |
+    > 31 |   afterEach(async () => {
+         |   ^
+      32 |     await Booking.deleteMany({});
+      33 |     await Enquiry.deleteMany({});
+      34 |   });
+
+      at afterEach (tests/api.test.js:31:3)
+      at Object.describe (tests/api.test.js:18:1)
+
+  ÔùÅ Database, API & Form Edge Cases Tests ÔÇ║ Form Testing & Input Validation (Enquiry) ÔÇ║ should reject Enquiry with missing required fields
+
+    MongoParseError: options usenewurlparser, useunifiedtopology are not supported
+
+      20 |     mongoServer = await MongoMemoryServer.create();
+      21 |     const uri = mongoServer.getUri();
+    > 22 |     await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+         |                    ^
+      23 |   });
+      24 |
+      25 |   afterAll(async () => {
+
+      at parseOptions (node_modules/mongodb/src/connection_string.ts:364:11)
+      at new MongoClient (node_modules/mongodb/src/mongo_client.ts:421:32)
+      at NativeConnection.createClient (node_modules/mongoose/lib/drivers/node-mongodb-native/connection.js:334:14)
+      at NativeConnection.openUri (node_modules/mongoose/lib/connection.js:1074:34)
+      at Mongoose.connect (node_modules/mongoose/lib/mongoose.js:469:15)
+      at Object.connect (tests/api.test.js:22:20)
+
+  ÔùÅ Database, API & Form Edge Cases Tests ÔÇ║ Form Testing & Input Validation (Enquiry) ÔÇ║ should reject Enquiry with missing required fields
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      29 |   });
+      30 |
+    > 31 |   afterEach(async () => {
+         |   ^
+      32 |     await Booking.deleteMany({});
+      33 |     await Enquiry.deleteMany({});
+      34 |   });
+
+      at afterEach (tests/api.test.js:31:3)
+      at Object.describe (tests/api.test.js:18:1)
+
+  ÔùÅ Database, API & Form Edge Cases Tests ÔÇ║ Form Testing & Input Validation (Enquiry) ÔÇ║ should store data correctly and consistently to Database (CRUD)
+
+    MongoParseError: options usenewurlparser, useunifiedtopology are not supported
+
+      20 |     mongoServer = await MongoMemoryServer.create();
+      21 |     const uri = mongoServer.getUri();
+    > 22 |     await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+         |                    ^
+      23 |   });
+      24 |
+      25 |   afterAll(async () => {
+
+      at parseOptions (node_modules/mongodb/src/connection_string.ts:364:11)
+      at new MongoClient (node_modules/mongodb/src/mongo_client.ts:421:32)
+      at NativeConnection.createClient (node_modules/mongoose/lib/drivers/node-mongodb-native/connection.js:334:14)
+      at NativeConnection.openUri (node_modules/mongoose/lib/connection.js:1074:34)
+      at Mongoose.connect (node_modules/mongoose/lib/mongoose.js:469:15)
+      at Object.connect (tests/api.test.js:22:20)
+
+  ÔùÅ Database, API & Form Edge Cases Tests ÔÇ║ Form Testing & Input Validation (Enquiry) ÔÇ║ should store data correctly and consistently to Database (CRUD)
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      29 |   });
+      30 |
+    > 31 |   afterEach(async () => {
+         |   ^
+      32 |     await Booking.deleteMany({});
+      33 |     await Enquiry.deleteMany({});
+      34 |   });
+
+      at afterEach (tests/api.test.js:31:3)
+      at Object.describe (tests/api.test.js:18:1)
+
+  ÔùÅ Database, API & Form Edge Cases Tests ÔÇ║ Form Testing & Edge Cases (Booking) ÔÇ║ should enforce status protection (No IDOR on status assignment)
+
+    MongoParseError: options usenewurlparser, useunifiedtopology are not supported
+
+      20 |     mongoServer = await MongoMemoryServer.create();
+      21 |     const uri = mongoServer.getUri();
+    > 22 |     await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+         |                    ^
+      23 |   });
+      24 |
+      25 |   afterAll(async () => {
+
+      at parseOptions (node_modules/mongodb/src/connection_string.ts:364:11)
+      at new MongoClient (node_modules/mongodb/src/mongo_client.ts:421:32)
+      at NativeConnection.createClient (node_modules/mongoose/lib/drivers/node-mongodb-native/connection.js:334:14)
+      at NativeConnection.openUri (node_modules/mongoose/lib/connection.js:1074:34)
+      at Mongoose.connect (node_modules/mongoose/lib/mongoose.js:469:15)
+      at Object.connect (tests/api.test.js:22:20)
+
+  ÔùÅ Database, API & Form Edge Cases Tests ÔÇ║ Form Testing & Edge Cases (Booking) ÔÇ║ should enforce status protection (No IDOR on status assignment)
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      29 |   });
+      30 |
+    > 31 |   afterEach(async () => {
+         |   ^
+      32 |     await Booking.deleteMany({});
+      33 |     await Enquiry.deleteMany({});
+      34 |   });
+
+      at afterEach (tests/api.test.js:31:3)
+      at Object.describe (tests/api.test.js:18:1)
+
+  ÔùÅ Database, API & Form Edge Cases Tests ÔÇ║ Form Testing & Edge Cases (Booking) ÔÇ║ should enforce required constraints on Booking
+
+    MongoParseError: options usenewurlparser, useunifiedtopology are not supported
+
+      20 |     mongoServer = await MongoMemoryServer.create();
+      21 |     const uri = mongoServer.getUri();
+    > 22 |     await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+         |                    ^
+      23 |   });
+      24 |
+      25 |   afterAll(async () => {
+
+      at parseOptions (node_modules/mongodb/src/connection_string.ts:364:11)
+      at new MongoClient (node_modules/mongodb/src/mongo_client.ts:421:32)
+      at NativeConnection.createClient (node_modules/mongoose/lib/drivers/node-mongodb-native/connection.js:334:14)
+      at NativeConnection.openUri (node_modules/mongoose/lib/connection.js:1074:34)
+      at Mongoose.connect (node_modules/mongoose/lib/mongoose.js:469:15)
+      at Object.connect (tests/api.test.js:22:20)
+
+  ÔùÅ Database, API & Form Edge Cases Tests ÔÇ║ Form Testing & Edge Cases (Booking) ÔÇ║ should enforce required constraints on Booking
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      29 |   });
+      30 |
+    > 31 |   afterEach(async () => {
+         |   ^
+      32 |     await Booking.deleteMany({});
+      33 |     await Enquiry.deleteMany({});
+      34 |   });
+
+      at afterEach (tests/api.test.js:31:3)
+      at Object.describe (tests/api.test.js:18:1)
+
+  ÔùÅ Database, API & Form Edge Cases Tests ÔÇ║ Duplicate Submissions & Edge Cases ÔÇ║ should allow duplicate enquiries from same email but create multiple documents
+
+    MongoParseError: options usenewurlparser, useunifiedtopology are not supported
+
+      20 |     mongoServer = await MongoMemoryServer.create();
+      21 |     const uri = mongoServer.getUri();
+    > 22 |     await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+         |                    ^
+      23 |   });
+      24 |
+      25 |   afterAll(async () => {
+
+      at parseOptions (node_modules/mongodb/src/connection_string.ts:364:11)
+      at new MongoClient (node_modules/mongodb/src/mongo_client.ts:421:32)
+      at NativeConnection.createClient (node_modules/mongoose/lib/drivers/node-mongodb-native/connection.js:334:14)
+      at NativeConnection.openUri (node_modules/mongoose/lib/connection.js:1074:34)
+      at Mongoose.connect (node_modules/mongoose/lib/mongoose.js:469:15)
+      at Object.connect (tests/api.test.js:22:20)
+
+  ÔùÅ Database, API & Form Edge Cases Tests ÔÇ║ Duplicate Submissions & Edge Cases ÔÇ║ should allow duplicate enquiries from same email but create multiple documents
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      29 |   });
+      30 |
+    > 31 |   afterEach(async () => {
+         |   ^
+      32 |     await Booking.deleteMany({});
+      33 |     await Enquiry.deleteMany({});
+      34 |   });
+
+      at afterEach (tests/api.test.js:31:3)
+      at Object.describe (tests/api.test.js:18:1)
+
+
+  ÔùÅ Test suite failed to run
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      23 |   });
+      24 |
+    > 25 |   afterAll(async () => {
+         |   ^
+      26 |     await mongoose.connection.dropDatabase();
+      27 |     await mongoose.connection.close();
+      28 |     await mongoServer.stop();
+
+      at afterAll (tests/api.test.js:25:3)
+      at Object.describe (tests/api.test.js:18:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       6 failed, 6 total
+Snapshots:   0 total
+Time:        36.276 s, estimated 37 s
+Ran all test suites matching tests/api.test.js.
+Jest did not exit one second after the test run has completed.
+
+'This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with `--detectOpenHandles` to troubleshoot this issue.

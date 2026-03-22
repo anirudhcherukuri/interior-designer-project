@@ -1,0 +1,743 @@
+✅ Found 75 resources in Cloudinary
+[
+  {
+    "public_id": "interior-designer-portfolio/gbpdsnx0ve9w3jp9va1s",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773838195/interior-designer-portfolio/gbpdsnx0ve9w3jp9va1s.jpg",
+    "context": null
+  },
+  {
+    "public_id": "interior-designer-portfolio/gvtpdpyi3pxtmlidkilf",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773838194/interior-designer-portfolio/gvtpdpyi3pxtmlidkilf.jpg",
+    "context": null
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745462052-0",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745464/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745462052-0.jpg",
+    "context": {
+      "title": "Regal Velvet Suite 4",
+      "description": "Bespoke regal velvet suite designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745466214-1",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745466/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745466214-1.jpg",
+    "context": {
+      "title": "Ivory Coast Living 3",
+      "description": "Bespoke ivory coast living designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Living Room",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745467857-2",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745468/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745467857-2.jpg",
+    "context": {
+      "title": "Obsidian Master Suite 3",
+      "description": "Bespoke obsidian master suite designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745470475-3",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745471/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745470475-3.jpg",
+    "context": {
+      "title": "Crystal Clear Dining 3",
+      "description": "Bespoke crystal clear dining designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745472516-4",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745472/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745472516-4.jpg",
+    "context": {
+      "title": "Velvet Dusk Hallway 3",
+      "description": "Bespoke velvet dusk hallway designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745474262-5",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745474/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745474262-5.jpg",
+    "context": {
+      "title": "Terra Cotta Terrace View 3",
+      "description": "Bespoke terra cotta terrace view designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745476040-6",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745476/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745476040-6.jpg",
+    "context": {
+      "title": "Pearl White Kitchen 3",
+      "description": "Bespoke pearl white kitchen designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Kitchen",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745478629-7",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745478/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745478629-7.jpg",
+    "context": {
+      "title": "Pacific Blue Lounge 3",
+      "description": "Bespoke pacific blue lounge designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745481592-8",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745481/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745481592-8.jpg",
+    "context": {
+      "title": "Rustic Luxury Bedroom 3",
+      "description": "Bespoke rustic luxury bedroom designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Bedroom",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745482861-9",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745482/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745482861-9.jpg",
+    "context": {
+      "title": "Modern Heritage Full House 3",
+      "description": "Bespoke modern heritage full house designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745484396-10",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745484/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745484396-10.jpg",
+    "context": {
+      "title": "Art Deco Study 3",
+      "description": "Bespoke art deco study designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745486132-11",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745486/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745486132-11.jpg",
+    "context": {
+      "title": "Champagne Penthouse 3",
+      "description": "Bespoke champagne penthouse designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745487625-12",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745487/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745487625-12.jpg",
+    "context": {
+      "title": "Emerald Accent Living 3",
+      "description": "Bespoke emerald accent living designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Living Room",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745489403-13",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745489/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745489403-13.jpg",
+    "context": {
+      "title": "Tuscan Villa View 3",
+      "description": "Bespoke tuscan villa view designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745491373-14",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745492/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745491373-14.jpg",
+    "context": {
+      "title": "Opulent Dining Space 3",
+      "description": "Bespoke opulent dining space designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745493844-15",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745494/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745493844-15.jpg",
+    "context": {
+      "title": "Sapphire Guest Retreat 3",
+      "description": "Bespoke sapphire guest retreat designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745496235-16",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745496/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745496235-16.jpg",
+    "context": {
+      "title": "Minimalist Dream Lounge 3",
+      "description": "Bespoke minimalist dream lounge designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745498847-17",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745498/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745498847-17.jpg",
+    "context": {
+      "title": "Royal Italian Hallway 3",
+      "description": "Bespoke royal italian hallway designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745500264-18",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745499/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745500264-18.jpg",
+    "context": {
+      "title": "Industrial Chic Office 3",
+      "description": "Bespoke industrial chic office designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745501274-19",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745501/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745501274-19.jpg",
+    "context": {
+      "title": "Contemporary Kitchen Suite 3",
+      "description": "Bespoke contemporary kitchen suite designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Kitchen",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745502656-20",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745502/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745502656-20.jpg",
+    "context": {
+      "title": "Gold-Leaf Master Bedroom 3",
+      "description": "Bespoke gold-leaf master bedroom designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Bedroom",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745504049-21",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745504/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745504049-21.jpg",
+    "context": {
+      "title": "Zen Sanctuary Living 3",
+      "description": "Bespoke zen sanctuary living designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Living Room",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745511955-22",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745511/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745511955-22.jpg",
+    "context": {
+      "title": "Marble Grand Foyer 3",
+      "description": "Bespoke marble grand foyer designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745513028-23",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745512/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745513028-23.jpg",
+    "context": {
+      "title": "Milanese Loft Concept 3",
+      "description": "Bespoke milanese loft concept designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745514364-24",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745516/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745514364-24.jpg",
+    "context": {
+      "title": "Regal Velvet Suite 3",
+      "description": "Bespoke regal velvet suite designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745533806-25",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745534/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745533806-25.jpg",
+    "context": {
+      "title": "Ivory Coast Living 2",
+      "description": "Bespoke ivory coast living designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Living Room",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745538257-26",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745538/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745538257-26.jpg",
+    "context": {
+      "title": "Obsidian Master Suite 2",
+      "description": "Bespoke obsidian master suite designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745539693-27",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745539/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745539693-27.jpg",
+    "context": {
+      "title": "Crystal Clear Dining 2",
+      "description": "Bespoke crystal clear dining designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745541041-28",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745541/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745541041-28.jpg",
+    "context": {
+      "title": "Velvet Dusk Hallway 2",
+      "description": "Bespoke velvet dusk hallway designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745543100-29",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745548/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745543100-29.jpg",
+    "context": {
+      "title": "Terra Cotta Terrace View 2",
+      "description": "Bespoke terra cotta terrace view designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745571846-30",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745572/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745571846-30.jpg",
+    "context": {
+      "title": "Pearl White Kitchen 2",
+      "description": "Bespoke pearl white kitchen designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Kitchen",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745574396-31",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745574/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745574396-31.jpg",
+    "context": {
+      "title": "Pacific Blue Lounge 2",
+      "description": "Bespoke pacific blue lounge designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745575437-32",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745575/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745575437-32.jpg",
+    "context": {
+      "title": "Rustic Luxury Bedroom 2",
+      "description": "Bespoke rustic luxury bedroom designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Bedroom",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745576909-33",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745576/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745576909-33.jpg",
+    "context": {
+      "title": "Modern Heritage Full House 2",
+      "description": "Bespoke modern heritage full house designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745577944-34",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745577/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745577944-34.jpg",
+    "context": {
+      "title": "Art Deco Study 2",
+      "description": "Bespoke art deco study designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745578956-35",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745578/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745578956-35.jpg",
+    "context": {
+      "title": "Champagne Penthouse 2",
+      "description": "Bespoke champagne penthouse designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745580400-36",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745586/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745580400-36.jpg",
+    "context": {
+      "title": "Emerald Accent Living 2",
+      "description": "Bespoke emerald accent living designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Living Room",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745609437-37",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745609/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745609437-37.jpg",
+    "context": {
+      "title": "Tuscan Villa View 2",
+      "description": "Bespoke tuscan villa view designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745610851-38",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745610/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745610851-38.jpg",
+    "context": {
+      "title": "Opulent Dining Space 2",
+      "description": "Bespoke opulent dining space designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745612987-39",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745612/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745612987-39.jpg",
+    "context": {
+      "title": "Sapphire Guest Retreat 2",
+      "description": "Bespoke sapphire guest retreat designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745614120-40",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745613/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745614120-40.jpg",
+    "context": {
+      "title": "Minimalist Dream Lounge 2",
+      "description": "Bespoke minimalist dream lounge designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745615291-41",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745614/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745615291-41.jpg",
+    "context": {
+      "title": "Royal Italian Hallway 2",
+      "description": "Bespoke royal italian hallway designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745616563-42",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745616/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745616563-42.jpg",
+    "context": {
+      "title": "Industrial Chic Office 2",
+      "description": "Bespoke industrial chic office designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745617518-43",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745617/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745617518-43.pdf",
+    "context": {
+      "title": "Contemporary Kitchen Suite 2",
+      "description": "Bespoke contemporary kitchen suite designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Kitchen",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745618560-44",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745618/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745618560-44.jpg",
+    "context": {
+      "title": "Gold-Leaf Master Bedroom 2",
+      "description": "Bespoke gold-leaf master bedroom designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Bedroom",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745619541-45",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745619/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745619541-45.jpg",
+    "context": {
+      "title": "Zen Sanctuary Living 2",
+      "description": "Bespoke zen sanctuary living designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Living Room",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745620434-46",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745620/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745620434-46.pdf",
+    "context": {
+      "title": "Marble Grand Foyer 2",
+      "description": "Bespoke marble grand foyer designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745621404-47",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745620/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745621404-47.jpg",
+    "context": {
+      "title": "Milanese Loft Concept 2",
+      "description": "Bespoke milanese loft concept designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745622508-48",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745622/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745622508-48.jpg",
+    "context": {
+      "title": "Regal Velvet Suite 2",
+      "description": "Bespoke regal velvet suite designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745623613-49",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745623/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745623613-49.jpg",
+    "context": {
+      "title": "Ivory Coast Living 1",
+      "description": "Bespoke ivory coast living designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Living Room",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745624566-50",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745624/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745624566-50.jpg",
+    "context": {
+      "title": "Obsidian Master Suite 1",
+      "description": "Bespoke obsidian master suite designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745625645-51",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745625/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745625645-51.jpg",
+    "context": {
+      "title": "Crystal Clear Dining 1",
+      "description": "Bespoke crystal clear dining designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745626742-52",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745626/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745626742-52.jpg",
+    "context": {
+      "title": "Velvet Dusk Hallway 1",
+      "description": "Bespoke velvet dusk hallway designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745627855-53",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745629/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745627855-53.jpg",
+    "context": {
+      "title": "Terra Cotta Terrace View 1",
+      "description": "Bespoke terra cotta terrace view designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745634615-54",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745634/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745634615-54.jpg",
+    "context": {
+      "title": "Pearl White Kitchen 1",
+      "description": "Bespoke pearl white kitchen designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Kitchen",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745635897-55",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745635/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745635897-55.jpg",
+    "context": {
+      "title": "Pacific Blue Lounge 1",
+      "description": "Bespoke pacific blue lounge designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745637045-56",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745636/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745637045-56.jpg",
+    "context": {
+      "title": "Rustic Luxury Bedroom 1",
+      "description": "Bespoke rustic luxury bedroom designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Bedroom",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745638106-57",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745637/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745638106-57.jpg",
+    "context": {
+      "title": "Modern Heritage Full House 1",
+      "description": "Bespoke modern heritage full house designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745639054-58",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745638/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745639054-58.jpg",
+    "context": {
+      "title": "Art Deco Study 1",
+      "description": "Bespoke art deco study designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745640025-59",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745639/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745640025-59.jpg",
+    "context": {
+      "title": "Champagne Penthouse 1",
+      "description": "Bespoke champagne penthouse designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745641330-60",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745640/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745641330-60.jpg",
+    "context": {
+      "title": "Emerald Accent Living 1",
+      "description": "Bespoke emerald accent living designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Living Room",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745642405-61",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745641/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745642405-61.jpg",
+    "context": {
+      "title": "Tuscan Villa View 1",
+      "description": "Bespoke tuscan villa view designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745643350-62",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745642/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745643350-62.jpg",
+    "context": {
+      "title": "Opulent Dining Space 1",
+      "description": "Bespoke opulent dining space designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745645245-63",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745644/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745645245-63.jpg",
+    "context": {
+      "title": "Sapphire Guest Retreat 1",
+      "description": "Bespoke sapphire guest retreat designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745646266-64",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745646/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745646266-64.jpg",
+    "context": {
+      "title": "Minimalist Dream Lounge 1",
+      "description": "Bespoke minimalist dream lounge designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745648800-65",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745648/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745648800-65.jpg",
+    "context": {
+      "title": "Royal Italian Hallway 1",
+      "description": "Bespoke royal italian hallway designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745649694-66",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745649/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745649694-66.jpg",
+    "context": {
+      "title": "Industrial Chic Office 1",
+      "description": "Bespoke industrial chic office designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745650786-67",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745650/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745650786-67.jpg",
+    "context": {
+      "title": "Contemporary Kitchen Suite 1",
+      "description": "Bespoke contemporary kitchen suite designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Kitchen",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745651982-68",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745651/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745651982-68.jpg",
+    "context": {
+      "title": "Gold-Leaf Master Bedroom 1",
+      "description": "Bespoke gold-leaf master bedroom designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Bedroom",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745653258-69",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745652/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745653258-69.jpg",
+    "context": {
+      "title": "Zen Sanctuary Living 1",
+      "description": "Bespoke zen sanctuary living designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Living Room",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745654426-70",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745654/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745654426-70.jpg",
+    "context": {
+      "title": "Marble Grand Foyer 1",
+      "description": "Bespoke marble grand foyer designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745655441-71",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745655/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745655441-71.jpg",
+    "context": {
+      "title": "Milanese Loft Concept 1",
+      "description": "Bespoke milanese loft concept designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  },
+  {
+    "public_id": "interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745656562-72",
+    "url": "https://res.cloudinary.com/dbtovbomo/image/upload/v1773745656/interior-designer-portfolio/interior-designer-portfolio/imported-fb-1773745656562-72.jpg",
+    "context": {
+      "title": "Regal Velvet Suite 1",
+      "description": "Bespoke regal velvet suite designed for ultimate luxury and comfort. Focus on premium materials and lighting.",
+      "roomType": "Full House",
+      "location": "Hyderabad, India"
+    }
+  }
+]
