@@ -106,7 +106,7 @@ function Home() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/gallery/living_room_1.jpg')",
+            backgroundImage: "url('/gallery/bg.jpg')",
             backgroundPosition: 'center 60%',
           }}
         />
