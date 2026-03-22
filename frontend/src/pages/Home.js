@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { projectsAPI } from '../api/config';
+import { projectsAPI, formatUrl } from '../api/config';
+
+// ── Guaranteed Local Fallback Projects ──────────────────────────────────────
+const LOCAL_PROJECTS = [
+  { _id: 'local-1', title: 'Contemporary Italian Living', imageUrl: '/gallery/living_room_1.jpg' },
+  { _id: 'local-2', title: 'Minimalist Master Suite', imageUrl: '/gallery/bedroom_1.jpg' },
+  { _id: 'local-3', title: 'Gourmet Marble Kitchen', imageUrl: '/gallery/kitchen_1.jpg' },
+  { _id: 'local-4', title: 'The Crystal Dining Room', imageUrl: '/gallery/hall2.jpeg' },
+];
 
 function Home() {
   const [projects, setProjects] = useState([]);
@@ -31,19 +39,26 @@ function Home() {
   useEffect(() => {
     const fetchProj = async () => {
       try {
-        const res = await projectsAPI.getAll();
-        if (res.data && res.data.length > 0) {
-          setProjects(res.data);
-          // If we have enough real projects, use them for services
-          if (res.data.length >= 4) {
-            setServices(prev => prev.map((s, i) => ({
-              ...s,
-              image: res.data[i].imageUrl || res.data[i].image || s.image
-            })));
-          }
+        const res = await projectsAPI.getAll().catch(() => ({ data: [] }));
+        let apiData = res.data || [];
+        
+        // Use local fallback if API returns fewer than 4 items
+        if (apiData.length < 4) {
+          apiData = LOCAL_PROJECTS;
         }
+
+        setProjects(apiData);
+        setServices(prev => prev.map((s, i) => ({
+          ...s,
+          image: formatUrl(apiData[i].imageUrl || apiData[i].images?.[0]) || s.image
+        })));
       } catch (e) {
         console.error('Home Fetch Error:', e);
+        setProjects(LOCAL_PROJECTS);
+        setServices(prev => prev.map((s, i) => ({
+          ...s,
+          image: formatUrl(LOCAL_PROJECTS[i].imageUrl) || s.image
+        })));
       }
     };
     fetchProj();
@@ -92,7 +107,7 @@ function Home() {
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: projects.length > 0 
-              ? `url(${projects[0].imageUrl})` 
+              ? `url(${formatUrl(projects[0].imageUrl || projects[0].images?.[0])})` 
               : "url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1920&q=80')",
             backgroundPosition: 'center 60%',
           }}

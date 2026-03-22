@@ -261,7 +261,7 @@ const Portfolio = () => {
                         {/* Image */}
                         <div className="relative h-72 overflow-hidden">
                           <img
-                            src={formatUrl(project.images?.[0])}
+                            src={formatUrl(project.imageUrl || project.images?.[0])}
                             alt={project.title}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                             onError={(e) => { e.target.src = 'https://via.placeholder.com/800x600?text=No+Image'; }}
