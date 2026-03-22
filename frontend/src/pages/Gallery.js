@@ -5,66 +5,50 @@ import { projectsAPI, uploadAPI, formatUrl } from '../api/config';
 
 // ── Local gallery images (static files served from /gallery/) ─────────────────
 // These always work regardless of backend status
-const LOCAL_GALLERY = [
-  // Bedrooms
-  ...['bedroom_1','bedroom_2','bedroom_3','bedroom_4','bedroom_6','bedroom_7','bedroom_8','bedroom_9',
-      'bedroom_10','bedroom_11','bedroom_12','bedroom_13','bedroom_14','bedroom_15','bedroom_16',
-      'bedroom_18','bedroom_19','bedroom_20','bedroom_21','bedroom_23','bedroom_24','bedroom_25',
-      'bedroom_26','bedroom_27','bedroom_28','bedroom_29','bedroom_30',
-      'bedrrom_5','bedrrom_17','bedrrom_22'].map((f,i) => ({
-    key: `local-bed-${i}`, type: 'image',
-    url: `/gallery/${f}.jpg`,
-    projectTitle: f.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),
-    roomType: 'Bedroom', projectId: null, link: '#'
-  })),
-  ...['bedroom1','bedroom2','bedroom3','bedroom4','bedroom5'].map((f,i) => ({
-    key: `local-bed-j-${i}`, type: 'image',
-    url: `/gallery/${f}.jpeg`,
-    projectTitle: f.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),
-    roomType: 'Bedroom', projectId: null, link: '#'
-  })),
-  // Living Rooms
-  ...['living_room_1','living_room_2','living_room_3','living_room_4','living_room_5',
-      'living_room_6','living_room_7','living_room_8','living_room_11',
-      'livingroom_9','livingroom_10','livingroom_13','livingroom_14','livingroom_15','livingroom_20'].map((f,i) => ({
-    key: `local-lr-${i}`, type: 'image',
-    url: `/gallery/${f}.jpg`,
-    projectTitle: f.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),
-    roomType: 'Living Room', projectId: null, link: '#'
-  })),
-  ...['living_room1','living_room2','living_room3','living_room4','living_room5'].map((f,i) => ({
-    key: `local-lr-j-${i}`, type: 'image',
-    url: `/gallery/${f}.jpeg`,
-    projectTitle: f.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),
-    roomType: 'Living Room', projectId: null, link: '#'
-  })),
-  // Kitchens
-  ...['kitchen_1','kitchen_2'].map((f,i) => ({
-    key: `local-kit-${i}`, type: 'image',
-    url: `/gallery/${f}.jpg`,
-    projectTitle: f.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),
-    roomType: 'Kitchen', projectId: null, link: '#'
-  })),
-  ...['kitchen1','kitchen2'].map((f,i) => ({
-    key: `local-kit-j-${i}`, type: 'image',
-    url: `/gallery/${f}.jpeg`,
-    projectTitle: f.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),
-    roomType: 'Kitchen', projectId: null, link: '#'
-  })),
-  // Cupboards / Wardrobes
-  ...['cupboard_1','cupboard_2','cupboard_3','cupboard_4','cupboard_9'].map((f,i) => ({
-    key: `local-cup-${i}`, type: 'image',
-    url: `/gallery/${f}.jpg`,
-    projectTitle: f.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),
-    roomType: 'Commercial', projectId: null, link: '#'
-  })),
-  // Hall / Dining
-  { key:'local-hall1', type:'image', url:'/gallery/hall.jpeg', projectTitle:'Hall Design', roomType:'Living Room', projectId:null, link:'#' },
-  { key:'local-hall2', type:'image', url:'/gallery/hall2.jpeg', projectTitle:'Hall Design 2', roomType:'Living Room', projectId:null, link:'#' },
-  { key:'local-ceiling', type:'image', url:'/gallery/ceiling.jpeg', projectTitle:'False Ceiling', roomType:'Living Room', projectId:null, link:'#' },
-  { key:'local-pooja', type:'image', url:'/gallery/poojaroom_1.jpg', projectTitle:'Pooja Room', roomType:'Commercial', projectId:null, link:'#' },
-  { key:'local-bg', type:'image', url:'/gallery/bg.jpg', projectTitle:'Luxury Interior', roomType:'Living Room', projectId:null, link:'#' },
-];
+const generateLocalGallery = () => {
+  const items = [];
+  let id = 1;
+
+  const add = (files, ext, room) => {
+    files.forEach(f => {
+      items.push({
+        key: `local-${id++}`, 
+        type: 'image',
+        url: `/gallery/${f}.${ext}`,
+        projectTitle: `Hyderabad Interior Project ${id}`,
+        roomType: room, 
+        projectId: null, 
+        link: '#'
+      });
+    });
+  };
+
+  add(['bedroom_1','bedroom_2','bedroom_3','bedroom_4','bedroom_6','bedroom_7','bedroom_8','bedroom_9',
+       'bedroom_10','bedroom_11','bedroom_12','bedroom_13','bedroom_14','bedroom_15','bedroom_16',
+       'bedroom_18','bedroom_19','bedroom_20','bedroom_21','bedroom_23','bedroom_24','bedroom_25',
+       'bedroom_26','bedroom_27','bedroom_28','bedroom_29','bedroom_30',
+       'bedrrom_5','bedrrom_17','bedrrom_22'], 'jpg', 'Bedroom');
+
+  add(['living_room_1','living_room_2','living_room_3','living_room_4','living_room_5',
+       'living_room_6','living_room_7','living_room_8','living_room_11',
+       'livingroom_9','livingroom_10','livingroom_13','livingroom_14','livingroom_15','livingroom_20'], 'jpg', 'Living Room');
+
+  add(['kitchen_1','kitchen_2'], 'jpg', 'Kitchen');
+
+  add(['cupboard_1','cupboard_2','cupboard_3','cupboard_4','cupboard_9'], 'jpg', 'Commercial');
+
+  items.push(
+    { key:`local-${id++}`, type:'image', url:'/gallery/hall.jpeg', projectTitle:`Hyderabad Project ${id}`, roomType:'Living Room', projectId:null, link:'#' },
+    { key:`local-${id++}`, type:'image', url:'/gallery/hall2.jpeg', projectTitle:`Hyderabad Project ${id}`, roomType:'Living Room', projectId:null, link:'#' },
+    { key:`local-${id++}`, type:'image', url:'/gallery/ceiling.jpeg', projectTitle:`Hyderabad Project ${id}`, roomType:'Living Room', projectId:null, link:'#' },
+    { key:`local-${id++}`, type:'image', url:'/gallery/poojaroom_1.jpg', projectTitle:`Hyderabad Project ${id}`, roomType:'Commercial', projectId:null, link:'#' },
+    { key:`local-${id++}`, type:'image', url:'/gallery/bg.jpg', projectTitle:`Hyderabad Project ${id}`, roomType:'Living Room', projectId:null, link:'#' }
+  );
+
+  return items;
+};
+
+const LOCAL_GALLERY = generateLocalGallery();
 
 const Gallery = () => {
   const [projects, setProjects] = useState([]);

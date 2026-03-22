@@ -10,10 +10,13 @@ const generateLocalProjects = () => {
 
   const add = (files, ext, room) => {
     files.forEach(f => {
+      // Dynamic naming: Alternate between "Hyderabad Interior Project" and "Hyderabad Project X"
+      const title = id === 1 ? 'Hyderabad Interior Project' : `Hyderabad Project ${id}`;
+      
       projs.push({
         _id: `local-${id++}`,
-        title: f.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase()),
-        description: `Stunning ${room.toLowerCase()} design implementation.`,
+        title: title,
+        description: `Stunning ${room.toLowerCase()} design implementation in Hyderabad.`,
         roomType: room,
         location: 'Hyderabad, India',
         images: [`/gallery/${f}.${ext}`]
@@ -26,26 +29,21 @@ const generateLocalProjects = () => {
        'bedroom_18','bedroom_19','bedroom_20','bedroom_21','bedroom_23','bedroom_24','bedroom_25',
        'bedroom_26','bedroom_27','bedroom_28','bedroom_29','bedroom_30',
        'bedrrom_5','bedrrom_17','bedrrom_22'], 'jpg', 'Bedroom');
-  
-  add(['bedroom1','bedroom2','bedroom3','bedroom4','bedroom5'], 'jpeg', 'Bedroom');
 
   add(['living_room_1','living_room_2','living_room_3','living_room_4','living_room_5',
        'living_room_6','living_room_7','living_room_8','living_room_11',
        'livingroom_9','livingroom_10','livingroom_13','livingroom_14','livingroom_15','livingroom_20'], 'jpg', 'Living Room');
-  
-  add(['living_room1','living_room2','living_room3','living_room4','living_room5'], 'jpeg', 'Living Room');
 
   add(['kitchen_1','kitchen_2'], 'jpg', 'Kitchen');
-  add(['kitchen1','kitchen2'], 'jpeg', 'Kitchen');
 
   add(['cupboard_1','cupboard_2','cupboard_3','cupboard_4','cupboard_9'], 'jpg', 'Commercial');
 
   projs.push(
-    { _id: `local-${id++}`, title: 'Hall Design', description: 'Elegant hall interior.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/hall.jpeg'] },
-    { _id: `local-${id++}`, title: 'Hall Design 2', description: 'Spacious hall interior.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/hall2.jpeg'] },
-    { _id: `local-${id++}`, title: 'False Ceiling', description: 'Premium ceiling design.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/ceiling.jpeg'] },
-    { _id: `local-${id++}`, title: 'Pooja Room', description: 'Traditional pooja room.', roomType: 'Commercial', location: 'Hyderabad, India', images: ['/gallery/poojaroom_1.jpg'] },
-    { _id: `local-${id++}`, title: 'Luxury Interior', description: 'Bespoke design work.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/bg.jpg'] }
+    { _id: `local-${id++}`, title: `Hyderabad Project ${id}`, description: 'Elegant hall interior.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/hall.jpeg'] },
+    { _id: `local-${id++}`, title: `Hyderabad Project ${id}`, description: 'Spacious hall interior.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/hall2.jpeg'] },
+    { _id: `local-${id++}`, title: `Hyderabad Project ${id}`, description: 'Premium ceiling design.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/ceiling.jpeg'] },
+    { _id: `local-${id++}`, title: `Hyderabad Project ${id}`, description: 'Traditional pooja room.', roomType: 'Commercial', location: 'Hyderabad, India', images: ['/gallery/poojaroom_1.jpg'] },
+    { _id: `local-${id++}`, title: `Hyderabad Project ${id}`, description: 'Bespoke design work.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/bg.jpg'] }
   );
 
   return projs;
