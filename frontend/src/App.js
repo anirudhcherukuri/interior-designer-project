@@ -8,10 +8,8 @@ import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import Admin from './pages/Admin';
 
-import useVisitorTracking from './hooks/useVisitorTracking';
-
+// Visitor tracking removed for streamlined performance
 const VisitorTracker = () => {
-  useVisitorTracking();
   return null;
 };
 

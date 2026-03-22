@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projectsAPI, formatUrl } from '../api/config';
-import { generateLocalProjects } from './Portfolio';
+import projectsConfig from '../config/projects.config.json';
 
 const ProjectDetail = () => {
   const { id } = useParams();
@@ -25,12 +25,11 @@ const ProjectDetail = () => {
             return;
           }
         } catch (e) {
-          console.warn("API Project fetch failed, checking local fallbacks...");
+          console.warn("API Project fetch failed, checking local config...");
         }
 
-        // Fallback to local if API fails or project not found
-        const localProjs = generateLocalProjects();
-        const found = localProjs.find(p => p._id === id);
+        // Fallback to our new projects.config.json
+        const found = projectsConfig.find(p => p.id === id || p._id === id);
         
         if (found) {
           setProject(found);

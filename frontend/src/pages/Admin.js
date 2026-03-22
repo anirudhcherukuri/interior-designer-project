@@ -1,452 +1,1255 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { projectsAPI, bookingsAPI, uploadAPI, authAPI, API_URL, USE_MOCK, formatUrl } from "../api/config";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { authAPI, bookingsAPI, uploadAPI, formatUrl, API_URL } from "../api/config";
 
-// ─── Palette ─────────────────────────────────────────────────────────────────
-const GOLD = "#C8963E";
-const GOLD2 = "#D4A843";
-const DARK = "#2C1A0E";   // deep brown (replaces indigo)
-const DARK2 = "#3D2314";
-const DARKEST = "#1E1006";
-const BEIGE = "#EDE4D3";
-const BEIGE2 = "#F5EFE6";
-const CREAM = "#FFFDF8";
+// ─── Palette ──────────────────────────────────────────────────────────────────
+const G = {
+  gold: "#C8963E",
+  gold2: "#D4A843",
+  dark: "#2C1A0E",
+  dark2: "#3D2314",
+  darkest: "#1E1006",
+  beige: "#EDE4D3",
+  beige2: "#F5EFE6",
+  cream: "#FFFDF8",
+};
 
-// ─── Constants ────────────────────────────────────────────────────────────────
 const ROOM_CATEGORIES = [
-  "Bedroom", "Living Room", "Kitchen", "Dining Room", "Home Office", 
-  "Bathroom", "Outdoor", "Commercial", "Other",
+  "Bedroom", "Living Room", "Kitchen", "Dining Room",
+  "Home Office", "Bathroom", "Outdoor", "Commercial", "Other",
 ];
 
-// ─── Stat Card ────────────────────────────────────────────────────────────────
-const StatCard = ({ title, value, icon, delay, accent }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay }}
-    className="p-8 rounded-[2rem] group hover:shadow-xl transition-all duration-500 overflow-hidden relative"
-    style={{ background: CREAM, border: "1px solid rgba(200,150,62,0.18)", boxShadow: "0 4px 20px rgba(44,26,14,0.07)" }}
-  >
-    <div className="absolute top-0 right-0 w-32 h-32 -mr-8 -mt-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-      style={{ background: `radial-gradient(circle, ${accent}30 0%, transparent 70%)` }} />
+// ─── Axios instance with credentials ─────────────────────────────────────────
+const api = axios.create({ baseURL: API_URL, withCredentials: true });
 
-    <div className="flex items-center justify-between mb-6 relative z-10">
-      <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-400 group-hover:scale-110"
-        style={{ background: `linear-gradient(135deg, ${accent}, ${accent}99)`, color: "#fff" }}>
-        {icon}
-      </div>
-      <div className="text-right">
-        <h3 className="text-[10px] font-bold uppercase tracking-[0.25em] mb-1" style={{ color: "#8a7660" }}>{title}</h3>
-        <p className="text-4xl font-display font-bold tracking-tighter" style={{ color: DARK }}>{value}</p>
-      </div>
-    </div>
-    <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: "rgba(200,150,62,0.1)" }}>
-      <motion.div
-        initial={{ width: 0 }}
-        animate={{ width: "70%" }}
-        transition={{ duration: 1, delay: delay + 0.5 }}
-        className="h-full rounded-full"
-        style={{ background: `linear-gradient(90deg, ${accent}, ${accent}60)` }}
-      />
-    </div>
-  </motion.div>
-);
+// ─── API helpers ──────────────────────────────────────────────────────────────
+const housesAPI = {
+  getAll: () => api.get("/api/houses"),
+  create: (d) => api.post("/api/houses", d),
+  update: (id, d) => api.put(`/api/houses/${id}`, d),
+  delete: (id) => api.delete(`/api/houses/${id}`),
+  gallery: () => api.get("/api/houses/gallery"),
+  upload: (fd) => api.post("/api/houses/upload", fd, { headers: { "Content-Type": "multipart/form-data" } }),
+};
+
+const enquiryAPI = {
+  getAll: () => api.get("/api/enquiry"),
+  delete: (id) => api.delete(`/api/enquiry/${id}`),
+  update: (id, d) => api.patch(`/api/enquiry/${id}`, d),
+};
+
+const mediaAPI = {
+  getAll: () => api.get("/api/upload"),
+  upload: (fd) => api.post("/api/upload", fd, { headers: { "Content-Type": "multipart/form-data" } }),
+  delete: (name) => api.delete(`/api/upload/${name}`),
+};
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
-const Icons = {
-  Dashboard: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-3a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z" /></svg>,
-  Portfolio: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
-  Gallery: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
+const Ic = {
+  Dashboard: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" strokeWidth={1.5} /><rect x="14" y="3" width="7" height="4" rx="1" strokeWidth={1.5} /><rect x="3" y="14" width="7" height="7" rx="1" strokeWidth={1.5} /><rect x="14" y="11" width="7" height="10" rx="1" strokeWidth={1.5} /></svg>,
+  Houses: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 22V12h6v10" /></svg>,
+  Gallery: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
+  Contact: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>,
   Bookings: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
   Logout: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>,
   Plus: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>,
   Upload: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>,
-  Tag: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>,
-  Menu: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16m-7 6h7" /></svg>,
-  X: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /></svg>,
+  Trash: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>,
   Edit: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>,
+  Check: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>,
+  Close: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>,
+  Menu: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16m-7 6h7" /></svg>,
+  Eye: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>,
+  Star: () => <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>,
 };
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
-function Admin() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [credentials, setCredentials] = useState({ username: "", password: "" });
-  const [loginError, setLoginError] = useState("");
-  const [activeTab, setActiveTab] = useState("dashboard");
-  const [projects, setProjects] = useState([]);
-  const [bookings, setBookings] = useState([]);
-  const [mediaFiles, setMediaFiles] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [newProject, setNewProject] = useState({ title: "", description: "", roomType: "", images: "", videos: "" });
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [showProjectForm, setShowProjectForm] = useState(false);
-  const [editingId, setEditingId] = useState(null);
-  const [mediaCategory, setMediaCategory] = useState("Bedroom");
-  const [activeMediaFilter, setActiveMediaFilter] = useState("All");
-  const [pendingUploads, setPendingUploads] = useState([]);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [adminSearchTerm, setAdminSearchTerm] = useState("");
-  const [editingMediaId, setEditingMediaId] = useState(null);
-  const [tempMediaName, setTempMediaName] = useState("");
-  const [tempMediaCategory, setTempMediaCategory] = useState("");
-  const mediaFileInputRef = useRef(null);
-  const projectFileInputRef = useRef(null);
+// ─── Reusable UI bits ─────────────────────────────────────────────────────────
+const Card = ({ children, className = "", style = {} }) => (
+  <div className={`rounded-[2rem] ${className}`}
+    style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 4px 24px rgba(44,26,14,0.06)", ...style }}>
+    {children}
+  </div>
+);
 
-  // Check for existing cookie session on mount
+const SectionHeader = ({ title, action }) => (
+  <div className="flex items-center justify-between mb-8 pb-5" style={{ borderBottom: "1px solid rgba(200,150,62,0.1)" }}>
+    <h3 className="font-bold uppercase tracking-[0.3em] text-[11px]" style={{ color: G.dark }}>{title}</h3>
+    {action}
+  </div>
+);
+
+const GoldBtn = ({ onClick, children, small, danger, outline, disabled }) => (
+  <button onClick={onClick} disabled={disabled}
+    className={`flex items-center justify-center gap-2 font-bold uppercase tracking-widest transition-all duration-300 rounded-xl ${small ? "px-5 py-2.5 text-[10px]" : "px-8 py-4 text-[11px]"}`}
+    style={danger
+      ? { background: "rgba(220,50,50,0.1)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.2)" }
+      : outline
+        ? { background: "transparent", color: G.gold, border: `1px solid ${G.gold}` }
+        : { background: `linear-gradient(135deg, ${G.dark}, ${G.dark2})`, color: G.gold, boxShadow: "0 6px 20px rgba(44,26,14,0.2)", opacity: disabled ? 0.6 : 1 }}
+    onMouseEnter={e => { if (!disabled) e.currentTarget.style.transform = "translateY(-1px)"; }}
+    onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; }}>
+    {children}
+  </button>
+);
+
+const Badge = ({ status }) => {
+  const map = {
+    pending: { bg: "rgba(200,150,62,0.12)", color: G.gold, label: "Pending" },
+    confirmed: { bg: "rgba(74,222,128,0.12)", color: "#16a34a", label: "Confirmed" },
+    rejected: { bg: "rgba(220,50,50,0.10)", color: "#dc2626", label: "Rejected" },
+    read: { bg: "rgba(100,150,255,0.12)", color: "#4060cc", label: "Read" },
+    unread: { bg: "rgba(200,150,62,0.12)", color: G.gold, label: "Unread" },
+  };
+  const s = map[status] || map.pending;
+  return (
+    <span className="px-3 py-1.5 rounded-lg font-bold uppercase tracking-wider text-[9px]"
+      style={{ background: s.bg, color: s.color, border: `1px solid ${s.color}33` }}>
+      {s.label}
+    </span>
+  );
+};
+
+const Spinner = ({ small }) => (
+  <div className={`rounded-full animate-spin ${small ? "w-4 h-4" : "w-10 h-10"}`}
+    style={{ border: `${small ? 2 : 3}px solid rgba(200,150,62,0.15)`, borderTopColor: G.gold }} />
+);
+
+const Input = ({ label, ...props }) => (
+  <div className="space-y-2">
+    {label && <label className="font-bold uppercase tracking-widest text-[10px] block" style={{ color: "#8a7660" }}>{label}</label>}
+    <input className="w-full px-5 py-4 rounded-xl text-sm outline-none transition-all"
+      style={{ background: G.beige, border: "1px solid rgba(200,150,62,0.25)", color: G.dark }} {...props} />
+  </div>
+);
+
+// ─── Stat Card ────────────────────────────────────────────────────────────────
+const StatCard = ({ title, value, icon, accent, delay = 0 }) => (
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay }}
+    className="p-8 rounded-[2rem] group relative overflow-hidden"
+    style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 4px 20px rgba(44,26,14,0.07)" }}>
+    <div className="absolute top-0 right-0 w-32 h-32 -mr-8 -mt-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+      style={{ background: `radial-gradient(circle, ${accent}25 0%, transparent 70%)` }} />
+    <div className="flex items-center justify-between mb-6">
+      <div className="w-14 h-14 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
+        style={{ background: `linear-gradient(135deg, ${accent}, ${accent}88)`, color: "#fff" }}>{icon}</div>
+      <div className="text-right">
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-1" style={{ color: "#8a7660" }}>{title}</p>
+        <p className="text-4xl font-display font-bold" style={{ color: G.dark }}>{value}</p>
+      </div>
+    </div>
+    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(200,150,62,0.1)" }}>
+      <motion.div initial={{ width: 0 }} animate={{ width: "65%" }} transition={{ duration: 1.2, delay: delay + 0.4 }}
+        className="h-full rounded-full" style={{ background: `linear-gradient(90deg, ${accent}, ${accent}55)` }} />
+    </div>
+  </motion.div>
+);
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HOUSE FORM MODAL
+// ══════════════════════════════════════════════════════════════════════════════
+const HouseModal = ({ editing, onClose, onSaved }) => {
+  const [title, setTitle] = useState(editing?.title || "");
+  const [location, setLocation] = useState(editing?.location || "");
+  const [images, setImages] = useState(editing?.images || []);
+  const [cover, setCover] = useState(editing?.cover || "");
+  const [gallery, setGallery] = useState([]);
+  const [tab, setTab] = useState("existing");
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [drag, setDrag] = useState(false);
+  const [search, setSearch] = useState("");
+  const fileRef = useRef(null);
+
   useEffect(() => {
-    const verifySession = async () => {
-      try {
-        await authAPI.me();
-        setIsAuthenticated(true);
-      } catch (e) {
-        setIsAuthenticated(false);
-      }
-    };
-    verifySession();
+    housesAPI.gallery().then(r => setGallery(r.data || [])).catch(() => { });
   }, []);
 
-  const handleLogout = async () => {
+  const doUpload = async (files) => {
+    setUploading(true);
     try {
-      await authAPI.logout();
-    } catch (err) {}
-    setIsAuthenticated(false);
+      const fd = new FormData();
+      files.forEach(f => fd.append("photos", f));
+      const res = await housesAPI.upload(fd);
+      const names = res.data.filenames || [];
+      setGallery(prev => [...names, ...prev]);
+      setImages(prev => { const next = [...prev, ...names]; if (!cover && names[0]) setCover(names[0]); return next; });
+    } catch (e) { alert("Upload failed: " + (e.response?.data?.error || e.message)); }
+    setUploading(false);
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await authAPI.login(credentials);
-      if (response.data.success) {
-        setIsAuthenticated(true);
-        setLoginError("");
-      }
-    } catch (err) {
-      setLoginError(err.response?.data?.message || "Invalid credentials");
+  const toggle = (f) => setImages(prev => {
+    if (prev.includes(f)) {
+      const next = prev.filter(x => x !== f);
+      if (cover === f) setCover(next[0] || "");
+      return next;
     }
+    if (!cover) setCover(f);
+    return [...prev, f];
+  });
+
+  const save = async () => {
+    if (!title.trim()) return alert("Enter a house name");
+    if (!images.length) return alert("Select at least one photo");
+    setSaving(true);
+    try {
+      const payload = { title, location, cover: cover || images[0], images };
+      editing ? await housesAPI.update(editing.id, payload) : await housesAPI.create(payload);
+      onSaved(); onClose();
+    } catch (e) { alert("Save failed: " + (e.response?.data?.error || e.message)); }
+    setSaving(false);
   };
 
-  const fetchData = useCallback(async (isInitial = false) => {
-    if (isInitial) setInitialLoading(true);
-    const hasData =
-      (activeTab === "dashboard") ||
-      (activeTab === "projects" && projects.length > 0) ||
-      (activeTab === "bookings" && bookings.length > 0) ||
-      (activeTab === "media" && mediaFiles.length > 0);
-    if (!hasData) setLoading(true);
+  const filtered = gallery.filter(f => f.toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+      style={{ background: "rgba(10,6,2,0.88)", backdropFilter: "blur(14px)" }}
+      onClick={e => e.target === e.currentTarget && onClose()}>
+      <motion.div initial={{ opacity: 0, y: 24, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 12 }} transition={{ duration: 0.25 }}
+        className="w-full max-w-4xl max-h-[90vh] flex flex-col rounded-[2rem] overflow-hidden"
+        style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.2)", boxShadow: "0 40px 80px rgba(0,0,0,0.45)" }}>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-10 py-6 flex-shrink-0"
+          style={{ background: G.beige2, borderBottom: "1px solid rgba(200,150,62,0.12)" }}>
+          <div>
+            <p className="font-accent text-[10px] tracking-[0.3em] uppercase mb-1" style={{ color: G.gold }}>
+              {editing ? "Edit Project" : "New House Project"}
+            </p>
+            <h2 className="font-display text-2xl font-bold" style={{ color: G.dark }}>
+              {editing ? editing.title : "Create House"}
+            </h2>
+          </div>
+          <button onClick={onClose} className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+            style={{ background: "rgba(200,150,62,0.1)", color: G.dark }}
+            onMouseEnter={e => e.currentTarget.style.background = "rgba(200,150,62,0.22)"}
+            onMouseLeave={e => e.currentTarget.style.background = "rgba(200,150,62,0.1)"}>
+            <Ic.Close />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto">
+          {/* Name + location */}
+          <div className="px-10 py-7 grid grid-cols-1 md:grid-cols-2 gap-6"
+            style={{ borderBottom: "1px solid rgba(200,150,62,0.1)" }}>
+            <Input label="House Name *" value={title} onChange={e => setTitle(e.target.value)} placeholder="Villa Razia" />
+            <Input label="Location" value={location} onChange={e => setLocation(e.target.value)} placeholder="Banjara Hills, Hyderabad" />
+          </div>
+
+          {/* Photos */}
+          <div className="px-10 py-7">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <p className="font-bold uppercase tracking-widest text-[11px]" style={{ color: G.dark }}>
+                  Photos
+                  {images.length > 0 &&
+                    <span className="ml-3 px-3 py-0.5 rounded-full text-[10px]"
+                      style={{ background: "rgba(200,150,62,0.15)", color: G.gold }}>{images.length} selected</span>}
+                </p>
+                {cover && <p className="text-[10px] mt-0.5" style={{ color: "#b5a080" }}>Cover: <span style={{ color: G.gold }}>{cover}</span> — click ★ to change</p>}
+              </div>
+              <div className="flex rounded-xl overflow-hidden" style={{ border: "1px solid rgba(200,150,62,0.2)" }}>
+                {[["existing", "Gallery"], ["upload", "Upload New"]].map(([id, lbl]) => (
+                  <button key={id} onClick={() => setTab(id)}
+                    className="px-5 py-2.5 font-bold text-[10px] uppercase tracking-widest transition-all"
+                    style={tab === id ? { background: G.dark, color: G.gold } : { color: "#8a7660" }}>{lbl}</button>
+                ))}
+              </div>
+            </div>
+
+            {/* Upload tab */}
+            {tab === "upload" && (
+              <div className="mb-4">
+                <div className="rounded-2xl flex flex-col items-center justify-center gap-3 py-10 cursor-pointer transition-all mb-4"
+                  style={{ background: drag ? "rgba(200,150,62,0.07)" : "rgba(200,150,62,0.03)", border: `2px dashed rgba(200,150,62,${drag ? 0.6 : 0.25})` }}
+                  onDragOver={e => { e.preventDefault(); setDrag(true); }}
+                  onDragLeave={() => setDrag(false)}
+                  onDrop={e => { e.preventDefault(); setDrag(false); doUpload(Array.from(e.dataTransfer.files)); }}
+                  onClick={() => fileRef.current?.click()}>
+                  <div style={{ color: G.gold }}><Ic.Upload /></div>
+                  <p className="font-bold uppercase tracking-widest text-[11px]" style={{ color: "#8a7660" }}>
+                    {uploading ? "Uploading…" : "Drag & drop or click to upload"}
+                  </p>
+                  <p className="text-[10px]" style={{ color: "#c8b99a" }}>JPG, PNG, WebP — up to 15 MB each</p>
+                  <input ref={fileRef} type="file" multiple accept="image/*" className="hidden"
+                    onChange={e => doUpload(Array.from(e.target.files || []))} />
+                </div>
+                {uploading && <div className="flex justify-center py-3"><Spinner /></div>}
+              </div>
+            )}
+
+            {/* Search (existing tab) */}
+            {tab === "existing" && (
+              <div className="relative mb-4">
+                <input type="text" placeholder="Search gallery…" value={search} onChange={e => setSearch(e.target.value)}
+                  className="w-full pl-10 pr-5 py-3 rounded-xl text-xs outline-none"
+                  style={{ background: G.beige, border: "1px solid rgba(200,150,62,0.2)", color: G.dark }} />
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            )}
+
+            {/* Photo grid */}
+            {gallery.length === 0 && tab === "existing" ? (
+              <div className="py-14 text-center rounded-2xl" style={{ background: G.beige, border: "1px dashed rgba(200,150,62,0.2)" }}>
+                <p className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#c8b99a" }}>No photos yet — switch to Upload New</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2.5">
+                {filtered.map(filename => {
+                  const sel = images.includes(filename);
+                  const isCover = cover === filename;
+                  return (
+                    <div key={filename} onClick={() => toggle(filename)}
+                      className="relative cursor-pointer rounded-xl overflow-hidden group"
+                      style={{ aspectRatio: "1", border: `2px solid ${sel ? G.gold : "transparent"}` }}>
+                      <img src={`${API_URL}/gallery/${filename}`} alt={filename}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        onError={e => { e.target.src = "https://via.placeholder.com/120?text=?"; }} />
+                      <div className="absolute inset-0 transition-opacity" style={{ background: sel ? "transparent" : "rgba(0,0,0,0.22)" }} />
+                      {sel && <div className="absolute top-1.5 left-1.5 w-5 h-5 rounded-full flex items-center justify-center"
+                        style={{ background: G.gold, color: G.dark }}><Ic.Check /></div>}
+                      {sel && <button className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full flex items-center justify-center transition-all"
+                        style={{ background: isCover ? G.gold : "rgba(0,0,0,0.5)", color: isCover ? G.dark : "#fff" }}
+                        onClick={e => { e.stopPropagation(); setCover(filename); }} title="Set as cover"><Ic.Star /></button>}
+                      {isCover && <div className="absolute bottom-0 left-0 right-0 py-0.5 text-center"
+                        style={{ background: "rgba(200,150,62,0.9)", fontSize: "7px", fontWeight: "bold", letterSpacing: "0.12em", color: G.dark }}>COVER</div>}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between px-10 py-5 flex-shrink-0"
+          style={{ background: G.beige2, borderTop: "1px solid rgba(200,150,62,0.12)" }}>
+          <p className="text-[11px]" style={{ color: "#b5a080" }}>
+            {images.length} photo{images.length !== 1 ? "s" : ""} selected{cover ? " · Cover set" : ""}
+          </p>
+          <div className="flex gap-3">
+            <button onClick={onClose} className="px-6 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest" style={{ color: "#8a7660" }}>Cancel</button>
+            <GoldBtn onClick={save} disabled={saving}>
+              {saving ? <><Spinner small /> Saving…</> : editing ? "Save Changes" : "Create Project"}
+            </GoldBtn>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ENQUIRY DETAIL MODAL
+// ══════════════════════════════════════════════════════════════════════════════
+const EnquiryModal = ({ enquiry, onClose, onUpdate }) => {
+  const [status, setStatus] = useState(enquiry.status || "unread");
+  const [saving, setSaving] = useState(false);
+
+  const save = async (newStatus) => {
+    setSaving(true);
     try {
-      if (activeTab === "dashboard") {
-        const [projRes, bookRes] = await Promise.all([
-          projectsAPI.getAll().catch(() => ({ data: [] })),
-          bookingsAPI.getAll().catch(() => ({ data: [] })),
-        ]);
-        setProjects(projRes.data || []);
-        setBookings(bookRes.data || []);
-      } else if (activeTab === "projects") {
-        const res = await projectsAPI.getAll();
-        setProjects(res.data || []);
-      } else if (activeTab === "bookings") {
-        const res = await bookingsAPI.getAll();
-        setBookings(res.data || []);
-      } else if (activeTab === "media") {
-        const res = await uploadAPI.getAll().catch(() => ({ data: [] }));
-        setMediaFiles(res.data || []);
-      }
-    } catch (err) { console.error(err); }
+      await enquiryAPI.update(enquiry._id, { status: newStatus });
+      setStatus(newStatus);
+      onUpdate();
+    } catch { alert("Failed to update status"); }
+    setSaving(false);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+      style={{ background: "rgba(10,6,2,0.88)", backdropFilter: "blur(14px)" }}
+      onClick={e => e.target === e.currentTarget && onClose()}>
+      <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
+        className="w-full max-w-lg rounded-[2rem] overflow-hidden"
+        style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.2)", boxShadow: "0 40px 80px rgba(0,0,0,0.4)" }}>
+        <div className="flex items-center justify-between px-10 py-6"
+          style={{ background: G.beige2, borderBottom: "1px solid rgba(200,150,62,0.12)" }}>
+          <div>
+            <p className="font-accent text-[10px] tracking-[0.3em] uppercase mb-1" style={{ color: G.gold }}>Contact Submission</p>
+            <h2 className="font-display text-xl font-bold" style={{ color: G.dark }}>{enquiry.name || enquiry.clientName}</h2>
+          </div>
+          <button onClick={onClose} className="w-9 h-9 rounded-xl flex items-center justify-center"
+            style={{ background: "rgba(200,150,62,0.1)", color: G.dark }}><Ic.Close /></button>
+        </div>
+
+        <div className="px-10 py-8 space-y-5">
+          {[
+            ["Email", enquiry.email],
+            ["Phone", enquiry.phone || "—"],
+            ["Service", enquiry.service || enquiry.serviceType || "—"],
+            ["Date", enquiry.createdAt ? new Date(enquiry.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "—"],
+          ].map(([lbl, val]) => (
+            <div key={lbl} className="flex justify-between items-center py-3"
+              style={{ borderBottom: "1px solid rgba(200,150,62,0.08)" }}>
+              <span className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#8a7660" }}>{lbl}</span>
+              <span className="text-sm font-medium" style={{ color: G.dark }}>{val}</span>
+            </div>
+          ))}
+
+          <div className="rounded-2xl p-5 mt-2" style={{ background: G.beige, border: "1px solid rgba(200,150,62,0.12)" }}>
+            <p className="font-bold uppercase tracking-widest text-[10px] mb-3" style={{ color: "#8a7660" }}>Message</p>
+            <p className="text-sm leading-relaxed italic" style={{ color: G.dark }}>"{enquiry.message}"</p>
+          </div>
+
+          <div className="flex items-center gap-3 pt-2">
+            <Badge status={status} />
+            <div className="flex gap-3 ml-auto">
+              {status !== "read" && (
+                <GoldBtn small onClick={() => save("read")} disabled={saving}>
+                  <Ic.Check /> Mark Read
+                </GoldBtn>
+              )}
+              <GoldBtn small danger onClick={async () => {
+                if (!window.confirm("Delete this enquiry?")) return;
+                try { await enquiryAPI.delete(enquiry._id); onUpdate(); onClose(); }
+                catch { alert("Delete failed"); }
+              }}>
+                <Ic.Trash /> Delete
+              </GoldBtn>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TAB: DASHBOARD OVERVIEW
+// ══════════════════════════════════════════════════════════════════════════════
+const DashboardTab = ({ houses, bookings, enquiries, onNav }) => {
+  const pending = bookings.filter(b => b.status === "pending").length;
+  const unread = enquiries.filter(e => e.status === "unread" || !e.status).length;
+
+  return (
+    <div className="space-y-10">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard title="House Projects" value={houses.length} icon={<Ic.Houses />} accent={G.gold} delay={0.05} />
+        <StatCard title="Gallery Photos" value="—" icon={<Ic.Gallery />} accent="#B8832A" delay={0.1} />
+        <StatCard title="Unread Enquiries" value={unread} icon={<Ic.Contact />} accent="#7A5020" delay={0.15} />
+        <StatCard title="Pending Bookings" value={pending} icon={<Ic.Bookings />} accent="#5A3010" delay={0.2} />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Recent enquiries */}
+        <Card className="p-8">
+          <SectionHeader title="Recent Enquiries"
+            action={<button onClick={() => onNav("contacts")} className="font-bold uppercase tracking-widest text-[10px]" style={{ color: G.gold }}>View All →</button>} />
+          <div className="space-y-3">
+            {enquiries.slice(0, 4).map((e, i) => (
+              <div key={i} className="flex items-center justify-between p-4 rounded-xl"
+                style={{ background: G.beige, border: "1px solid rgba(200,150,62,0.1)" }}>
+                <div>
+                  <p className="font-bold text-sm" style={{ color: G.dark }}>{e.name || e.clientName}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: "#b5a080" }}>{e.email}</p>
+                </div>
+                <Badge status={e.status || "unread"} />
+              </div>
+            ))}
+            {enquiries.length === 0 && <p className="text-center py-8 text-[10px] font-bold uppercase tracking-widest" style={{ color: "#c8b99a" }}>No enquiries yet</p>}
+          </div>
+        </Card>
+
+        {/* Recent bookings */}
+        <Card className="p-8">
+          <SectionHeader title="Recent Bookings"
+            action={<button onClick={() => onNav("bookings")} className="font-bold uppercase tracking-widest text-[10px]" style={{ color: G.gold }}>View All →</button>} />
+          <div className="space-y-3">
+            {bookings.slice(0, 4).map((b, i) => (
+              <div key={i} className="flex items-center justify-between p-4 rounded-xl"
+                style={{ background: G.beige, border: "1px solid rgba(200,150,62,0.1)" }}>
+                <div>
+                  <p className="font-bold text-sm" style={{ color: G.dark }}>{b.clientName}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: "#b5a080" }}>{b.serviceType || "Consultation"}</p>
+                </div>
+                <Badge status={b.status || "pending"} />
+              </div>
+            ))}
+            {bookings.length === 0 && <p className="text-center py-8 text-[10px] font-bold uppercase tracking-widest" style={{ color: "#c8b99a" }}>No bookings yet</p>}
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TAB: HOUSES
+// ══════════════════════════════════════════════════════════════════════════════
+const HousesTab = () => {
+  const [houses, setHouses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(null); // null | 'new' | house-object
+  const [search, setSearch] = useState("");
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try { const r = await housesAPI.getAll(); setHouses(r.data || []); }
+    catch { setHouses([]); }
     setLoading(false);
-    setInitialLoading(false);
-  }, [activeTab]); // Remove projects.length etc to break the feedback loop
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchData(initialLoading);
-    }
-  }, [fetchData, isAuthenticated]); // Only run when auth status changes or tab changes
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleFileSelect = (e) => {
-    const files = Array.from(e.target.files || []);
-    if (!files.length) return;
-    setPendingUploads(prev => [...prev, ...files.map(file => ({
-      file, preview: URL.createObjectURL(file), category: mediaCategory,
-      id: `${Date.now()}-${Math.random()}`,
+  useEffect(() => { load(); }, [load]);
+
+  const del = async (id, title) => {
+    if (!window.confirm(`Delete "${title}"? Photos remain in gallery.`)) return;
+    try { await housesAPI.delete(id); setHouses(p => p.filter(h => h.id !== id)); }
+    catch (e) { alert("Delete failed: " + e.message); }
+  };
+
+  const filtered = houses.filter(h =>
+    !search || h.title.toLowerCase().includes(search.toLowerCase()) ||
+    (h.location || "").toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-8">
+      <AnimatePresence>
+        {modal && <HouseModal editing={modal === "new" ? null : modal} onClose={() => setModal(null)} onSaved={load} />}
+      </AnimatePresence>
+
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="relative w-full md:w-80">
+          <input type="text" placeholder="Search houses…" value={search} onChange={e => setSearch(e.target.value)}
+            className="w-full pl-10 pr-5 py-4 rounded-xl outline-none text-[11px] tracking-widest uppercase font-bold"
+            style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.25)", color: G.dark }} />
+          <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+        <GoldBtn onClick={() => setModal("new")}><Ic.Plus /> New House Project</GoldBtn>
+      </div>
+
+      {loading ? (
+        <div className="flex justify-center py-20"><Spinner /></div>
+      ) : filtered.length === 0 ? (
+        <div className="py-32 text-center rounded-[2rem]"
+          style={{ background: "rgba(255,253,248,0.7)", border: "2px dashed rgba(200,150,62,0.2)" }}>
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
+            style={{ background: "rgba(200,150,62,0.08)", color: "rgba(200,150,62,0.35)" }}><Ic.Houses /></div>
+          <p className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#c8b99a" }}>
+            {search ? "No houses match your search" : "No house projects yet — click New House Project"}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+          {filtered.map((house, i) => (
+            <motion.div key={house.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: i * 0.05 }}
+              className="group rounded-[2rem] overflow-hidden transition-all duration-400"
+              style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 4px 20px rgba(44,26,14,0.07)" }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 16px 48px rgba(44,26,14,0.14)"; e.currentTarget.style.borderColor = "rgba(200,150,62,0.35)"; }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 4px 20px rgba(44,26,14,0.07)"; e.currentTarget.style.borderColor = "rgba(200,150,62,0.15)"; }}>
+
+              <div className="relative h-52 overflow-hidden">
+                {house.cover
+                  ? <img src={`${API_URL}/gallery/${house.cover}`} alt={house.title}
+                    className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
+                    onError={e => { e.target.src = "https://via.placeholder.com/600x400?text=No+Image"; }} />
+                  : <div className="w-full h-full flex items-center justify-center"
+                    style={{ background: G.beige, color: "rgba(200,150,62,0.3)" }}><Ic.Houses /></div>}
+
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(30,16,6,0.65) 0%, transparent 55%)", opacity: 0.7 }} />
+
+                <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                  style={{ background: "rgba(15,10,5,0.72)", backdropFilter: "blur(6px)", border: "1px solid rgba(200,150,62,0.3)" }}>
+                  <span className="text-[10px] font-bold tracking-widest" style={{ color: G.gold }}>{house.images?.length || 0} PHOTOS</span>
+                </div>
+
+                <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                  style={{ background: "rgba(255,253,248,0.93)", backdropFilter: "blur(6px)" }}>
+                  <GoldBtn small onClick={() => setModal(house)}><Ic.Edit /> Edit</GoldBtn>
+                  <GoldBtn small danger onClick={() => del(house.id, house.title)}><Ic.Trash /> Delete</GoldBtn>
+                </div>
+              </div>
+
+              <div className="p-6" style={{ borderTop: "1px solid rgba(200,150,62,0.08)" }}>
+                <h3 className="font-display font-bold text-lg mb-1" style={{ color: G.dark }}>{house.title}</h3>
+                {house.location && (
+                  <div className="flex items-center gap-1.5" style={{ color: "#b5a080" }}>
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span className="font-accent text-[10px] tracking-widest uppercase">{house.location}</span>
+                  </div>
+                )}
+                {house.images?.length > 0 && (
+                  <div className="flex gap-1.5 mt-4">
+                    {house.images.slice(0, 5).map((f, idx) => (
+                      <div key={idx} className="flex-1 rounded-lg overflow-hidden" style={{ height: "34px" }}>
+                        <img src={`${API_URL}/gallery/${f}`} alt="" className="w-full h-full object-cover"
+                          onError={e => { e.target.src = "https://via.placeholder.com/60?text=?"; }} />
+                      </div>
+                    ))}
+                    {house.images.length > 5 && (
+                      <div className="flex-1 rounded-lg flex items-center justify-center text-[9px] font-bold"
+                        style={{ height: "34px", background: G.beige, color: G.gold }}>+{house.images.length - 5}</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TAB: GALLERY (media upload)
+// ══════════════════════════════════════════════════════════════════════════════
+const GalleryTab = () => {
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [pending, setPending] = useState([]);
+  const [cat, setCat] = useState("Bedroom");
+  const [filter, setFilter] = useState("All");
+  const [search, setSearch] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try { const r = await mediaAPI.getAll(); setFiles(r.data || []); }
+    catch { setFiles([]); }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const handleSelect = (e) => {
+    const selected = Array.from(e.target.files || []);
+    setPending(prev => [...prev, ...selected.map(file => ({
+      file, preview: URL.createObjectURL(file), category: cat, id: `${Date.now()}-${Math.random()}`
     }))]);
     e.target.value = "";
   };
 
-  const handleConfirmUpload = async () => {
-    if (!pendingUploads.length) return;
-    setLoading(true);
-    try {
-      for (const item of pendingUploads) {
-        const formData = new FormData();
-        formData.append("file", item.file);
-        formData.append("category", item.category);
-        if (USE_MOCK) {
-          setMediaFiles(prev => [{ name: item.file.name, url: item.preview, category: item.category, isMock: true }, ...prev]);
-        } else {
-          const res = await uploadAPI.upload(formData);
-          const fullUrl = res.data.fileUrl.startsWith("http") ? res.data.fileUrl : `${API_URL}${res.data.fileUrl}`;
-          setMediaFiles(prev => [{ name: item.file.name, url: fullUrl, category: item.category }, ...prev]);
-        }
-      }
-      setPendingUploads([]);
-      if (!USE_MOCK) fetchData();
-    } catch (err) { console.error(err); alert("Upload failed."); }
-    setLoading(false);
-  };
-
-  const handleProjectFileSelect = async (e) => {
-    const files = Array.from(e.target.files || []);
-    if (!files.length) return;
-    setLoading(true);
-    for (const file of files) {
-      const formData = new FormData();
-      formData.append("file", file);
-      if (USE_MOCK) {
-        await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onloadend = () => { setUploadedFiles(prev => [...prev, reader.result]); resolve(); };
-          reader.readAsDataURL(file);
-        });
-      } else {
-        try {
-          const res = await uploadAPI.upload(formData);
-          const fullUrl = res.data.fileUrl.startsWith("http") ? res.data.fileUrl : `${API_URL}${res.data.fileUrl}`;
-          setUploadedFiles(prev => [...prev, fullUrl]);
-        } catch (err) { console.error(err); }
-      }
+  const confirmUpload = async () => {
+    setUploading(true);
+    for (const item of pending) {
+      const fd = new FormData();
+      fd.append("file", item.file);
+      fd.append("category", item.category);
+      try { await mediaAPI.upload(fd); } catch (e) { console.error("upload failed", e); }
     }
-    setLoading(false);
-    e.target.value = "";
+    setPending([]);
+    await load();
+    setUploading(false);
   };
 
-  const handleAddProject = async (e) => {
+  const del = async (name, idx) => {
+    if (!window.confirm("Delete this photo from gallery?")) return;
+    try { await mediaAPI.delete(name); setFiles(p => p.filter((_, i) => i !== idx)); }
+    catch (e) { alert("Delete failed: " + e.message); }
+  };
+
+  const cats = ["All", ...Array.from(new Set(files.map(f => f.category).filter(Boolean)))];
+  const shown = files
+    .filter(f => filter === "All" || f.category === filter)
+    .filter(f => !search || (f.name || "").toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <div className="space-y-8">
+      {/* Upload panel */}
+      <Card className="p-8">
+        <SectionHeader title="Upload Photos" />
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <select value={cat} onChange={e => setCat(e.target.value)}
+            className="flex-1 px-5 py-4 rounded-xl text-sm outline-none appearance-none"
+            style={{ background: G.beige, border: "1px solid rgba(200,150,62,0.2)", color: G.dark }}>
+            {ROOM_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <GoldBtn onClick={() => fileRef.current?.click()}><Ic.Upload /> Select Photos</GoldBtn>
+          <input ref={fileRef} type="file" multiple accept="image/*" className="hidden" onChange={handleSelect} />
+        </div>
+
+        <AnimatePresence>
+          {pending.length > 0 && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mb-5">
+                {pending.map(item => (
+                  <div key={item.id} className="relative rounded-xl overflow-hidden" style={{ border: "1px solid rgba(200,150,62,0.15)" }}>
+                    <div className="aspect-square"><img src={item.preview} alt="" className="w-full h-full object-cover" /></div>
+                    <select value={item.category}
+                      onChange={e => setPending(p => p.map(u => u.id === item.id ? { ...u, category: e.target.value } : u))}
+                      className="w-full px-1.5 py-1 text-[9px] font-bold uppercase outline-none appearance-none text-center"
+                      style={{ background: G.cream, borderTop: "1px solid rgba(200,150,62,0.12)", color: "#6b5c45" }}>
+                      {ROOM_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                    <button onClick={() => setPending(p => p.filter(u => u.id !== item.id))}
+                      className="absolute top-1 right-1 w-5 h-5 rounded-full text-white text-xs font-bold flex items-center justify-center"
+                      style={{ background: "#dc2626" }}>✕</button>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-4">
+                <GoldBtn onClick={confirmUpload} disabled={uploading}>
+                  {uploading ? <><Spinner small /> Uploading…</> : `Confirm & Upload ${pending.length} Photo${pending.length > 1 ? "s" : ""}`}
+                </GoldBtn>
+                <GoldBtn outline onClick={() => setPending([])}>Clear</GoldBtn>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Card>
+
+      {/* Filter + search */}
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div className="flex flex-wrap gap-2">
+          {cats.map(c => (
+            <button key={c} onClick={() => setFilter(c)}
+              className="px-5 py-2.5 rounded-2xl font-bold text-[10px] uppercase tracking-widest transition-all"
+              style={filter === c
+                ? { background: `linear-gradient(135deg, ${G.dark}, ${G.dark2})`, color: G.gold }
+                : { background: G.cream, color: "#8a7660", border: "1px solid rgba(200,150,62,0.2)" }}>
+              {c}
+            </button>
+          ))}
+        </div>
+        <div className="relative w-full sm:w-64">
+          <input type="text" placeholder="Search files…" value={search} onChange={e => setSearch(e.target.value)}
+            className="w-full pl-10 pr-5 py-3 rounded-xl text-xs outline-none"
+            style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.2)", color: G.dark }} />
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Grid */}
+      {loading ? (
+        <div className="flex justify-center py-20"><Spinner /></div>
+      ) : shown.length === 0 ? (
+        <div className="py-32 text-center rounded-[2rem]"
+          style={{ background: "rgba(255,253,248,0.7)", border: "2px dashed rgba(200,150,62,0.2)" }}>
+          <p className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#c8b99a" }}>
+            {search || filter !== "All" ? "No photos match your filter" : "No photos uploaded yet"}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+          <AnimatePresence>
+            {shown.map((file, idx) => (
+              <motion.div key={`${file.name}-${idx}`} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.25, delay: idx * 0.02 }}
+                className="group relative rounded-2xl overflow-hidden"
+                style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.12)" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(200,150,62,0.4)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(44,26,14,0.12)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(200,150,62,0.12)"; e.currentTarget.style.boxShadow = "none"; }}>
+                <div className="aspect-[4/5] overflow-hidden">
+                  <img src={formatUrl(file.url)} alt={file.name} loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
+                    onError={e => { e.target.src = "https://via.placeholder.com/300?text=?"; }} />
+                </div>
+                {file.category && (
+                  <div className="px-3 py-2" style={{ borderTop: "1px solid rgba(200,150,62,0.1)" }}>
+                    <span className="font-bold uppercase tracking-widest text-[9px]" style={{ color: G.gold }}>{file.category}</span>
+                  </div>
+                )}
+                {/* Delete overlay */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300"
+                  style={{ background: "rgba(255,253,248,0.92)", backdropFilter: "blur(4px)" }}>
+                  <button onClick={() => del(file.name, idx)}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
+                    style={{ background: "rgba(220,50,50,0.1)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.2)" }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.color = "#fff"; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(220,50,50,0.1)"; e.currentTarget.style.color = "#dc2626"; }}>
+                    <Ic.Trash /> Delete
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TAB: CONTACT FORM SUBMISSIONS
+// ══════════════════════════════════════════════════════════════════════════════
+const ContactsTab = () => {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState(null);
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try { const r = await enquiryAPI.getAll(); setItems(r.data || []); }
+    catch { setItems([]); }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const del = async (id) => {
+    if (!window.confirm("Delete this enquiry?")) return;
+    try { await enquiryAPI.delete(id); setItems(p => p.filter(x => x._id !== id)); }
+    catch { alert("Delete failed"); }
+  };
+
+  const markRead = async (id) => {
+    try { await enquiryAPI.update(id, { status: "read" }); setItems(p => p.map(x => x._id === id ? { ...x, status: "read" } : x)); }
+    catch { alert("Update failed"); }
+  };
+
+  const shown = items
+    .filter(e => filter === "all" || (filter === "unread" ? (!e.status || e.status === "unread") : e.status === "read"))
+    .filter(e => !search || (e.name || e.clientName || "").toLowerCase().includes(search.toLowerCase()) || (e.email || "").toLowerCase().includes(search.toLowerCase()));
+
+  const unread = items.filter(e => !e.status || e.status === "unread").length;
+
+  return (
+    <div className="space-y-8">
+      <AnimatePresence>
+        {selected && <EnquiryModal enquiry={selected} onClose={() => setSelected(null)} onUpdate={load} />}
+      </AnimatePresence>
+
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div className="flex gap-2">
+          {[["all", "All"], ["unread", `Unread (${unread})`], ["read", "Read"]].map(([id, lbl]) => (
+            <button key={id} onClick={() => setFilter(id)}
+              className="px-5 py-2.5 rounded-2xl font-bold text-[10px] uppercase tracking-widest transition-all"
+              style={filter === id
+                ? { background: `linear-gradient(135deg, ${G.dark}, ${G.dark2})`, color: G.gold }
+                : { background: G.cream, color: "#8a7660", border: "1px solid rgba(200,150,62,0.2)" }}>
+              {lbl}
+            </button>
+          ))}
+        </div>
+        <div className="relative w-full sm:w-72">
+          <input type="text" placeholder="Search name or email…" value={search} onChange={e => setSearch(e.target.value)}
+            className="w-full pl-10 pr-5 py-3 rounded-xl text-xs outline-none"
+            style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.2)", color: G.dark }} />
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="flex justify-center py-20"><Spinner /></div>
+      ) : shown.length === 0 ? (
+        <div className="py-32 text-center rounded-[2rem]"
+          style={{ background: "rgba(255,253,248,0.7)", border: "2px dashed rgba(200,150,62,0.2)" }}>
+          <p className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#c8b99a" }}>No enquiries found</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {shown.map((e, i) => {
+            const isUnread = !e.status || e.status === "unread";
+            return (
+              <motion.div key={e._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: i * 0.04 }}
+                className="group rounded-2xl p-6 flex items-center gap-5 transition-all duration-300 cursor-pointer"
+                style={{
+                  background: isUnread ? `linear-gradient(135deg, ${G.cream}, rgba(200,150,62,0.04))` : G.cream,
+                  border: `1px solid ${isUnread ? "rgba(200,150,62,0.25)" : "rgba(200,150,62,0.12)"}`,
+                  boxShadow: isUnread ? "0 4px 20px rgba(200,150,62,0.07)" : "none"
+                }}
+                onClick={() => setSelected(e)}>
+                {/* Unread dot */}
+                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                  style={{ background: isUnread ? G.gold : "transparent", boxShadow: isUnread ? `0 0 8px ${G.gold}` : "none" }} />
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-1">
+                    <p className="font-bold text-base" style={{ color: G.dark }}>{e.name || e.clientName}</p>
+                    {isUnread && <span className="px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest"
+                      style={{ background: "rgba(200,150,62,0.15)", color: G.gold }}>New</span>}
+                  </div>
+                  <p className="text-[11px] font-bold uppercase tracking-widest mb-1" style={{ color: "#b5a080" }}>{e.email}</p>
+                  <p className="text-sm truncate italic" style={{ color: "#8a7660" }}>"{e.message}"</p>
+                </div>
+
+                <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                  <p className="text-[10px]" style={{ color: "#c8b99a" }}>
+                    {e.createdAt ? new Date(e.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : ""}
+                  </p>
+                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {isUnread && (
+                      <button onClick={ev => { ev.stopPropagation(); markRead(e._id); }}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
+                        style={{ background: "rgba(74,222,128,0.1)", color: "#16a34a", border: "1px solid rgba(74,222,128,0.2)" }}
+                        onMouseEnter={ev => { ev.currentTarget.style.background = "#16a34a"; ev.currentTarget.style.color = "#fff"; }}
+                        onMouseLeave={ev => { ev.currentTarget.style.background = "rgba(74,222,128,0.1)"; ev.currentTarget.style.color = "#16a34a"; }}
+                        title="Mark as read"><Ic.Check /></button>
+                    )}
+                    <button onClick={ev => { ev.stopPropagation(); del(e._id); }}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
+                      style={{ background: "rgba(220,50,50,0.08)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.15)" }}
+                      onMouseEnter={ev => { ev.currentTarget.style.background = "#dc2626"; ev.currentTarget.style.color = "#fff"; }}
+                      onMouseLeave={ev => { ev.currentTarget.style.background = "rgba(220,50,50,0.08)"; ev.currentTarget.style.color = "#dc2626"; }}
+                      title="Delete"><Ic.Trash /></button>
+                    <button className="w-8 h-8 rounded-lg flex items-center justify-center"
+                      style={{ background: "rgba(200,150,62,0.1)", color: G.gold, border: "1px solid rgba(200,150,62,0.2)" }}
+                      title="View details"><Ic.Eye /></button>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TAB: BOOKINGS
+// ══════════════════════════════════════════════════════════════════════════════
+const BookingsTab = () => {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try { const r = await bookingsAPI.getAll(); setItems(r.data || []); }
+    catch { setItems([]); }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const setStatus = async (id, status) => {
+    try { await bookingsAPI.updateStatus(id, status); setItems(p => p.map(x => x._id === id ? { ...x, status } : x)); }
+    catch { alert("Failed to update status"); }
+  };
+
+  const del = async (id) => {
+    if (!window.confirm("Delete this booking?")) return;
+    try { await bookingsAPI.delete(id); setItems(p => p.filter(x => x._id !== id)); }
+    catch { alert("Delete failed"); }
+  };
+
+  const pending = items.filter(b => b.status === "pending").length;
+  const shown = items
+    .filter(b => filter === "all" || b.status === filter)
+    .filter(b => !search || (b.clientName || "").toLowerCase().includes(search.toLowerCase()) || (b.email || "").toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <div className="space-y-8">
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div className="flex gap-2 flex-wrap">
+          {[["all", "All"], ["pending", `Pending (${pending})`], ["confirmed", "Confirmed"], ["rejected", "Rejected"]].map(([id, lbl]) => (
+            <button key={id} onClick={() => setFilter(id)}
+              className="px-5 py-2.5 rounded-2xl font-bold text-[10px] uppercase tracking-widest transition-all"
+              style={filter === id
+                ? { background: `linear-gradient(135deg, ${G.dark}, ${G.dark2})`, color: G.gold }
+                : { background: G.cream, color: "#8a7660", border: "1px solid rgba(200,150,62,0.2)" }}>
+              {lbl}
+            </button>
+          ))}
+        </div>
+        <div className="relative w-full sm:w-72">
+          <input type="text" placeholder="Search client or email…" value={search} onChange={e => setSearch(e.target.value)}
+            className="w-full pl-10 pr-5 py-3 rounded-xl text-xs outline-none"
+            style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.2)", color: G.dark }} />
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="flex justify-center py-20"><Spinner /></div>
+      ) : shown.length === 0 ? (
+        <div className="py-32 text-center rounded-[2rem]"
+          style={{ background: "rgba(255,253,248,0.7)", border: "2px dashed rgba(200,150,62,0.2)" }}>
+          <p className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#c8b99a" }}>No bookings found</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {shown.map((b, i) => (
+            <motion.div key={b._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: i * 0.04 }}
+              className="rounded-2xl p-6 transition-all duration-300"
+              style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 2px 12px rgba(44,26,14,0.05)" }}
+              onMouseEnter={e => e.currentTarget.style.boxShadow = "0 8px 32px rgba(44,26,14,0.1)"}
+              onMouseLeave={e => e.currentTarget.style.boxShadow = "0 2px 12px rgba(44,26,14,0.05)"}>
+              <div className="flex flex-col md:flex-row md:items-center gap-5">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <p className="font-display font-bold text-lg" style={{ color: G.dark }}>{b.clientName}</p>
+                    <Badge status={b.status || "pending"} />
+                  </div>
+                  <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "#b5a080" }}>
+                    {b.email}{b.phone ? ` · ${b.phone}` : ""}
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    {b.serviceType && (
+                      <span className="px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider"
+                        style={{ background: "rgba(200,150,62,0.1)", color: G.gold, border: "1px solid rgba(200,150,62,0.15)" }}>
+                        {b.serviceType}
+                      </span>
+                    )}
+                    {b.bookingDate && (
+                      <span className="px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider"
+                        style={{ background: G.beige, color: "#8a7660" }}>
+                        📅 {b.bookingDate}{b.bookingTime ? ` at ${b.bookingTime}` : ""}
+                      </span>
+                    )}
+                  </div>
+                  {b.message && (
+                    <p className="text-sm italic leading-relaxed" style={{ color: "#8a7660" }}>"{b.message}"</p>
+                  )}
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex gap-3 flex-shrink-0">
+                  {b.status === "pending" && (
+                    <>
+                      <button onClick={() => setStatus(b._id, "confirmed")}
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
+                        style={{ background: "rgba(74,222,128,0.1)", color: "#16a34a", border: "1px solid rgba(74,222,128,0.25)" }}
+                        onMouseEnter={e => { e.currentTarget.style.background = "#16a34a"; e.currentTarget.style.color = "#fff"; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = "rgba(74,222,128,0.1)"; e.currentTarget.style.color = "#16a34a"; }}>
+                        <Ic.Check /> Accept
+                      </button>
+                      <button onClick={() => setStatus(b._id, "rejected")}
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
+                        style={{ background: "rgba(220,50,50,0.08)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.2)" }}
+                        onMouseEnter={e => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.color = "#fff"; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = "rgba(220,50,50,0.08)"; e.currentTarget.style.color = "#dc2626"; }}>
+                        <Ic.Close /> Reject
+                      </button>
+                    </>
+                  )}
+                  {b.status === "confirmed" && (
+                    <button onClick={() => setStatus(b._id, "rejected")}
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
+                      style={{ background: "rgba(220,50,50,0.08)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.2)" }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.color = "#fff"; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "rgba(220,50,50,0.08)"; e.currentTarget.style.color = "#dc2626"; }}>
+                      <Ic.Close /> Reject
+                    </button>
+                  )}
+                  {b.status === "rejected" && (
+                    <button onClick={() => setStatus(b._id, "confirmed")}
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
+                      style={{ background: "rgba(74,222,128,0.1)", color: "#16a34a", border: "1px solid rgba(74,222,128,0.25)" }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "#16a34a"; e.currentTarget.style.color = "#fff"; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "rgba(74,222,128,0.1)"; e.currentTarget.style.color = "#16a34a"; }}>
+                      <Ic.Check /> Approve
+                    </button>
+                  )}
+                  <button onClick={() => del(b._id)}
+                    className="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
+                    style={{ background: "rgba(220,50,50,0.06)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.12)" }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.color = "#fff"; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(220,50,50,0.06)"; e.currentTarget.style.color = "#dc2626"; }}>
+                    <Ic.Trash />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MAIN ADMIN
+// ══════════════════════════════════════════════════════════════════════════════
+export default function Admin() {
+  const [authed, setAuthed] = useState(false);
+  const [creds, setCreds] = useState({ username: "", password: "" });
+  const [loginErr, setLoginErr] = useState("");
+  const [tab, setTab] = useState("dashboard");
+  const [mobileOpen, setMobile] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Data for dashboard overview
+  const [houses, setHouses] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [enquiries, setEnquiries] = useState([]);
+
+  useEffect(() => {
+    authAPI.me().then(() => setAuthed(true)).catch(() => setAuthed(false));
+  }, []);
+
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", fn);
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
+
+  // Load dashboard data when on overview tab
+  useEffect(() => {
+    if (!authed || tab !== "dashboard") return;
+    housesAPI.getAll().then(r => setHouses(r.data || [])).catch(() => { });
+    bookingsAPI.getAll().then(r => setBookings(r.data || [])).catch(() => { });
+    enquiryAPI.getAll().then(r => setEnquiries(r.data || [])).catch(() => { });
+  }, [authed, tab]);
+
+  const login = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
-      const manualImages = newProject.images ? newProject.images.split(",").map(u => u.trim()).filter(Boolean) : [];
-      const projectData = { ...newProject, images: [...manualImages, ...uploadedFiles], videos: newProject.videos ? newProject.videos.split(",").map(v => v.trim()) : [] };
-      if (editingId) await projectsAPI.update(editingId, projectData);
-      else await projectsAPI.create(projectData);
-      setShowProjectForm(false); setEditingId(null);
-      setNewProject({ title: "", description: "", roomType: "", images: "", videos: "" });
-      setUploadedFiles([]);
-      fetchData();
-    } catch (err) {
-      console.error(err);
-      setProjects([{ ...newProject, _id: Date.now().toString(), images: [...uploadedFiles] }, ...projects]);
-      setShowProjectForm(false);
-    }
-    setLoading(false);
+      const r = await authAPI.login(creds);
+      if (r.data.success) { setAuthed(true); setLoginErr(""); }
+    } catch (err) { setLoginErr(err.response?.data?.message || "Invalid credentials"); }
   };
 
-  const deleteProject = async (id) => {
-    if (!window.confirm("Delete this project?")) return;
-    try { await projectsAPI.delete(id); fetchData(); }
-    catch { setProjects(projects.filter(p => p._id !== id)); }
-  };
+  const logout = async () => { try { await authAPI.logout(); } catch { } setAuthed(false); };
 
-  const updateBookingStatus = async (id, status) => {
-    try { await bookingsAPI.updateStatus(id, status); fetchData(); }
-    catch { setBookings(bookings.map(b => b._id === id ? { ...b, status } : b)); }
-  };
-
-  const filteredMedia = activeMediaFilter === "All" ? mediaFiles : mediaFiles.filter(f => f.category === activeMediaFilter);
-  const usedCategories = ["All", ...Array.from(new Set(mediaFiles.map(f => f.category).filter(Boolean)))];
-
-  const tabs = [
-    { id: "dashboard", label: "Overview", icon: <Icons.Dashboard /> },
-    { id: "projects", label: "Portfolio", icon: <Icons.Portfolio /> },
-    { id: "media", label: "Gallery", icon: <Icons.Gallery /> },
-    { id: "bookings", label: "Appointments", icon: <Icons.Bookings /> },
+  const TABS = [
+    { id: "dashboard", label: "Overview", icon: <Ic.Dashboard /> },
+    { id: "houses", label: "Houses", icon: <Ic.Houses /> },
+    { id: "gallery", label: "Gallery", icon: <Ic.Gallery /> },
+    { id: "contacts", label: "Enquiries", icon: <Ic.Contact /> },
+    { id: "bookings", label: "Bookings", icon: <Ic.Bookings /> },
   ];
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // LOGIN PAGE
-  // ══════════════════════════════════════════════════════════════════════════
-  if (!isAuthenticated) {
+  // ── Login ──────────────────────────────────────────────────────────────────
+  if (!authed) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden"
-        style={{ background: `linear-gradient(135deg, ${DARKEST} 0%, ${DARK} 40%, ${DARK2} 100%)` }}>
-
-        {/* Gold bokeh glows */}
+        style={{ background: `linear-gradient(135deg, ${G.darkest} 0%, ${G.dark} 45%, ${G.dark2} 100%)` }}>
         <div className="absolute top-[-15%] left-[-10%] w-[60%] h-[60%] rounded-full pointer-events-none"
-          style={{ background: `radial-gradient(circle, rgba(200,150,62,0.18) 0%, transparent 70%)`, filter: "blur(80px)" }} />
+          style={{ background: "radial-gradient(circle, rgba(200,150,62,0.18) 0%, transparent 70%)", filter: "blur(80px)" }} />
         <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full pointer-events-none"
-          style={{ background: `radial-gradient(circle, rgba(200,150,62,0.10) 0%, transparent 70%)`, filter: "blur(60px)" }} />
-        <div className="absolute inset-0 bg-luxury-pattern opacity-[0.05]" />
+          style={{ background: "radial-gradient(circle, rgba(200,150,62,0.1) 0%, transparent 70%)", filter: "blur(60px)" }} />
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10 w-full max-w-md rounded-[2.5rem] p-8 md:p-14"
-          style={{
-            background: "rgba(255,253,248,0.97)",
-            border: "1px solid rgba(200,150,62,0.2)",
-            boxShadow: "0 50px 100px rgba(0,0,0,0.5)",
-          }}
-        >
-          {/* Logo mark */}
+        <motion.div initial={{ opacity: 0, y: 24, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.7 }}
+          className="relative z-10 w-full max-w-md rounded-[2.5rem] p-10 md:p-14"
+          style={{ background: "rgba(255,253,248,0.98)", border: "1px solid rgba(200,150,62,0.2)", boxShadow: "0 50px 100px rgba(0,0,0,0.5)" }}>
+
           <div className="text-center mb-12">
-            <div className="w-20 h-20 rounded-[1.5rem] mx-auto mb-6 flex items-center justify-center font-display font-bold text-3xl"
-              style={{ background: `linear-gradient(135deg, ${DARK}, ${DARK2})`, color: GOLD, boxShadow: "0 12px 40px rgba(44,26,14,0.35)" }}>
+            <div className="w-20 h-20 rounded-[1.5rem] mx-auto mb-5 flex items-center justify-center font-display font-bold text-3xl"
+              style={{ background: `linear-gradient(135deg, ${G.dark}, ${G.dark2})`, color: G.gold, boxShadow: "0 12px 40px rgba(44,26,14,0.35)" }}>
               II
             </div>
-            <h1 className="font-display font-bold text-4xl mb-2 tracking-tight" style={{ color: DARK }}>
-              Italian Interiors
-            </h1>
-            <p className="font-accent font-bold uppercase tracking-[0.4em] text-[10px] mb-6" style={{ color: GOLD }}>
-              Curated Management
-            </p>
+            <h1 className="font-display font-bold text-4xl mb-1 tracking-tight" style={{ color: G.dark }}>Italian Interiors</h1>
+            <p className="font-accent font-bold uppercase tracking-[0.4em] text-[10px] mb-6" style={{ color: G.gold }}>Studio Dashboard</p>
             <div className="flex items-center justify-center gap-4">
-              <div className="h-px w-10" style={{ background: `linear-gradient(90deg, transparent, ${GOLD})` }} />
-              <div className="w-1.5 h-1.5 rounded-full" style={{ background: GOLD }} />
-              <div className="h-px w-10" style={{ background: `linear-gradient(90deg, ${GOLD}, transparent)` }} />
+              <div className="h-px w-10" style={{ background: `linear-gradient(90deg, transparent, ${G.gold})` }} />
+              <div className="w-1.5 h-1.5 rounded-full" style={{ background: G.gold }} />
+              <div className="h-px w-10" style={{ background: `linear-gradient(90deg, ${G.gold}, transparent)` }} />
             </div>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest ml-1" style={{ color: "#8a7660" }}>Username</label>
-              <input type="text" value={credentials.username}
-                onChange={e => setCredentials({ ...credentials, username: e.target.value })}
-                className="w-full px-6 py-4 outline-none transition-all rounded-2xl text-sm"
-                style={{ background: BEIGE, border: "1px solid rgba(200,150,62,0.25)", color: DARK }}
-                placeholder="admin" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest ml-1" style={{ color: "#8a7660" }}>Password</label>
-              <input type="password" value={credentials.password}
-                onChange={e => setCredentials({ ...credentials, password: e.target.value })}
-                className="w-full px-6 py-4 outline-none transition-all rounded-2xl text-sm"
-                style={{ background: BEIGE, border: "1px solid rgba(200,150,62,0.25)", color: DARK }}
-                placeholder="••••••••" />
-            </div>
-
-            {loginError && (
-              <motion.p initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-                className="text-red-500 text-[10px] font-bold text-center uppercase tracking-wider py-3 rounded-xl"
-                style={{ background: "rgba(220,50,50,0.06)", border: "1px solid rgba(220,50,50,0.15)" }}>
-                {loginError}
-              </motion.p>
-            )}
-
+          <form onSubmit={login} className="space-y-5">
+            <Input label="Email / Username" type="text" value={creds.username}
+              onChange={e => setCreds({ ...creds, username: e.target.value })}
+              placeholder="italianinteriors93@gmail.com" />
+            <Input label="Password" type="password" value={creds.password}
+              onChange={e => setCreds({ ...creds, password: e.target.value })}
+              placeholder="••••••••" />
+            <AnimatePresence>
+              {loginErr && (
+                <motion.p initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                  className="text-[10px] font-bold text-center uppercase tracking-wider py-3 rounded-xl"
+                  style={{ color: "#dc2626", background: "rgba(220,50,50,0.06)", border: "1px solid rgba(220,50,50,0.15)" }}>
+                  {loginErr}
+                </motion.p>
+              )}
+            </AnimatePresence>
             <button type="submit"
-              className="w-full py-5 font-accent font-bold text-[11px] uppercase tracking-[0.3em] rounded-2xl transition-all duration-300 mt-2"
-              style={{ background: `linear-gradient(135deg, ${GOLD}, ${GOLD2})`, color: DARK, boxShadow: "0 8px 28px rgba(200,150,62,0.35)" }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px) scale(1.02)"; e.currentTarget.style.boxShadow = "0 12px 36px rgba(200,150,62,0.5)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0) scale(1)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(200,150,62,0.35)"; }}>
+              className="w-full py-5 font-accent font-bold text-[11px] uppercase tracking-[0.3em] rounded-2xl transition-all duration-300"
+              style={{ background: `linear-gradient(135deg, ${G.gold}, ${G.gold2})`, color: G.dark, boxShadow: "0 8px 28px rgba(200,150,62,0.35)" }}
+              onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
+              onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
               Open Studio
             </button>
           </form>
 
-          <div className="mt-10 text-center">
-            <Link to="/" className="font-accent text-[10px] font-bold uppercase tracking-[0.2em] transition-colors"
-              style={{ color: "#b5a080" }}
-              onMouseEnter={e => e.target.style.color = GOLD}
-              onMouseLeave={e => e.target.style.color = "#b5a080"}>
-              ← Back to Main Portfolio
+          <p className="text-center mt-8">
+            <Link to="/" className="font-accent text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: "#b5a080" }}>
+              ← Back to Portfolio
             </Link>
-          </div>
+          </p>
         </motion.div>
       </div>
     );
   }
 
-  // ══════════════════════════════════════════════════════════════════════════
-  // DASHBOARD SHELL
-  // ══════════════════════════════════════════════════════════════════════════
+  // ── Dashboard shell ────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row font-body" style={{ background: BEIGE }}>
-      <div className="fixed inset-0 bg-luxury-pattern opacity-[0.04] pointer-events-none" />
+    <div className="min-h-screen flex flex-col lg:flex-row" style={{ background: G.beige }}>
+      <div className="fixed inset-0 bg-luxury-pattern opacity-[0.035] pointer-events-none" />
 
-      {/* ── Mobile Header ── */}
+      {/* Mobile top bar */}
       <div className="lg:hidden flex items-center justify-between px-6 py-5 sticky top-0 z-[60] border-b backdrop-blur-md"
-        style={{ background: "rgba(30,16,6,0.95)", borderColor: "rgba(200,150,62,0.2)" }}>
-        <h1 className="font-display font-bold text-lg tracking-tight" style={{ color: BEIGE2 }}>Italian Interiors</h1>
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2" style={{ color: GOLD }}>
-          {mobileMenuOpen ? <Icons.X /> : <Icons.Menu />}
+        style={{ background: "rgba(30,16,6,0.96)", borderColor: "rgba(200,150,62,0.2)" }}>
+        <span className="font-display font-bold text-lg" style={{ color: G.beige2 }}>Italian Interiors</span>
+        <button onClick={() => setMobile(o => !o)} style={{ color: G.gold }}>
+          {mobileOpen ? <Ic.Close /> : <Ic.Menu />}
         </button>
       </div>
 
-      {/* ── Sidebar (Collapsible on Mobile) ── */}
+      {/* Sidebar */}
       <AnimatePresence>
-        {(mobileMenuOpen || window.innerWidth >= 1024) && (
+        {(mobileOpen || (typeof window !== "undefined" && window.innerWidth >= 1024)) && (
           <>
-            {/* Backdrop for mobile */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="lg:hidden fixed inset-0 z-[50]" 
-              style={{ background: "rgba(15,11,5,0.8)", backdropFilter: "blur(4px)" }}
-            />
-            
-            <motion.aside 
-              initial={{ x: -300 }}
-              animate={{ x: 0 }}
-              exit={{ x: -300 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setMobile(false)}
+              className="lg:hidden fixed inset-0 z-[50]"
+              style={{ background: "rgba(10,6,2,0.82)", backdropFilter: "blur(4px)" }} />
+
+            <motion.aside initial={{ x: -288 }} animate={{ x: 0 }} exit={{ x: -288 }}
+              transition={{ type: "spring", damping: 26, stiffness: 220 }}
               className="w-72 flex flex-col fixed top-0 left-0 h-screen z-[55]"
               style={{
-                background: `linear-gradient(180deg, ${DARKEST} 0%, ${DARK} 60%, ${DARK2} 100%)`,
-                boxShadow: "10px 0 50px rgba(0,0,0,0.3)",
-                borderRight: "1px solid rgba(200,150,62,0.12)",
+                background: `linear-gradient(180deg, ${G.darkest} 0%, ${G.dark} 55%, ${G.dark2} 100%)`,
+                borderRight: "1px solid rgba(200,150,62,0.1)",
+                boxShadow: "12px 0 48px rgba(0,0,0,0.35)",
               }}>
-              {/* Sidebar content */}
-              <div className="absolute top-0 right-0 w-full h-48 pointer-events-none"
-                style={{ background: "radial-gradient(ellipse at top right, rgba(200,150,62,0.12) 0%, transparent 70%)", filter: "blur(30px)" }} />
-              <div className="absolute inset-0 bg-luxury-pattern opacity-[0.04] pointer-events-none" />
+              <div className="absolute top-0 right-0 w-full h-56 pointer-events-none"
+                style={{ background: "radial-gradient(ellipse at top right, rgba(200,150,62,0.1) 0%, transparent 70%)", filter: "blur(30px)" }} />
 
-              {/* Brand (Desktop only) */}
-              <div className="hidden lg:block relative z-10 px-8 py-10 border-b text-center" style={{ borderColor: "rgba(200,150,62,0.12)" }}>
-                <h1 className="font-display font-bold text-xl tracking-tight leading-none mb-2" style={{ color: BEIGE2 }}>
-                  Italian Interiors
-                </h1>
-                <div className="h-0.5 w-8 rounded-full mx-auto" style={{ background: GOLD }} />
-                <p className="font-accent font-bold uppercase mt-2" style={{ fontSize: "0.55rem", letterSpacing: "0.3em", color: "rgba(200,150,62,0.55)" }}>
+              {/* Brand */}
+              <div className="hidden lg:block relative z-10 px-8 py-10 border-b text-center"
+                style={{ borderColor: "rgba(200,150,62,0.1)" }}>
+                <p className="font-display font-bold text-xl mb-2" style={{ color: G.beige2 }}>Italian Interiors</p>
+                <div className="h-0.5 w-8 rounded-full mx-auto mb-2" style={{ background: G.gold }} />
+                <p style={{ fontSize: "0.52rem", letterSpacing: "0.32em", color: "rgba(200,150,62,0.5)", fontWeight: "bold", textTransform: "uppercase" }}>
                   Studio Dashboard
                 </p>
               </div>
 
               {/* Nav */}
-              <nav className="relative z-10 flex-1 py-10 px-5 space-y-2">
-                {tabs.map(tab => (
-                  <button key={tab.id} onClick={() => { setActiveTab(tab.id); setMobileMenuOpen(false); }}
-                    className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-400 relative group"
-                    style={activeTab === tab.id ? {
-                      background: "rgba(200,150,62,0.15)",
-                      border: "1px solid rgba(200,150,62,0.25)",
-                      color: GOLD,
-                    } : {
-                      background: "transparent",
-                      border: "1px solid transparent",
-                      color: "rgba(245,239,230,0.35)",
-                    }}>
-                    <span className="transition-transform duration-400 group-hover:scale-110">{tab.icon}</span>
-                    <span className="text-[11px] font-bold uppercase tracking-[0.2em]">{tab.label}</span>
-                    {activeTab === tab.id && (
-                      <div className="absolute right-4 w-1.5 h-1.5 rounded-full" style={{ background: GOLD, boxShadow: `0 0 10px ${GOLD}` }} />
-                    )}
+              <nav className="relative z-10 flex-1 px-5 py-8 space-y-1.5">
+                {TABS.map(t => (
+                  <button key={t.id}
+                    onClick={() => { setTab(t.id); setMobile(false); }}
+                    className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300 relative group"
+                    style={tab === t.id
+                      ? { background: "rgba(200,150,62,0.14)", border: "1px solid rgba(200,150,62,0.28)", color: G.gold }
+                      : { background: "transparent", border: "1px solid transparent", color: "rgba(245,239,230,0.32)" }}>
+                    <span className="group-hover:scale-110 transition-transform duration-300">{t.icon}</span>
+                    <span className="text-[11px] font-bold uppercase tracking-[0.2em]">{t.label}</span>
+                    {tab === t.id && <div className="absolute right-4 w-1.5 h-1.5 rounded-full" style={{ background: G.gold }} />}
                   </button>
                 ))}
               </nav>
 
-              {/* Sign out */}
-              <div className="relative z-10 px-6 py-8 border-t" style={{ borderColor: "rgba(200,150,62,0.1)", background: "rgba(0,0,0,0.2)" }}>
-                <button onClick={handleLogout}
-                  className="flex items-center justify-center gap-3 w-full py-5 px-6 rounded-2xl font-bold text-[10px] uppercase tracking-[0.3em] transition-all duration-400"
-                  style={{ background: "rgba(220,50,50,0.15)", color: "#f87171", border: "1px solid rgba(220,50,50,0.2)" }}>
-                  End Session <Icons.Logout />
+              {/* Logout */}
+              <div className="relative z-10 px-6 py-7 border-t" style={{ borderColor: "rgba(200,150,62,0.1)", background: "rgba(0,0,0,0.18)" }}>
+                <button onClick={logout}
+                  className="flex items-center justify-center gap-3 w-full py-4 px-6 rounded-2xl font-bold text-[10px] uppercase tracking-[0.3em] transition-all"
+                  style={{ background: "rgba(220,50,50,0.14)", color: "#f87171", border: "1px solid rgba(220,50,50,0.2)" }}
+                  onMouseEnter={e => e.currentTarget.style.background = "rgba(220,50,50,0.25)"}
+                  onMouseLeave={e => e.currentTarget.style.background = "rgba(220,50,50,0.14)"}>
+                  End Session <Ic.Logout />
                 </button>
               </div>
             </motion.aside>
@@ -454,652 +1257,40 @@ function Admin() {
         )}
       </AnimatePresence>
 
-      {/* ── Main ── */}
-      <main className="flex-1 lg:ml-72 p-6 md:p-10 lg:p-16 relative z-10 min-h-screen">
-
+      {/* Main */}
+      <main className="flex-1 lg:ml-72 p-6 md:p-10 lg:p-14 relative z-10">
         {/* Header */}
-        <header className={`flex flex-col md:flex-row justify-between items-start gap-8 mb-16 sticky top-0 md:top-0 z-40 transition-all duration-300 py-4 -mx-6 px-6 md:-mx-10 md:px-10 lg:-mx-16 lg:px-16 ${isScrolled ? 'backdrop-blur-xl shadow-lg border-b' : ''}`}
-          style={{ 
-            background: isScrolled ? "rgba(255,253,248,0.85)" : "transparent",
-            borderColor: isScrolled ? "rgba(200,150,62,0.15)" : "transparent"
-          }}>
+        <header className={`flex items-start justify-between gap-6 mb-14 sticky top-0 z-40 py-5 -mx-6 px-6 md:-mx-10 md:px-10 lg:-mx-14 lg:px-14 transition-all duration-300 ${scrolled ? "backdrop-blur-xl border-b shadow-sm" : ""}`}
+          style={{ background: scrolled ? "rgba(237,228,211,0.92)" : "transparent", borderColor: scrolled ? "rgba(200,150,62,0.15)" : "transparent" }}>
           <div>
-            <h2 className="font-display font-bold tracking-tighter leading-none mb-4 transition-all duration-300"
-              style={{ fontSize: isScrolled ? "clamp(1.5rem,4vw,2.5rem)" : "clamp(2.5rem,5vw,4rem)", color: DARK }}>
-              {tabs.find(t => t.id === activeTab)?.label}
+            <h2 className="font-display font-bold tracking-tighter transition-all duration-300"
+              style={{ fontSize: scrolled ? "clamp(1.6rem,3.5vw,2.4rem)" : "clamp(2.4rem,5vw,3.8rem)", color: G.dark, lineHeight: 1 }}>
+              {TABS.find(t => t.id === tab)?.label}
             </h2>
-            {!isScrolled && (
-              <div className="flex items-center gap-4">
-                <div className="h-px w-12" style={{ background: `linear-gradient(90deg, ${GOLD}, transparent)` }} />
+            {!scrolled && (
+              <div className="flex items-center gap-3 mt-3">
+                <div className="h-px w-10" style={{ background: `linear-gradient(90deg, ${G.gold}, transparent)` }} />
                 <p className="font-accent font-bold uppercase tracking-[0.35em] text-[10px]" style={{ color: "#b5a080" }}>Studio Console</p>
               </div>
             )}
           </div>
-          <div className="px-5 md:px-7 py-3 md:py-4 rounded-2xl flex items-center gap-3 self-center md:self-auto"
-            style={{ background: CREAM, border: "1px solid rgba(200,150,62,0.2)", boxShadow: "0 4px 20px rgba(44,26,14,0.07)" }}>
-            <div className="w-2.5 h-2.5 rounded-full animate-pulse" style={{ background: "#4ade80", boxShadow: "0 0 10px #4ade80" }} />
-            <span className="font-accent font-bold uppercase tracking-widest text-[9px] md:text-[10px]" style={{ color: "#8a7660" }}>
+          <div className="px-5 py-3 rounded-2xl flex items-center gap-2.5 flex-shrink-0"
+            style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.18)", boxShadow: "0 4px 16px rgba(44,26,14,0.06)" }}>
+            <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#4ade80" }} />
+            <span className="font-accent font-bold uppercase tracking-widest text-[10px]" style={{ color: "#8a7660" }}>
               {new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
             </span>
           </div>
         </header>
 
-        {/* Add project button & Search */}
-        {activeTab === "projects" && (
-          <div className="mb-10 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="relative w-full md:w-96 group">
-              <input 
-                type="text" 
-                placeholder="Search projects..." 
-                value={adminSearchTerm}
-                onChange={(e) => setAdminSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-6 py-4 rounded-xl outline-none transition-all duration-300 font-accent text-[10px] tracking-widest uppercase"
-                style={{ 
-                  background: CREAM, 
-                  border: "1px solid rgba(200,150,62,0.25)",
-                  color: DARK,
-                  boxShadow: "0 4px 12px rgba(44,26,14,0.04)"
-                }}
-              />
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 opacity-30 group-focus-within:opacity-100 transition-opacity">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-            </div>
-            <button
-              onClick={() => { setEditingId(null); setNewProject({ title: "", description: "", roomType: "", images: "", videos: "" }); setShowProjectForm(!showProjectForm); }}
-              className="flex items-center gap-3 px-10 py-4 rounded-xl font-accent font-bold text-[11px] uppercase tracking-[0.25em] transition-all duration-300 w-full md:w-auto justify-center"
-              style={{ background: `linear-gradient(135deg, ${DARK}, ${DARK2})`, color: GOLD, boxShadow: "0 8px 28px rgba(44,26,14,0.25)" }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px) scale(1.02)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0) scale(1)"; }}>
-              <Icons.Plus /> {showProjectForm ? "Close" : "New Creation"}
-            </button>
-          </div>
-        )}
-
-        {/* Loading spinner */}
-        {loading || initialLoading ? (
-          <div className="flex flex-col items-center justify-center min-h-[400px] gap-8">
-            <div className="relative w-16 h-16">
-              <div className="absolute inset-0 rounded-full" style={{ border: "3px solid rgba(200,150,62,0.15)" }} />
-              <div className="absolute inset-0 rounded-full animate-spin" style={{ border: "3px solid transparent", borderTopColor: GOLD }} />
-            </div>
-            <p className="font-accent font-bold uppercase tracking-[0.5em] animate-pulse text-[10px]" style={{ color: "#b5a080" }}>Loading…</p>
-          </div>
-        ) : (
-          <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-
-            {/* ═══════ DASHBOARD ═══════ */}
-            {activeTab === "dashboard" && (
-              <div className="space-y-10">
-                {/* Stat cards — brown accent shades instead of purple/emerald/amber */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  <StatCard title="Total Projects" value={projects.length} icon={<Icons.Portfolio />} delay={0.1} accent={GOLD} />
-                  <StatCard title="Appointments" value={bookings.length} icon={<Icons.Bookings />} delay={0.2} accent="#B8832A" />
-                  <StatCard title="Pending Approvals" value={bookings.filter(b => b.status === "pending").length} icon={<Icons.Dashboard />} delay={0.3} accent="#7A4020" />
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  <div className="lg:col-span-2 space-y-8">
-
-                    {/* Recent projects */}
-                    <div className="rounded-[2rem] p-10"
-                      style={{ background: CREAM, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 4px 24px rgba(44,26,14,0.06)" }}>
-                      <div className="flex justify-between items-center mb-8 pb-5" style={{ borderBottom: "1px solid rgba(200,150,62,0.1)" }}>
-                        <h3 className="font-bold uppercase tracking-[0.3em] text-[11px]" style={{ color: DARK }}>Recent Projects</h3>
-                        <button onClick={() => setActiveTab("projects")} className="font-bold uppercase tracking-widest text-[10px] transition-opacity hover:opacity-70" style={{ color: GOLD }}>View All →</button>
-                      </div>
-                      <div className="space-y-4">
-                        {projects.slice(0, 4).map((p, i) => (
-                          <div key={i} className="flex items-center gap-6 p-5 rounded-xl"
-                            style={{ background: BEIGE, border: "1px solid rgba(200,150,62,0.1)" }}>
-                            <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0" style={{ background: "rgba(200,150,62,0.1)" }}>
-                              {p.images?.[0]
-                                ? <img src={formatUrl(p.images[0])} alt={p.title} className="w-full h-full object-cover" />
-                                : <div className="w-full h-full flex items-center justify-center" style={{ color: "rgba(200,150,62,0.4)" }}><Icons.Portfolio /></div>}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-bold text-sm truncate" style={{ color: DARK }}>{p.title}</p>
-                              <p className="font-bold uppercase tracking-widest mt-0.5 text-[10px]" style={{ color: "#b5a080" }}>{p.roomType}</p>
-                            </div>
-                          </div>
-                        ))}
-                        {projects.length === 0 && <p className="text-center py-8 font-bold uppercase tracking-widest text-[10px]" style={{ color: "#c8b99a" }}>No projects yet</p>}
-                      </div>
-                    </div>
-
-                    {/* Pending bookings */}
-                    <div className="rounded-[2rem] p-10"
-                      style={{ background: CREAM, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 4px 24px rgba(44,26,14,0.06)" }}>
-                      <div className="flex justify-between items-center mb-8 pb-5" style={{ borderBottom: "1px solid rgba(200,150,62,0.1)" }}>
-                        <h3 className="font-bold uppercase tracking-[0.3em] text-[11px]" style={{ color: DARK }}>Pending Approvals</h3>
-                        <button onClick={() => setActiveTab("bookings")} className="font-bold uppercase tracking-widest text-[10px] transition-opacity hover:opacity-70" style={{ color: GOLD }}>View All →</button>
-                      </div>
-                      <div className="space-y-3">
-                        {bookings.filter(b => b.status === "pending").slice(0, 3).map((b, i) => (
-                          <div key={i} className="flex items-center justify-between p-5 rounded-xl"
-                            style={{ background: BEIGE, border: "1px solid rgba(200,150,62,0.1)" }}>
-                            <div>
-                              <p className="font-bold text-sm" style={{ color: DARK }}>{b.clientName}</p>
-                              <p className="font-bold uppercase tracking-widest mt-0.5 text-[10px]" style={{ color: "#b5a080" }}>{b.serviceType || "Interior Design"}</p>
-                            </div>
-                            <button onClick={() => updateBookingStatus(b._id, "confirmed")}
-                              className="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all"
-                              style={{ background: "rgba(74,222,128,0.1)", color: "#16a34a", border: "1px solid rgba(74,222,128,0.2)" }}
-                              onMouseEnter={e => { e.currentTarget.style.background = "#16a34a"; e.currentTarget.style.color = "#fff"; }}
-                              onMouseLeave={e => { e.currentTarget.style.background = "rgba(74,222,128,0.1)"; e.currentTarget.style.color = "#16a34a"; }}>✓</button>
-                          </div>
-                        ))}
-                        {bookings.filter(b => b.status === "pending").length === 0 && (
-                          <p className="text-center py-8 font-bold uppercase tracking-widest text-[10px]" style={{ color: "#c8b99a" }}>No pending requests</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-8">
-                    {/* By room type */}
-                    <div className="rounded-[2rem] p-10"
-                      style={{ background: CREAM, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 4px 24px rgba(44,26,14,0.06)" }}>
-                      <h3 className="font-bold uppercase tracking-[0.3em] text-[11px] mb-8 pb-5" style={{ color: DARK, borderBottom: "1px solid rgba(200,150,62,0.1)" }}>By Room Type</h3>
-                      <div className="space-y-4">
-                        {Array.from(new Set(projects.map(p => p.roomType).filter(Boolean))).map((type, i) => {
-                          const count = projects.filter(p => p.roomType === type).length;
-                          const pct = Math.round((count / projects.length) * 100);
-                          return (
-                            <div key={i}>
-                              <div className="flex justify-between mb-1.5">
-                                <span className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#8a7660" }}>{type}</span>
-                                <span className="font-bold text-[10px]" style={{ color: DARK }}>{count}</span>
-                              </div>
-                              <div className="h-1.5 w-full rounded-full" style={{ background: "rgba(200,150,62,0.12)" }}>
-                                <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1, delay: i * 0.1 }}
-                                  className="h-full rounded-full" style={{ background: `linear-gradient(90deg, ${GOLD}, rgba(200,150,62,0.5))` }} />
-                              </div>
-                            </div>
-                          );
-                        })}
-                        {projects.length === 0 && <p className="font-bold uppercase text-center py-4 text-[10px]" style={{ color: "#c8b99a" }}>No data</p>}
-                      </div>
-                    </div>
-
-                    {/* System health */}
-                    <div className="rounded-[2rem] p-10 relative overflow-hidden"
-                      style={{ background: `linear-gradient(135deg, ${DARKEST} 0%, ${DARK} 100%)`, border: "1px solid rgba(200,150,62,0.15)" }}>
-                      <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
-                        style={{ background: "radial-gradient(circle, rgba(200,150,62,0.15) 0%, transparent 70%)", filter: "blur(30px)" }} />
-                      <h3 className="font-bold uppercase tracking-[0.3em] text-[10px] mb-7 relative z-10" style={{ color: "rgba(200,150,62,0.7)" }}>System</h3>
-                      <div className="space-y-4 relative z-10">
-                        {[
-                          { label: "Status", value: <span className="flex items-center gap-2 text-[10px] font-bold" style={{ color: "#4ade80" }}><span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />Online</span> },
-                          { label: "Gallery Files", value: mediaFiles.length },
-                          { label: "Projects", value: projects.length },
-                        ].map((row, i) => (
-                          <div key={i} className="flex justify-between items-center">
-                            <span className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "rgba(245,239,230,0.4)" }}>{row.label}</span>
-                            <span className="font-bold text-[10px]" style={{ color: "rgba(245,239,230,0.8)" }}>{row.value}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* ═══════ PROJECTS ═══════ */}
-            {activeTab === "projects" && (
-              <div className="space-y-10">
-                <AnimatePresence>
-                  {showProjectForm && (
-                    <motion.form initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }}
-                      onSubmit={handleAddProject}
-                      className="rounded-[2rem] p-6 md:p-12 space-y-8"
-                      style={{ background: CREAM, border: "1px solid rgba(200,150,62,0.2)", boxShadow: "0 8px 40px rgba(44,26,14,0.1)" }}>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-2">
-                          <label className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#8a7660" }}>Project Title</label>
-                          <input value={newProject.title} onChange={e => setNewProject({ ...newProject, title: e.target.value })}
-                            className="w-full px-5 py-4 rounded-xl text-sm outline-none transition-all"
-                            style={{ background: BEIGE, border: "1px solid rgba(200,150,62,0.2)", color: DARK }}
-                            placeholder="Villa Serenity" required />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#8a7660" }}>Room Type</label>
-                          <select value={newProject.roomType} onChange={e => setNewProject({ ...newProject, roomType: e.target.value })}
-                            className="w-full px-5 py-4 rounded-xl text-sm outline-none appearance-none"
-                            style={{ background: BEIGE, border: "1px solid rgba(200,150,62,0.2)", color: DARK }} required>
-                            <option value="">Select type</option>
-                            {ROOM_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                            <option value="Residential">Residential</option>
-                            <option value="Hospitality">Hospitality</option>
-                            <option value="Minimalist">Minimalist</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#8a7660" }}>Description</label>
-                        <textarea value={newProject.description} onChange={e => setNewProject({ ...newProject, description: e.target.value })}
-                          className="w-full px-5 py-4 rounded-xl text-sm outline-none h-32 resize-none"
-                          style={{ background: BEIGE, border: "1px solid rgba(200,150,62,0.2)", color: DARK }}
-                          placeholder="Describe the design…" required />
-                      </div>
-                      <div className="space-y-3">
-                        <label className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#8a7660" }}>Images</label>
-                        <input value={newProject.images} onChange={e => setNewProject({ ...newProject, images: e.target.value })}
-                          className="w-full px-5 py-4 rounded-xl text-xs outline-none"
-                          style={{ background: BEIGE, border: "1px solid rgba(200,150,62,0.2)", color: DARK }}
-                          placeholder="Paste image URLs separated by commas, or upload below" />
-                        <div onClick={() => projectFileInputRef.current?.click()}
-                          className="h-32 rounded-xl flex flex-col items-center justify-center gap-3 cursor-pointer transition-all duration-300"
-                          style={{ background: "rgba(200,150,62,0.04)", border: "2px dashed rgba(200,150,62,0.3)" }}
-                          onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(200,150,62,0.6)"}
-                          onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(200,150,62,0.3)"}>
-                          <div style={{ color: GOLD }}><Icons.Upload /></div>
-                          <p className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#b5a080" }}>Click to upload images</p>
-                        </div>
-                        <input ref={projectFileInputRef} type="file" multiple accept="image/*" className="hidden" onChange={handleProjectFileSelect} />
-                        {uploadedFiles.length > 0 && (
-                          <div className="flex flex-wrap gap-3 p-4 rounded-xl" style={{ background: BEIGE, border: "1px solid rgba(200,150,62,0.1)" }}>
-                            {uploadedFiles.map((url, i) => (
-                              <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden group">
-                                <img src={url} alt="" className="w-full h-full object-cover" />
-                                <button type="button" onClick={() => setUploadedFiles(prev => prev.filter((_, idx) => idx !== i))}
-                                  className="absolute inset-0 flex items-center justify-center text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                                  style={{ background: "rgba(220,50,50,0.75)" }}>✕</button>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex justify-end gap-5 pt-6" style={{ borderTop: "1px solid rgba(200,150,62,0.1)" }}>
-                        <button type="button" onClick={() => { setShowProjectForm(false); setEditingId(null); }}
-                          className="px-8 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-colors"
-                          style={{ color: "#8a7660" }}
-                          onMouseEnter={e => e.target.style.color = DARK}
-                          onMouseLeave={e => e.target.style.color = "#8a7660"}>Discard</button>
-                        <button type="submit"
-                          className="px-10 py-3 rounded-xl font-bold text-[11px] uppercase tracking-[0.3em] transition-all duration-300"
-                          style={{ background: `linear-gradient(135deg, ${DARK}, ${DARK2})`, color: GOLD, boxShadow: "0 4px 16px rgba(44,26,14,0.25)" }}
-                          onMouseEnter={e => e.currentTarget.style.transform = "translateY(-1px)"}
-                          onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
-                          {editingId ? "Save Changes" : "Publish Project"}
-                        </button>
-                      </div>
-                    </motion.form>
-                  )}
-                </AnimatePresence>
-
-                {projects.length === 0 ? (
-                  <div className="py-28 text-center rounded-[2rem]"
-                    style={{ background: "rgba(255,253,248,0.7)", border: "2px dashed rgba(200,150,62,0.2)" }}>
-                    <p className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#c8b99a" }}>No projects yet</p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                    {projects
-                      .filter(p => !adminSearchTerm || 
-                        p.title.toLowerCase().includes(adminSearchTerm.toLowerCase()) || 
-                        p.roomType.toLowerCase().includes(adminSearchTerm.toLowerCase()))
-                      .map(project => (
-                        <div key={project._id} className="group rounded-[2rem] overflow-hidden transition-all duration-500"
-                        style={{ background: CREAM, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 4px 20px rgba(44,26,14,0.07)" }}
-                        onMouseEnter={e => e.currentTarget.style.boxShadow = "0 16px 50px rgba(44,26,14,0.14)"}
-                        onMouseLeave={e => e.currentTarget.style.boxShadow = "0 4px 20px rgba(44,26,14,0.07)"}>
-                        <div className="relative h-60 overflow-hidden">
-                          <img src={project.images?.[0] ? formatUrl(project.images[0]) : "https://via.placeholder.com/800x600?text=No+Image"} alt={project.title}
-                            loading="lazy" className="w-full h-full object-cover transition-transform duration-[3000ms] group-hover:scale-110"
-                            onError={e => { e.target.src = "https://via.placeholder.com/800x600?text=No+Image"; }} />
-                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-400 flex items-center justify-center gap-5"
-                            style={{ background: "rgba(255,253,248,0.93)", backdropFilter: "blur(8px)" }}>
-                            <button onClick={() => {
-                              setEditingId(project._id);
-                              setNewProject({ title: project.title, description: project.description, roomType: project.roomType, images: (project.images || []).join(", "), videos: (project.videos || []).join(", ") });
-                              setShowProjectForm(true);
-                              window.scrollTo({ top: 0, behavior: "smooth" });
-                            }}
-                              className="w-12 h-12 rounded-xl flex items-center justify-center transition-all"
-                              style={{ background: DARK, color: GOLD }}
-                              onMouseEnter={e => { e.currentTarget.style.background = DARK2; e.currentTarget.style.transform = "scale(1.1)"; }}
-                              onMouseLeave={e => { e.currentTarget.style.background = DARK; e.currentTarget.style.transform = "scale(1)"; }}>
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                            </button>
-                            <button onClick={() => deleteProject(project._id)}
-                              className="w-12 h-12 rounded-xl flex items-center justify-center transition-all"
-                              style={{ background: "rgba(220,50,50,0.1)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.2)" }}
-                              onMouseEnter={e => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.color = "#fff"; e.currentTarget.style.transform = "scale(1.1)"; }}
-                              onMouseLeave={e => { e.currentTarget.style.background = "rgba(220,50,50,0.1)"; e.currentTarget.style.color = "#dc2626"; e.currentTarget.style.transform = "scale(1)"; }}>✕</button>
-                          </div>
-                        </div>
-                        <div className="p-8" style={{ borderTop: "1px solid rgba(200,150,62,0.08)" }}>
-                          <div className="flex justify-between items-start gap-3 mb-3">
-                            <h3 className="font-display font-bold text-xl leading-tight" style={{ color: DARK }}>{project.title}</h3>
-                            <span className="font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg flex-shrink-0 text-[9px]"
-                              style={{ background: "rgba(200,150,62,0.1)", color: GOLD, border: "1px solid rgba(200,150,62,0.15)" }}>
-                              {project.roomType}
-                            </span>
-                          </div>
-                          <p className="text-sm leading-relaxed line-clamp-2" style={{ color: "#8a7660" }}>{project.description}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* ═══════ MEDIA GALLERY ═══════ */}
-            {activeTab === "media" && (
-              <div className="space-y-8">
-                <div className="rounded-[2rem] p-10"
-                  style={{ background: CREAM, border: "1px solid rgba(200,150,62,0.2)", boxShadow: "0 4px 24px rgba(44,26,14,0.06)" }}>
-                  <div className="flex flex-col md:flex-row justify-between items-center mb-8 pb-5 gap-4" style={{ borderBottom: "1px solid rgba(200,150,62,0.1)" }}>
-                    <h3 className="font-bold uppercase tracking-[0.3em] text-[11px]"
-                      style={{ color: DARK }}>Upload to Gallery</h3>
-                    
-                    <div className="relative w-full md:w-64 group">
-                      <input 
-                        type="text" 
-                        placeholder="Search gallery..." 
-                        value={adminSearchTerm}
-                        onChange={(e) => setAdminSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 rounded-lg outline-none transition-all duration-300 font-accent text-[9px] tracking-widest uppercase"
-                        style={{ 
-                          background: BEIGE, 
-                          border: "1px solid rgba(200,150,62,0.15)",
-                          color: DARK
-                        }}
-                      />
-                      <div className="absolute left-3 top-1/2 -translate-y-1/2 opacity-30 group-focus-within:opacity-100 transition-opacity">
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-6 mb-6">
-                    <div className="flex-1 space-y-2">
-                      <label className="font-bold uppercase tracking-widest text-[10px] flex items-center gap-2" style={{ color: "#8a7660" }}>
-                        <Icons.Tag /> Room Category
-                      </label>
-                      <select value={mediaCategory} onChange={e => setMediaCategory(e.target.value)}
-                        className="w-full px-5 py-4 rounded-xl text-sm outline-none appearance-none"
-                        style={{ background: BEIGE, border: "1px solid rgba(200,150,62,0.2)", color: DARK }}>
-                        {ROOM_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                      </select>
-                    </div>
-                    <div className="flex items-end">
-                      <button type="button" onClick={() => mediaFileInputRef.current?.click()}
-                        className="flex items-center gap-3 px-10 py-4 rounded-xl font-accent font-bold text-[11px] uppercase tracking-[0.25em] transition-all duration-300"
-                        style={{ background: `linear-gradient(135deg, ${DARK}, ${DARK2})`, color: GOLD, boxShadow: "0 6px 24px rgba(44,26,14,0.2)" }}
-                        onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-                        onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
-                        <Icons.Upload /> Select Files
-                      </button>
-                      <input ref={mediaFileInputRef} type="file" multiple accept="image/*,video/*" className="hidden" onChange={handleFileSelect} />
-                    </div>
-                  </div>
-
-                  <AnimatePresence>
-                    {pendingUploads.length > 0 && (
-                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
-                        <div className="pt-6" style={{ borderTop: "1px solid rgba(200,150,62,0.1)" }}>
-                          <div className="flex justify-between items-center mb-5">
-                            <p className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#8a7660" }}>
-                              {pendingUploads.length} file{pendingUploads.length > 1 ? "s" : ""} staged
-                            </p>
-                            <button onClick={() => setPendingUploads([])}
-                              className="font-bold uppercase tracking-widest text-[10px] transition-colors"
-                              style={{ color: "#c8b99a" }}
-                              onMouseEnter={e => e.target.style.color = "#dc2626"}
-                              onMouseLeave={e => e.target.style.color = "#c8b99a"}>Clear All</button>
-                          </div>
-                          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
-                            {pendingUploads.map(item => (
-                              <div key={item.id} className="relative group rounded-xl overflow-hidden"
-                                style={{ border: "1px solid rgba(200,150,62,0.15)" }}>
-                                <div className="aspect-square"><img src={item.preview} alt={item.file.name} className="w-full h-full object-cover" /></div>
-                                <select value={item.category}
-                                  onChange={e => setPendingUploads(prev => prev.map(u => u.id === item.id ? { ...u, category: e.target.value } : u))}
-                                  className="w-full px-2 py-1.5 text-[9px] font-bold uppercase tracking-wider outline-none appearance-none text-center"
-                                  style={{ background: CREAM, borderTop: "1px solid rgba(200,150,62,0.15)", color: "#6b5c45" }}>
-                                  {ROOM_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                                </select>
-                                <button onClick={() => setPendingUploads(prev => prev.filter(u => u.id !== item.id))}
-                                  className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity text-white"
-                                  style={{ background: "#dc2626" }}>✕</button>
-                              </div>
-                            ))}
-                          </div>
-                          <button onClick={handleConfirmUpload}
-                            className="w-full py-4 rounded-xl font-bold text-[11px] uppercase tracking-[0.3em] transition-all duration-300"
-                            style={{ background: `linear-gradient(135deg, ${GOLD}, ${GOLD2})`, color: DARK, boxShadow: "0 6px 24px rgba(200,150,62,0.3)" }}
-                            onMouseEnter={e => e.currentTarget.style.transform = "translateY(-1px)"}
-                            onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
-                            Confirm & Upload {pendingUploads.length} File{pendingUploads.length > 1 ? "s" : ""}
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* Filter pills */}
-                {mediaFiles.length > 0 && (
-                  <div className="flex flex-wrap gap-3">
-                    {usedCategories.map(cat => (
-                      <button key={cat} onClick={() => setActiveMediaFilter(cat)}
-                        className="px-8 py-3 rounded-2xl font-bold text-[10px] uppercase tracking-widest transition-all duration-400"
-                        style={activeMediaFilter === cat ? {
-                          background: `linear-gradient(135deg, ${DARK}, ${DARK2})`,
-                          color: GOLD,
-                          boxShadow: "0 8px 24px rgba(44,26,14,0.2)",
-                        } : {
-                          background: CREAM,
-                          color: "#8a7660",
-                          border: "1px solid rgba(200,150,62,0.2)",
-                        }}>
-                        {cat}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {filteredMedia.length > 0 ? (
-                  <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                    <AnimatePresence>
-                      {filteredMedia
-                        .filter(f => !adminSearchTerm || 
-                          f.name.toLowerCase().includes(adminSearchTerm.toLowerCase()) || 
-                          (f.category && f.category.toLowerCase().includes(adminSearchTerm.toLowerCase())))
-                        .map((file, index) => (
-                          <motion.div key={`${file.name}-${index}`}
-                          initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-                          transition={{ duration: 0.3, delay: index * 0.03 }}
-                          className="group relative rounded-[1.5rem] overflow-hidden transition-all duration-400"
-                          style={{ background: CREAM, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 2px 12px rgba(44,26,14,0.06)" }}
-                          onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 12px 40px rgba(44,26,14,0.14)"; e.currentTarget.style.borderColor = "rgba(200,150,62,0.35)"; }}
-                          onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 2px 12px rgba(44,26,14,0.06)"; e.currentTarget.style.borderColor = "rgba(200,150,62,0.15)"; }}>
-                          <div className="aspect-[4/5] overflow-hidden">
-                            <img src={formatUrl(file.url)} alt={file.name} loading="lazy"
-                              className="w-full h-full object-cover transition-transform duration-[3000ms] group-hover:scale-110"
-                              onError={e => { e.target.src = "https://via.placeholder.com/400x500?text=Missing"; }} />
-                          </div>
-                          {file.category && (
-                            <div className="px-4 py-2.5" style={{ borderTop: "1px solid rgba(200,150,62,0.1)" }}>
-                              <span className="font-bold uppercase tracking-widest text-[9px]" style={{ color: GOLD }}>{file.category}</span>
-                            </div>
-                          )}
-                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-400 flex flex-col items-center justify-center gap-4 p-5"
-                            style={{ background: "rgba(255,253,248,0.95)", backdropFilter: "blur(8px)" }}>
-                             <p className="font-bold uppercase tracking-wider text-center break-all text-[9px]" style={{ color: "#6b5c45" }}>{file.name}</p>
-                             
-                             {editingMediaId === file.name ? (
-                               <div className="flex flex-col gap-2 w-full">
-                                 <input 
-                                   className="w-full px-3 py-2 rounded-lg text-[10px] outline-none" 
-                                   style={{ background: "#fff", border: `1px solid ${GOLD}` }} 
-                                   value={tempMediaName} 
-                                   onChange={e => setTempMediaName(e.target.value)} 
-                                   placeholder="New Title"
-                                 />
-                                 <select 
-                                   className="w-full px-3 py-2 rounded-lg text-[10px] outline-none appearance-none" 
-                                   style={{ background: "#fff", border: `1px solid ${GOLD}` }}
-                                   value={tempMediaCategory}
-                                   onChange={e => setTempMediaCategory(e.target.value)}
-                                 >
-                                   {ROOM_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                                 </select>
-                                 <div className="flex gap-2">
-                                   <button 
-                                     onClick={async () => {
-                                       setLoading(true);
-                                       try {
-                                         await uploadAPI.updateMetadata(file.name, { title: tempMediaName, roomType: tempMediaCategory });
-                                         setEditingMediaId(null);
-                                         fetchData();
-                                       } catch (err) { alert("Failed to update"); }
-                                       setLoading(false);
-                                     }}
-                                     className="flex-1 py-2 rounded-lg text-white text-[9px] font-bold uppercase tracking-widest" 
-                                     style={{ background: DARK }}>Save</button>
-                                   <button 
-                                     onClick={() => setEditingMediaId(null)}
-                                     className="px-3 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest" 
-                                     style={{ background: "rgba(220,50,50,0.1)", color: "#dc2626" }}>✕</button>
-                                 </div>
-                               </div>
-                             ) : (
-                               <>
-                                 <span className="px-4 py-1.5 rounded-lg font-bold uppercase tracking-widest text-[9px]"
-                                   style={{ background: "rgba(200,150,62,0.1)", color: GOLD, border: "1px solid rgba(200,150,62,0.2)" }}>
-                                   {file.category || "Uncategorised"}
-                                 </span>
-                                 <div className="flex gap-3">
-                                   <button
-                                     onClick={() => {
-                                       setEditingMediaId(file.name);
-                                       setTempMediaName(file.name);
-                                       setTempMediaCategory(file.category || "Bedroom");
-                                     }}
-                                     className="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
-                                     style={{ background: DARK, color: GOLD }}
-                                     onMouseEnter={e => e.currentTarget.style.background = DARK2}
-                                     onMouseLeave={e => e.currentTarget.style.background = DARK}><Icons.Edit /></button>
-                                   <button
-                                     onClick={async () => {
-                                       if (!window.confirm("Delete this file?")) return;
-                                       try { await uploadAPI.delete(file.name); fetchData(); }
-                                       catch { setMediaFiles(prev => prev.filter((_, i) => i !== index)); }
-                                     }}
-                                     className="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
-                                     style={{ background: "rgba(220,50,50,0.1)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.2)" }}
-                                     onMouseEnter={e => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.color = "#fff"; }}
-                                     onMouseLeave={e => { e.currentTarget.style.background = "rgba(220,50,50,0.1)"; e.currentTarget.style.color = "#dc2626"; }}>✕</button>
-                                 </div>
-                               </>
-                             )}
-                           </div>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
-                  </div>
-                ) : (
-                  <div className="py-40 rounded-[2rem] flex flex-col items-center gap-6"
-                    style={{ background: "rgba(255,253,248,0.7)", border: "2px dashed rgba(200,150,62,0.2)" }}>
-                    <div style={{ color: "rgba(200,150,62,0.3)", transform: "scale(2)" }}><Icons.Gallery /></div>
-                    <p className="font-bold uppercase tracking-[0.5em] text-[10px]" style={{ color: "#c8b99a" }}>
-                      {activeMediaFilter === "All" ? "No gallery images uploaded yet" : `No gallery images in "${activeMediaFilter}"`}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* ═══════ BOOKINGS ═══════ */}
-            {activeTab === "bookings" && (
-              <div className="rounded-[2rem] overflow-hidden"
-                style={{ background: CREAM, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 4px 24px rgba(44,26,14,0.06)" }}>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr style={{ background: "rgba(200,150,62,0.06)", borderBottom: "1px solid rgba(200,150,62,0.12)" }}>
-                        {["Client", "Request", "Status", "Schedule", "Actions"].map(h => (
-                          <th key={h} className="px-10 py-7 font-bold uppercase tracking-[0.35em] text-[10px]" style={{ color: "#8a7660" }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {bookings.map((booking, rowIdx) => (
-                        <tr key={booking._id}
-                          style={{ borderBottom: rowIdx < bookings.length - 1 ? "1px solid rgba(200,150,62,0.07)" : "none" }}
-                          onMouseEnter={e => e.currentTarget.style.background = "rgba(200,150,62,0.03)"}
-                          onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                          <td className="px-10 py-8">
-                            <p className="font-bold text-base mb-0.5" style={{ color: DARK }}>{booking.clientName}</p>
-                            <p className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#b5a080" }}>
-                              {booking.email}{booking.phone && ` · ${booking.phone}`}
-                            </p>
-                          </td>
-                          <td className="px-10 py-8 max-w-xs">
-                            <span className="inline-block px-3 py-1 rounded-lg font-bold uppercase tracking-widest text-[9px] mb-2"
-                              style={{ background: "rgba(200,150,62,0.1)", color: GOLD, border: "1px solid rgba(200,150,62,0.15)" }}>
-                              {booking.serviceType || "Consultation"}
-                            </span>
-                            <p className="text-sm italic line-clamp-2" style={{ color: "#8a7660" }}>"{booking.message}"</p>
-                          </td>
-                          <td className="px-10 py-8">
-                            <span className="px-4 py-2 rounded-lg font-bold uppercase tracking-wider text-[10px]"
-                              style={booking.status === "confirmed"
-                                ? { background: "rgba(74,222,128,0.1)", color: "#16a34a", border: "1px solid rgba(74,222,128,0.2)" }
-                                : { background: "rgba(200,150,62,0.1)", color: GOLD, border: "1px solid rgba(200,150,62,0.2)" }}>
-                              {booking.status}
-                            </span>
-                          </td>
-                          <td className="px-10 py-8">
-                            <p className="font-bold text-sm" style={{ color: DARK }}>{booking.bookingDate || "Flexible"}</p>
-                            <p className="font-bold uppercase tracking-widest mt-0.5 text-[10px]" style={{ color: "#b5a080" }}>{booking.bookingTime || "TBD"}</p>
-                          </td>
-                          <td className="px-10 py-8">
-                            <div className="flex gap-3">
-                              {booking.status === "pending" && (
-                                <button onClick={() => updateBookingStatus(booking._id, "confirmed")}
-                                  className="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all"
-                                  style={{ background: "rgba(74,222,128,0.1)", color: "#16a34a", border: "1px solid rgba(74,222,128,0.2)" }}
-                                  onMouseEnter={e => { e.currentTarget.style.background = "#16a34a"; e.currentTarget.style.color = "#fff"; }}
-                                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(74,222,128,0.1)"; e.currentTarget.style.color = "#16a34a"; }}>✓</button>
-                              )}
-                              <button onClick={async () => {
-                                if (!window.confirm("Delete booking?")) return;
-                                try { await bookingsAPI.delete(booking._id); fetchData(); }
-                                catch { setBookings(prev => prev.filter(b => b._id !== booking._id)); }
-                              }}
-                                className="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
-                                style={{ background: "rgba(220,50,50,0.07)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.15)" }}
-                                onMouseEnter={e => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.color = "#fff"; }}
-                                onMouseLeave={e => { e.currentTarget.style.background = "rgba(220,50,50,0.07)"; e.currentTarget.style.color = "#dc2626"; }}>✕</button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {bookings.length === 0 && (
-                  <div className="py-28 text-center">
-                    <p className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#c8b99a" }}>No bookings yet</p>
-                  </div>
-                )}
-              </div>
-            )}
-
-          </motion.div>
-        )}
+        <motion.div key={tab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+          {tab === "dashboard" && <DashboardTab houses={houses} bookings={bookings} enquiries={enquiries} onNav={setTab} />}
+          {tab === "houses" && <HousesTab />}
+          {tab === "gallery" && <GalleryTab />}
+          {tab === "contacts" && <ContactsTab />}
+          {tab === "bookings" && <BookingsTab />}
+        </motion.div>
       </main>
     </div>
   );
 }
-
-export default Admin;
