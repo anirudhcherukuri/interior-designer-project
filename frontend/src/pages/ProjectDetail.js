@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projectsAPI, formatUrl } from '../api/config';
+import { generateLocalProjects } from './Portfolio';
 
 const ProjectDetail = () => {
   const { id } = useParams();
@@ -15,8 +16,27 @@ const ProjectDetail = () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await projectsAPI.getById(id);
-        setProject(response.data);
+        
+        // Try API first
+        try {
+          const response = await projectsAPI.getById(id);
+          if (response.data) {
+            setProject(response.data);
+            return;
+          }
+        } catch (e) {
+          console.warn("API Project fetch failed, checking local fallbacks...");
+        }
+
+        // Fallback to local if API fails or project not found
+        const localProjs = generateLocalProjects();
+        const found = localProjs.find(p => p._id === id);
+        
+        if (found) {
+          setProject(found);
+        } else {
+          setError('Project not found');
+        }
       } catch (err) {
         setError(err.message || 'Project not found');
       } finally {

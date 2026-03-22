@@ -1,0 +1,114 @@
+[
+    {
+        "id": "house-001",
+        "title": "Villa Razia",
+        "location": "Banjara Hills, Hyderabad",
+        "cover": "bedroom_1.jpg",
+        "images": [
+            "bedroom_1.jpg",
+            "bedroom_2.jpg",
+            "bedroom_3.jpg",
+            "living_room_1.jpg",
+            "living_room_2.jpg",
+            "kitchen_1.jpg",
+            "hall.jpeg"
+        ]
+    },
+    {
+        "id": "house-002",
+        "title": "Jubilee Residence",
+        "location": "Jubilee Hills, Hyderabad",
+        "cover": "living_room_3.jpg",
+        "images": [
+            "living_room_3.jpg",
+            "living_room_4.jpg",
+            "living_room_5.jpg",
+            "bedroom_4.jpg",
+            "bedroom_6.jpg",
+            "bedroom_7.jpg",
+            "kitchen_2.jpg",
+            "ceiling.jpeg"
+        ]
+    },
+    {
+        "id": "house-003",
+        "title": "Gachibowli Apartment",
+        "location": "Gachibowli, Hyderabad",
+        "cover": "bedroom_8.jpg",
+        "images": [
+            "bedroom_8.jpg",
+            "bedroom_9.jpg",
+            "bedroom_10.jpg",
+            "living_room_6.jpg",
+            "living_room_7.jpg",
+            "cupboard_1.jpg",
+            "cupboard_2.jpg"
+        ]
+    },
+    {
+        "id": "house-004",
+        "title": "Madhapur Penthouse",
+        "location": "Madhapur, Hyderabad",
+        "cover": "living_room_8.jpg",
+        "images": [
+            "living_room_8.jpg",
+            "livingroom_9.jpg",
+            "livingroom_10.jpg",
+            "bedroom_11.jpg",
+            "bedroom_12.jpg",
+            "bedroom_13.jpg",
+            "hall2.jpeg",
+            "poojaroom_1.jpg"
+        ]
+    },
+    {
+        "id": "house-005",
+        "title": "Kondapur Villa",
+        "location": "Kondapur, Hyderabad",
+        "cover": "bedroom_14.jpg",
+        "images": [
+            "bedroom_14.jpg",
+            "bedroom_15.jpg",
+            "bedroom_16.jpg",
+            "living_room_11.jpg",
+            "livingroom_13.jpg",
+            "cupboard_3.jpg",
+            "cupboard_4.jpg"
+        ]
+    },
+    {
+        "id": "house-006",
+        "title": "Hitec City Suite",
+        "location": "Hitec City, Hyderabad",
+        "cover": "bedroom_18.jpg",
+        "images": [
+            "bedroom_18.jpg",
+            "bedroom_19.jpg",
+            "bedroom_20.jpg",
+            "bedroom_21.jpg",
+            "livingroom_14.jpg",
+            "livingroom_15.jpg",
+            "livingroom_20.jpg",
+            "cupboard_9.jpg"
+        ]
+    },
+    {
+        "id": "house-007",
+        "title": "Film Nagar Retreat",
+        "location": "Film Nagar, Hyderabad",
+        "cover": "bedrrom_22.jpg",
+        "images": [
+            "bedrrom_22.jpg",
+            "bedroom_23.jpg",
+            "bedroom_24.jpg",
+            "bedroom_25.jpg",
+            "bedroom_26.jpg",
+            "bedroom_27.jpg",
+            "bedroom_28.jpg",
+            "bedroom_29.jpg",
+            "bedroom_30.jpg",
+            "bedrrom_5.jpg",
+            "bedrrom_17.jpg"
+        ]
+    }
+]

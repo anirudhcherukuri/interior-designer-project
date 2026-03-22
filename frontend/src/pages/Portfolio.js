@@ -1,191 +1,383 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { projectsAPI, formatUrl } from '../api/config';
+import projectsConfig from '../config/projects.config.json';
 
-// ── Guaranteed Local Fallback Projects ──────────────────────────────────────
-const generateLocalProjects = () => {
-  const projs = [];
-  let id = 1;
+// Base path for all gallery images
+const GALLERY_BASE = '/gallery/';
+const img = (filename) => `${GALLERY_BASE}${filename}`;
 
-  const add = (files, ext, room) => {
-    files.forEach(f => {
-      // Dynamic naming: Alternate between "Hyderabad Interior Project" and "Hyderabad Project X"
-      const title = id === 1 ? 'Hyderabad Interior Project' : `Hyderabad Project ${id}`;
-      
-      projs.push({
-        _id: `local-${id++}`,
-        title: title,
-        description: `Stunning ${room.toLowerCase()} design implementation in Hyderabad.`,
-        roomType: room,
-        location: 'Hyderabad, India',
-        images: [`/gallery/${f}.${ext}`]
-      });
-    });
-  };
+// ── Lightbox ─────────────────────────────────────────────────────────────────
+const Lightbox = ({ project, startIndex = 0, onClose }) => {
+  const [current, setCurrent] = useState(startIndex);
+  const images = project.images || [];
 
-  add(['bedroom_1','bedroom_2','bedroom_3','bedroom_4','bedroom_6','bedroom_7','bedroom_8','bedroom_9',
-       'bedroom_10','bedroom_11','bedroom_12','bedroom_13','bedroom_14','bedroom_15','bedroom_16',
-       'bedroom_18','bedroom_19','bedroom_20','bedroom_21','bedroom_23','bedroom_24','bedroom_25',
-       'bedroom_26','bedroom_27','bedroom_28','bedroom_29','bedroom_30',
-       'bedrrom_5','bedrrom_17','bedrrom_22'], 'jpg', 'Bedroom');
-
-  add(['living_room_1','living_room_2','living_room_3','living_room_4','living_room_5',
-       'living_room_6','living_room_7','living_room_8','living_room_11',
-       'livingroom_9','livingroom_10','livingroom_13','livingroom_14','livingroom_15','livingroom_20'], 'jpg', 'Living Room');
-
-  add(['kitchen_1','kitchen_2'], 'jpg', 'Kitchen');
-
-  add(['cupboard_1','cupboard_2','cupboard_3','cupboard_4','cupboard_9'], 'jpg', 'Commercial');
-
-  projs.push(
-    { _id: `local-${id++}`, title: `Hyderabad Project ${id}`, description: 'Elegant hall interior.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/hall.jpeg'] },
-    { _id: `local-${id++}`, title: `Hyderabad Project ${id}`, description: 'Spacious hall interior.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/hall2.jpeg'] },
-    { _id: `local-${id++}`, title: `Hyderabad Project ${id}`, description: 'Premium ceiling design.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/ceiling.jpeg'] },
-    { _id: `local-${id++}`, title: `Hyderabad Project ${id}`, description: 'Traditional pooja room.', roomType: 'Commercial', location: 'Hyderabad, India', images: ['/gallery/poojaroom_1.jpg'] },
-    { _id: `local-${id++}`, title: `Hyderabad Project ${id}`, description: 'Bespoke design work.', roomType: 'Living Room', location: 'Hyderabad, India', images: ['/gallery/bg.jpg'] }
-  );
-
-  return projs;
-};
-
-const LOCAL_PROJECTS = generateLocalProjects();
-
-const Portfolio = () => {
-  const [projects, setProjects] = useState([]);
-  const [filteredProjects, setFilteredProjects] = useState([]);
-  const [activeFilter, setActiveFilter] = useState('All');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  const roomTypes = ['All', 'Bedroom', 'Living Room', 'Kitchen', 'Dining Room', 'Home Office', 'Bathroom', 'Outdoor', 'Commercial'];
+  const prev = useCallback(() => setCurrent(i => (i - 1 + images.length) % images.length), [images.length]);
+  const next = useCallback(() => setCurrent(i => (i + 1) % images.length), [images.length]);
 
   useEffect(() => {
-    fetchProjects();
-  }, []);
+    const handler = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    };
+    window.addEventListener('keydown', handler);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', handler);
+      document.body.style.overflow = '';
+    };
+  }, [onClose, prev, next]);
 
-  const fetchProjects = async () => {
-    try {
-      setLoading(true);
-      const response = await projectsAPI.getAll().catch(() => ({ data: [] }));
-      const apiData = response.data || [];
-      
-      // Merge local fallback with API data (preventing duplicates if API is working)
-      const merged = [...LOCAL_PROJECTS];
-      apiData.forEach(p => {
-        if (!merged.find(m => m.title === p.title)) {
-          merged.push(p);
-        }
-      });
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-[999] flex flex-col"
+      style={{ background: 'rgba(8,5,2,0.97)', backdropFilter: 'blur(16px)' }}
+      onClick={onClose}
+    >
+      {/* Top bar */}
+      <div
+        className="flex items-center justify-between px-6 py-4 flex-shrink-0"
+        style={{ borderBottom: '1px solid rgba(197,160,89,0.15)' }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div>
+          <p className="font-accent text-[10px] tracking-[0.3em] uppercase mb-0.5" style={{ color: '#C5A059' }}>
+            {project.location}
+          </p>
+          <h3 className="font-display text-lg font-semibold" style={{ color: '#faf8f4' }}>
+            {project.title}
+          </h3>
+        </div>
 
-      setProjects(merged);
-      setFilteredProjects(merged);
-    } catch (error) {
-      console.error('Error fetching projects:', error);
-      // Fallback if total failure
-      setProjects(LOCAL_PROJECTS);
-      setFilteredProjects(LOCAL_PROJECTS);
-    } finally {
-      setLoading(false);
-    }
-  };
+        <div className="flex items-center gap-5">
+          <span className="font-accent text-xs tracking-widest" style={{ color: 'rgba(250,248,244,0.35)' }}>
+            {current + 1} / {images.length}
+          </span>
 
-  const handleFilter = (roomType) => {
-    setActiveFilter(roomType);
-    filterProjects(roomType, searchTerm);
-  };
+          {/* Close — always visible, high contrast */}
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="flex items-center justify-center w-11 h-11 rounded-full transition-all duration-200"
+            style={{ background: 'rgba(197,160,89,0.15)', border: '1.5px solid rgba(197,160,89,0.5)', color: '#C5A059' }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.15)'; e.currentTarget.style.color = '#C5A059'; }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
 
-  const handleSearch = (e) => {
-    const term = e.target.value.toLowerCase();
-    setSearchTerm(term);
-    filterProjects(activeFilter, term);
-  };
+      {/* Main image */}
+      <div
+        className="flex-1 flex items-center justify-center relative min-h-0 px-16"
+        onClick={e => e.stopPropagation()}
+      >
+        <button
+          onClick={prev}
+          className="absolute left-4 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200"
+          style={{ background: 'rgba(197,160,89,0.1)', border: '1px solid rgba(197,160,89,0.35)', color: '#C5A059' }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.1)'; e.currentTarget.style.color = '#C5A059'; }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
 
-  const filterProjects = (room, term) => {
-    let filtered = projects;
-    if (room !== 'All') {
-      filtered = filtered.filter(p => p.roomType === room);
-    }
-    if (term) {
-      filtered = filtered.filter(p => 
-        p.title.toLowerCase().includes(term) || 
-        p.roomType.toLowerCase().includes(term) ||
-        p.description.toLowerCase().includes(term)
-      );
-    }
-    setFilteredProjects(filtered);
-  };
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={current}
+            src={img(images[current])}
+            alt={`${project.title} — ${current + 1}`}
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.02 }}
+            transition={{ duration: 0.25 }}
+            className="object-contain rounded-sm"
+            style={{ maxHeight: 'calc(100vh - 210px)', maxWidth: '100%' }}
+            onError={e => { e.target.src = 'https://via.placeholder.com/1200x800?text=Image+Not+Found'; }}
+          />
+        </AnimatePresence>
+
+        <button
+          onClick={next}
+          className="absolute right-4 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200"
+          style={{ background: 'rgba(197,160,89,0.1)', border: '1px solid rgba(197,160,89,0.35)', color: '#C5A059' }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.1)'; e.currentTarget.style.color = '#C5A059'; }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Thumbnail strip */}
+      <div
+        className="flex-shrink-0 py-3 px-4 overflow-x-auto"
+        style={{ borderTop: '1px solid rgba(197,160,89,0.1)' }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex gap-2 justify-center" style={{ minWidth: 'max-content', margin: '0 auto' }}>
+          {images.map((file, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className="flex-shrink-0 rounded-md overflow-hidden transition-all duration-200"
+              style={{
+                width: '52px', height: '52px',
+                border: i === current ? '2px solid #C5A059' : '2px solid transparent',
+                opacity: i === current ? 1 : 0.4,
+                transform: i === current ? 'scale(1.1)' : 'scale(1)',
+              }}
+            >
+              <img
+                src={img(file)}
+                alt=""
+                className="w-full h-full object-cover"
+                onError={e => { e.target.src = 'https://via.placeholder.com/60?text=?'; }}
+              />
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="text-center pb-3 flex-shrink-0" onClick={e => e.stopPropagation()}>
+        <span className="font-accent text-[9px] tracking-[0.3em] uppercase" style={{ color: 'rgba(250,248,244,0.18)' }}>
+          ← → navigate &nbsp;·&nbsp; ESC close
+        </span>
+      </div>
+    </motion.div>
+  );
+};
+
+// ── Project Card ──────────────────────────────────────────────────────────────
+const ProjectCard = ({ project, index, onOpen }) => {
+  const [hovered, setHovered] = useState(false);
+  const photoCount = project.images.length;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, delay: index * 0.06 }}
+    >
+      <div
+        className="overflow-hidden rounded-2xl border transition-all duration-400 cursor-pointer"
+        style={{
+          background: '#fff',
+          borderColor: hovered ? 'rgba(197,160,89,0.5)' : 'rgba(197,160,89,0.15)',
+          boxShadow: hovered ? '0 16px 48px rgba(26,18,8,0.16)' : '0 4px 20px rgba(26,18,8,0.06)',
+          transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
+        }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onClick={() => onOpen(project, 0)}
+      >
+        {/* Cover image */}
+        <div className="relative overflow-hidden" style={{ height: '280px' }}>
+          <img
+            src={img(project.cover)}
+            alt={project.title}
+            className="w-full h-full object-cover transition-transform duration-700"
+            style={{ transform: hovered ? 'scale(1.07)' : 'scale(1)' }}
+            onError={e => { e.target.src = 'https://via.placeholder.com/800x600?text=No+Image'; }}
+          />
+
+          {/* Gradient overlay */}
+          <div
+            className="absolute inset-0 transition-opacity duration-300"
+            style={{
+              background: 'linear-gradient(to top, rgba(10,8,5,0.8) 0%, rgba(10,8,5,0.1) 55%, transparent 100%)',
+              opacity: hovered ? 1 : 0.55,
+            }}
+          />
+
+          {/* Photo count badge — top left */}
+          <div
+            className="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+            style={{ background: 'rgba(10,8,5,0.7)', backdropFilter: 'blur(8px)', border: '1px solid rgba(197,160,89,0.35)' }}
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#C5A059" strokeWidth="2.5">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
+            </svg>
+            <span className="font-accent text-[10px] tracking-[0.15em]" style={{ color: '#C5A059' }}>
+              {photoCount} PHOTOS
+            </span>
+          </div>
+
+          {/* Hover thumbnail preview strip — peek at first 4 images */}
+          <div
+            className="absolute bottom-0 left-0 right-0 flex gap-1 p-2 transition-all duration-300"
+            style={{
+              opacity: hovered ? 1 : 0,
+              transform: hovered ? 'translateY(0)' : 'translateY(6px)',
+            }}
+          >
+            {project.images.slice(0, 4).map((file, i) => (
+              <div
+                key={i}
+                className="flex-1 rounded overflow-hidden hover:opacity-90 transition-opacity duration-200"
+                style={{ height: '46px', border: '1px solid rgba(197,160,89,0.3)' }}
+                onClick={e => { e.stopPropagation(); onOpen(project, i); }}
+              >
+                <img src={img(file)} alt="" className="w-full h-full object-cover"
+                  onError={e => { e.target.src = 'https://via.placeholder.com/80?text=?'; }} />
+              </div>
+            ))}
+            {photoCount > 4 && (
+              <div
+                className="flex-1 rounded flex items-center justify-center"
+                style={{ height: '46px', background: 'rgba(10,8,5,0.75)', border: '1px solid rgba(197,160,89,0.3)' }}
+              >
+                <span className="font-accent text-[10px] tracking-widest" style={{ color: '#C5A059' }}>
+                  +{photoCount - 4}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Hover centre button */}
+          <div
+            className="absolute inset-0 flex items-center justify-center transition-all duration-300"
+            style={{ opacity: hovered ? 1 : 0 }}
+          >
+            <div
+              className="w-14 h-14 rounded-full flex items-center justify-center"
+              style={{ background: '#C5A059', color: '#1a1208', boxShadow: '0 6px 28px rgba(197,160,89,0.5)' }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Card body */}
+        <div className="px-6 py-5" style={{ borderTop: '1px solid rgba(197,160,89,0.1)' }}>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h3
+                className="font-display text-xl font-semibold mb-1 truncate transition-colors duration-300"
+                style={{ color: hovered ? '#C5A059' : '#1a1208', letterSpacing: '-0.01em' }}
+              >
+                {project.title}
+              </h3>
+              {project.location && (
+                <div className="flex items-center gap-1.5 text-xs" style={{ color: '#b5a080' }}>
+                  <svg className="flex-shrink-0 w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span className="font-accent tracking-wider uppercase truncate">{project.location}</span>
+                </div>
+              )}
+            </div>
+            <span
+              className="flex-shrink-0 font-accent text-[10px] tracking-[0.2em] uppercase flex items-center gap-1 mt-1"
+              style={{ color: '#C5A059' }}
+            >
+              Gallery
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// ── Portfolio Page ────────────────────────────────────────────────────────────
+const Portfolio = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [lightbox, setLightbox] = useState(null);
+
+  const filtered = projectsConfig.filter(p => {
+    if (!searchTerm) return true;
+    const q = searchTerm.toLowerCase();
+    return (
+      p.title.toLowerCase().includes(q) ||
+      (p.location || '').toLowerCase().includes(q)
+    );
+  });
+
+  const openLightbox = (project, index) => setLightbox({ project, index });
+  const closeLightbox = () => setLightbox(null);
 
   return (
     <div className="min-h-screen" style={{ background: '#EDE4D3' }}>
 
+      <AnimatePresence>
+        {lightbox && (
+          <Lightbox project={lightbox.project} startIndex={lightbox.index} onClose={closeLightbox} />
+        )}
+      </AnimatePresence>
+
       {/* ── Hero ── */}
       <section className="relative pt-36 pb-28 overflow-hidden">
-        {/* Deep warm background */}
         <div className="absolute inset-0" style={{
           background: 'linear-gradient(135deg, #1a1208 0%, #2d1f0e 35%, #1e160a 70%, #0f0b05 100%)'
         }} />
-
-        {/* Luxury pattern overlay */}
         <div className="absolute inset-0 bg-luxury-pattern opacity-[0.06]" />
-
-        {/* Gold bokeh orbs */}
         <div className="absolute top-[-15%] left-[-8%] w-[55%] h-[80%] rounded-full pointer-events-none"
           style={{ background: 'radial-gradient(circle, rgba(197,160,89,0.18) 0%, transparent 70%)', filter: 'blur(60px)' }} />
         <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[70%] rounded-full pointer-events-none"
           style={{ background: 'radial-gradient(circle, rgba(197,160,89,0.12) 0%, transparent 70%)', filter: 'blur(80px)' }} />
-        <div className="absolute top-[30%] right-[20%] w-[30%] h-[40%] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(255,220,140,0.06) 0%, transparent 70%)', filter: 'blur(50px)' }} />
-
-        {/* Thin gold rule top */}
-        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(197,160,89,0.5), transparent)' }} />
+        <div className="absolute top-0 left-0 right-0 h-px"
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(197,160,89,0.5), transparent)' }} />
 
         <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10 text-center">
           <motion.div
             initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
+            transition={{ duration: 0.8 }}
             className="max-w-3xl mx-auto"
           >
-            <span className="font-accent tracking-[0.35em] uppercase text-xs font-bold mb-6 block"
-              style={{ color: '#C5A059' }}>
+            <span className="font-accent tracking-[0.35em] uppercase text-xs font-bold mb-6 block" style={{ color: '#C5A059' }}>
               Our Work
             </span>
-
             <h1 className="font-display font-bold mb-8 leading-tight"
               style={{ fontSize: 'clamp(3rem, 10vw, 6rem)', color: '#faf8f4', letterSpacing: '-0.02em' }}>
               Portfolio
             </h1>
-
-            {/* Gold ornament */}
             <div className="flex items-center justify-center gap-4 mb-8">
               <div className="h-px w-16" style={{ background: 'linear-gradient(90deg, transparent, #C5A059)' }} />
               <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#C5A059' }} />
               <div className="h-px w-16" style={{ background: 'linear-gradient(90deg, #C5A059, transparent)' }} />
             </div>
-
             <p className="text-xl font-light leading-relaxed max-w-2xl mx-auto mb-10"
               style={{ color: 'rgba(250,248,244,0.65)', fontFamily: 'Georgia, serif' }}>
-              Discover our collection of beautifully designed spaces across different room types
+              Each project tells the complete story of a home — room by room.
             </p>
-
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => document.getElementById('work-grid').scrollIntoView({ behavior: 'smooth' })}
-              className="px-12 py-5 rounded-full font-accent font-bold text-sm tracking-[0.3em] uppercase transition-all duration-300"
-              style={{ 
-                background: 'linear-gradient(135deg, #C5A059 0%, #B38E47 100%)', 
-                color: '#1a1208',
-                boxShadow: '0 10px 40px rgba(197,160,89,0.3)'
-              }}
+              onClick={() => document.getElementById('projects').scrollIntoView({ behavior: 'smooth' })}
+              className="px-12 py-5 rounded-full font-accent font-bold text-sm tracking-[0.3em] uppercase"
+              style={{ background: 'linear-gradient(135deg, #C5A059 0%, #B38E47 100%)', color: '#1a1208', boxShadow: '0 10px 40px rgba(197,160,89,0.3)' }}
             >
-              PROJECTS
+              EXPLORE HOMES
             </motion.button>
           </motion.div>
         </div>
 
-        {/* Wave bottom */}
         <div className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none" style={{ height: '60px' }}>
           <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="w-full h-full">
             <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#EDE4D3" />
@@ -193,172 +385,78 @@ const Portfolio = () => {
         </div>
       </section>
 
-      {/* ── Filter bar ── */}
-      <section id="work-grid" className="py-8 sticky top-20 md:top-24 z-40 backdrop-blur-md border-b"
-        style={{ background: 'rgba(237,228,211,0.95)', borderColor: 'rgba(200,150,62,0.2)' }}>
+      {/* ── Search ── */}
+      <section
+        id="projects"
+        className="py-7 sticky top-20 md:top-24 z-40 backdrop-blur-md border-b"
+        style={{ background: 'rgba(237,228,211,0.95)', borderColor: 'rgba(200,150,62,0.2)' }}
+      >
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto space-y-8">
-            {/* Search Input */}
-            <div className="relative group max-w-xl mx-auto">
-              <input 
-                type="text" 
-                placeholder="Search rooms (e.g. 'Bedroom', 'Living Room')..." 
-                value={searchTerm}
-                onChange={handleSearch}
-                className="w-full px-12 py-4 rounded-2xl outline-none transition-all duration-300 font-accent text-xs tracking-widest"
-                style={{ 
-                  background: 'rgba(255,253,248,0.7)', 
-                  border: '1px solid rgba(197,160,89,0.3)',
-                  color: '#1a1208'
-                }}
-              />
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <div className="max-w-lg mx-auto relative">
+            <input
+              type="text"
+              placeholder="Search by project name or location..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="w-full px-12 py-4 rounded-2xl outline-none transition-all duration-300 font-accent text-xs tracking-widest"
+              style={{ background: 'rgba(255,253,248,0.8)', border: '1px solid rgba(197,160,89,0.3)', color: '#1a1208' }}
+            />
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 opacity-40">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 transition-opacity"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <line x1="18" y1="6" x2="6" y2="18" strokeWidth="2" strokeLinecap="round" />
+                  <line x1="6" y1="6" x2="18" y2="18" strokeWidth="2" strokeLinecap="round" />
                 </svg>
-              </div>
-            </div>
-
-            {/* Filter Buttons */}
-            <div className="flex flex-nowrap md:flex-wrap justify-start md:justify-center gap-3 overflow-x-auto pb-4 md:pb-0 scrollbar-hide">
-              {roomTypes.map((roomType) => (
-                <motion.button
-                  key={roomType}
-                  onClick={() => handleFilter(roomType)}
-                  whileTap={{ scale: 0.96 }}
-                  className="px-6 py-2.5 font-accent text-[10px] md:text-xs tracking-[0.15em] uppercase transition-all duration-300 rounded-full border whitespace-nowrap flex-shrink-0"
-                  style={activeFilter === roomType ? {
-                    background: '#1a1208',
-                    color: '#C5A059',
-                    borderColor: '#1a1208',
-                    boxShadow: '0 4px 20px rgba(26,18,8,0.25)'
-                  } : {
-                    background: 'transparent',
-                    color: '#6b5c45',
-                    borderColor: 'rgba(197,160,89,0.3)'
-                  }}
-                >
-                  {roomType}
-                </motion.button>
-              ))}
-            </div>
+              </button>
+            )}
           </div>
         </div>
       </section>
 
-      {/* ── Projects grid ── */}
+      {/* ── Grid ── */}
       <section className="py-20 relative">
-        {/* Subtle mid-page texture */}
         <div className="absolute inset-0 bg-luxury-pattern opacity-[0.04] pointer-events-none" />
-
         <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="rounded-2xl h-96 animate-pulse"
-                  style={{ background: 'linear-gradient(135deg, #ede8df, #e8e0d0)' }} />
-              ))}
-            </div>
-          ) : filteredProjects.length === 0 ? (
+
+          <div className="mb-8 text-center">
+            <span className="font-accent text-xs tracking-[0.2em] uppercase" style={{ color: '#b5a080' }}>
+              {filtered.length} {filtered.length === 1 ? 'Project' : 'Projects'}
+            </span>
+          </div>
+
+          {filtered.length === 0 ? (
             <div className="text-center py-24">
               <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
                 style={{ background: 'rgba(197,160,89,0.1)', border: '1px solid rgba(197,160,89,0.2)' }}>
                 <svg className="w-10 h-10" fill="none" stroke="#C5A059" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-display font-semibold mb-2" style={{ color: '#1a1208' }}>No Projects Found</h3>
-              <p style={{ color: '#6b5c45' }}>Try selecting a different category</p>
+              <h3 className="text-2xl font-display font-semibold mb-2" style={{ color: '#1a1208' }}>No Results</h3>
+              <p style={{ color: '#6b5c45' }}>Try a different project name or location</p>
             </div>
           ) : (
             <AnimatePresence mode="wait">
               <motion.div
-                key={activeFilter}
+                key={searchTerm}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.25 }}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
-                {filteredProjects.map((project, index) => (
-                  <motion.div
-                    key={project._id}
-                    initial={{ opacity: 0, y: 24 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.07 }}
-                    className="group"
-                  >
-                    <Link to={`/portfolio/${project._id}`}>
-                      <div className="overflow-hidden rounded-2xl border transition-all duration-500"
-                        style={{
-                          background: '#fff',
-                          borderColor: 'rgba(197,160,89,0.15)',
-                          boxShadow: '0 4px 24px rgba(26,18,8,0.07)'
-                        }}
-                      >
-                        {/* Image */}
-                        <div className="relative h-72 overflow-hidden">
-                          <img
-                            src={formatUrl(project.imageUrl || project.images?.[0])}
-                            alt={project.title}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                            onError={(e) => { e.target.src = 'https://via.placeholder.com/800x600?text=No+Image'; }}
-                          />
-                          {/* Gradient on hover */}
-                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400"
-                            style={{ background: 'linear-gradient(to top, rgba(26,18,8,0.7) 0%, transparent 60%)' }} />
-
-                          {/* Room type badge */}
-                          <div className="absolute top-4 right-4">
-                            <span className="font-accent text-[10px] tracking-[0.2em] uppercase px-4 py-1.5 rounded-full"
-                              style={{ background: 'rgba(26,18,8,0.75)', color: '#C5A059', backdropFilter: 'blur(8px)' }}>
-                              {project.roomType}
-                            </span>
-                          </div>
-
-                          {/* Hover Overlay */}
-                          <div 
-                            className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 bg-black/40 backdrop-blur-[1px]"
-                          >
-                            <motion.div
-                              initial={{ y: 10, opacity: 0 }}
-                              whileHover={{ scale: 1.1 }}
-                              animate={{ y: 0, opacity: 1 }}
-                              className="w-14 h-14 rounded-full flex items-center justify-center mb-3"
-                              style={{ background: '#C5A059', color: '#1a1208' }}
-                            >
-                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                              </svg>
-                            </motion.div>
-                            <span className="font-accent text-[9px] tracking-[0.4em] uppercase text-white font-bold">
-                              WATCH PHOTOS
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Card body */}
-                        <div className="p-7" style={{ borderTop: '1px solid rgba(197,160,89,0.1)' }}>
-                          <h3 className="font-display text-xl font-semibold mb-2 transition-colors duration-300 group-hover:text-[#C5A059]"
-                            style={{ color: '#1a1208', letterSpacing: '-0.01em' }}>
-                            {project.title}
-                          </h3>
-                          <p className="text-sm leading-relaxed line-clamp-2 mb-4" style={{ color: '#8a7660' }}>
-                            {project.description}
-                          </p>
-                          {project.location && (
-                            <div className="flex items-center gap-1.5 text-xs" style={{ color: '#b5a080' }}>
-                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                              </svg>
-                              <span className="font-accent tracking-wider uppercase">{project.location}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </Link>
-                  </motion.div>
+                {filtered.map((project, index) => (
+                  <ProjectCard key={project.id} project={project} index={index} onOpen={openLightbox} />
                 ))}
               </motion.div>
             </AnimatePresence>
@@ -366,30 +464,22 @@ const Portfolio = () => {
         </div>
       </section>
 
-      {/* ── Stats band ── */}
+      {/* ── Stats ── */}
       <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(135deg, #1a1208 0%, #2d1f0e 50%, #1a1208 100%)'
-        }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #1a1208 0%, #2d1f0e 50%, #1a1208 100%)' }} />
         <div className="absolute inset-0 bg-luxury-pattern opacity-[0.06]" />
         <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(197,160,89,0.4), transparent)' }} />
         <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(197,160,89,0.4), transparent)' }} />
-
         <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
               { number: '200+', label: 'Projects Completed' },
               { number: '12+', label: 'Years Experience' },
               { number: '500+', label: 'Happy Clients' },
               { number: '15+', label: 'Design Awards' },
             ].map((stat, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-              >
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}>
                 <p className="font-display font-bold mb-2"
                   style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', color: '#C5A059', letterSpacing: '-0.02em' }}>
                   {stat.number}
@@ -407,10 +497,6 @@ const Portfolio = () => {
       <section className="py-28 relative overflow-hidden">
         <div className="absolute inset-0" style={{ background: '#EDE4D3' }} />
         <div className="absolute inset-0 bg-luxury-pattern opacity-[0.05]" />
-        {/* Gold orb */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[200%] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse, rgba(197,160,89,0.08) 0%, transparent 70%)', filter: 'blur(40px)' }} />
-
         <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -436,16 +522,17 @@ const Portfolio = () => {
             </p>
             <Link
               to="/contact"
-              className="inline-block font-accent text-xs tracking-[0.3em] uppercase px-12 py-5 rounded-full transition-all duration-400"
+              className="inline-block font-accent text-xs tracking-[0.3em] uppercase px-12 py-5 rounded-full transition-all duration-300"
               style={{ background: '#1a1208', color: '#C5A059', boxShadow: '0 8px 32px rgba(26,18,8,0.25)' }}
-              onMouseEnter={e => { e.target.style.background = '#2d1f0e'; e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 12px 40px rgba(26,18,8,0.35)'; }}
-              onMouseLeave={e => { e.target.style.background = '#1a1208'; e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 8px 32px rgba(26,18,8,0.25)'; }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#2d1f0e'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#1a1208'; e.currentTarget.style.transform = 'translateY(0)'; }}
             >
               Start Your Project
             </Link>
           </motion.div>
         </div>
       </section>
+
     </div>
   );
 };
