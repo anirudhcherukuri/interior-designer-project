@@ -1,8 +1,15 @@
-🧪 Starting 100% Cloudinary-Only (No DB) Unit Tests...
 
-Test 1: Backend Health Check... ✅ PASSED
-Test 2: Cloudinary Dynamic Assets Fetch... ❌ FAILED: Request failed with status code 500
-Test 3: Verify Cloudinary Config... ✅ PASSED
+[33m=========================================[0m
+   RUNNING BACKEND SECURITY & API TESTS  
+[33m=========================================[0m
 
------------------------------------
-⚠️ 1 tests failed. Database removal may require server restart.
+[31m✗ FAIL[0m | Public Endpoint: Fetch Portfolio Projects (/api/projects) | Expected: 2xx, Got: 404
+[31m✗ FAIL[0m | Contact API: Submit Valid Form (/api/enquiry) | Expected: 2xx, Got: 404
+[31m✗ FAIL[0m | Security: Access Protected Auth Route WITHOUT Token (/api/auth/me) | Expected: 401, Got: 404
+[31m✗ FAIL[0m | Security: Upload Media WITHOUT Token (Should Reject) (/api/upload) | Expected: 401, Got: 404
+[31m✗ FAIL[0m | Security: Delete Media WITHOUT Token (Should Reject) | Expected: 401, Got: 404
+
+[33m=========================================[0m
+   ALL API SECURITY & UNIT TESTS COMPLETE  
+[33m=========================================[0m
+
