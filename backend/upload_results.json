@@ -1,0 +1,13 @@
+­ƒÜÇ Uploading premium service images to Cloudinary...
+Ô£à service_residential uploaded successfully!
+Ô£à service_commercial uploaded successfully!
+Ô£à service_luxury uploaded successfully!
+Ô£à service_consultation uploaded successfully!
+
+Final URLs:
+{
+  "service_residential": "https://res.cloudinary.com/dbtovbomo/image/upload/v1774250953/interior-designer-portfolio/services/services/service_residential.jpg",
+  "service_commercial": "https://res.cloudinary.com/dbtovbomo/image/upload/v1774250955/interior-designer-portfolio/services/services/service_commercial.jpg",
+  "service_luxury": "https://res.cloudinary.com/dbtovbomo/image/upload/v1774250956/interior-designer-portfolio/services/services/service_luxury.jpg",
+  "service_consultation": "https://res.cloudinary.com/dbtovbomo/image/upload/v1774250957/interior-designer-portfolio/services/services/service_consultation.jpg"
+}

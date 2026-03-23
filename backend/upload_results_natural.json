@@ -1,0 +1,13 @@
+­ƒÜÇ Final upload for natural service images...
+Ô£à service_residential uploaded!
+Ô£à service_commercial uploaded!
+Ô£à service_luxury uploaded!
+Ô£à service_consultation uploaded!
+
+Final URLs:
+{
+  "service_residential": "https://res.cloudinary.com/dbtovbomo/image/upload/v1774251863/interior-designer-portfolio/services/services/service_residential_natural.jpg",
+  "service_commercial": "https://res.cloudinary.com/dbtovbomo/image/upload/v1774251865/interior-designer-portfolio/services/services/service_commercial_natural.jpg",
+  "service_luxury": "https://res.cloudinary.com/dbtovbomo/image/upload/v1774251866/interior-designer-portfolio/services/services/service_luxury_natural.jpg",
+  "service_consultation": "https://res.cloudinary.com/dbtovbomo/image/upload/v1774251867/interior-designer-portfolio/services/services/service_consultation_natural.jpg"
+}

@@ -14,22 +14,22 @@ const LOCAL_PROJECTS = [
 function Home() {
   const [services, setServices] = useState([
     {
-      image: '/gallery/living_room_8.jpg', 
+      image: 'https://res.cloudinary.com/dbtovbomo/image/upload/v1774251863/interior-designer-portfolio/services/services/service_residential_natural.jpg', 
       title: 'Residential Design',
       description: 'Transforming houses into dream homes with personalized interior solutions.',
     },
     {
-      image: '/gallery/livingroom_13.jpg', 
+      image: 'https://res.cloudinary.com/dbtovbomo/image/upload/v1774251865/interior-designer-portfolio/services/services/service_commercial_natural.jpg', 
       title: 'Commercial Spaces',
       description: 'Creating productive and inspiring work environments for businesses.',
     },
     {
-      image: '/gallery/bedroom_27.jpg',
+      image: 'https://res.cloudinary.com/dbtovbomo/image/upload/v1774251866/interior-designer-portfolio/services/services/service_luxury_natural.jpg',
       title: 'Luxury Interiors',
       description: 'Bespoke high-end designs that reflect sophistication and elegance.',
     },
     {
-      image: '/gallery/bedroom_28.jpg',
+      image: 'https://res.cloudinary.com/dbtovbomo/image/upload/v1774251867/interior-designer-portfolio/services/services/service_consultation_natural.jpg',
       title: 'Design Consultation',
       description: 'Expert guidance to bring your vision to life with professional insights.',
     },
@@ -46,16 +46,8 @@ function Home() {
           apiData = LOCAL_PROJECTS;
         }
 
-        setServices(prev => prev.map((s, i) => ({
-          ...s,
-          image: formatUrl(apiData[i].imageUrl || apiData[i].images?.[0]) || s.image
-        })));
       } catch (e) {
         console.error('Home Fetch Error:', e);
-        setServices(prev => prev.map((s, i) => ({
-          ...s,
-          image: formatUrl(LOCAL_PROJECTS[i].imageUrl) || s.image
-        })));
       }
     };
     fetchProj();
