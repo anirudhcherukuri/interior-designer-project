@@ -1071,6 +1071,7 @@ const BookingsTab = () => {
 // ══════════════════════════════════════════════════════════════════════════════
 export default function Admin() {
   const [authed, setAuthed] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [creds, setCreds] = useState({ username: "", password: "" });
   const [loginErr, setLoginErr] = useState("");
   const [tab, setTab] = useState("dashboard");
@@ -1083,7 +1084,10 @@ export default function Admin() {
   const [enquiries, setEnquiries] = useState([]);
 
   useEffect(() => {
-    authAPI.me().then(() => setAuthed(true)).catch(() => setAuthed(false));
+    authAPI.me()
+      .then(() => setAuthed(true))
+      .catch(() => setAuthed(false))
+      .finally(() => setInitialLoading(false));
   }, []);
 
   useEffect(() => {
@@ -1117,6 +1121,19 @@ export default function Admin() {
     { id: "contacts", label: "Enquiries", icon: <Ic.Contact /> },
     { id: "bookings", label: "Bookings", icon: <Ic.Bookings /> },
   ];
+
+  if (initialLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#1a1208]">
+        <div className="flex flex-col items-center gap-4">
+          <Spinner />
+          <p className="font-accent text-[10px] uppercase tracking-[0.3em]" style={{ color: G.gold }}>
+            Authenticating...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   // ── Login ──────────────────────────────────────────────────────────────────
   if (!authed) {
