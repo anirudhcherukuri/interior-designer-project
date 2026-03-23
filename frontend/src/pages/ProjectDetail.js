@@ -83,7 +83,7 @@ const ProjectDetail = () => {
     );
   }
 
-  const { title, description, location, roomType, images = [], videos = [] } = project;
+  const { title, description, location, images = [], videos = [] } = project;
   const hasVideos = videos && videos.length > 0;
 
   return (

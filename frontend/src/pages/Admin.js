@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { authAPI, bookingsAPI, uploadAPI, formatUrl, API_URL } from "../api/config";
+import { authAPI, bookingsAPI, formatUrl, API_URL } from "../api/config";
 
 // ─── Palette ──────────────────────────────────────────────────────────────────
 const G = {

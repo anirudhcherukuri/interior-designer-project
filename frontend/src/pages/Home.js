@@ -12,7 +12,6 @@ const LOCAL_PROJECTS = [
 ];
 
 function Home() {
-  const [projects, setProjects] = useState([]);
   const [services, setServices] = useState([
     {
       image: '/gallery/living_room_8.jpg', 
@@ -47,14 +46,12 @@ function Home() {
           apiData = LOCAL_PROJECTS;
         }
 
-        setProjects(apiData);
         setServices(prev => prev.map((s, i) => ({
           ...s,
           image: formatUrl(apiData[i].imageUrl || apiData[i].images?.[0]) || s.image
         })));
       } catch (e) {
         console.error('Home Fetch Error:', e);
-        setProjects(LOCAL_PROJECTS);
         setServices(prev => prev.map((s, i) => ({
           ...s,
           image: formatUrl(LOCAL_PROJECTS[i].imageUrl) || s.image

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { API_URL } from '../api/config';
+import { bookingsAPI } from '../api/config';
 
 const Contact = () => {
   const [form, setForm] = useState({

@@ -45,6 +45,7 @@ export const enquiryAPI = {
 // ─── Projects (legacy MongoDB route — kept for compatibility) ─────────────────
 export const projectsAPI = {
   getAll: () => api.get('/api/projects'),
+  getById: (id) => api.get(`/api/projects/${id}`),
   create: (data) => api.post('/api/projects', data),
   update: (id, data) => api.put(`/api/projects/${id}`, data),
   delete: (id) => api.delete(`/api/projects/${id}`),

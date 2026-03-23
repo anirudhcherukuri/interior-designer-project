@@ -102,7 +102,6 @@ const Gallery = () => {
 
   libraryFiles.forEach((file, i) => {
     const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(file.url || file.name);
-    const isVideo = /\.(mp4|webm|ogg)$/i.test(file.url || file.name);
     // Use file.url directly if backend provides it (which it does now)
     const url = formatUrl(file.url || `/uploads/${file.name}`);
     

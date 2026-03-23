@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { projectsAPI, formatUrl } from '../api/config';
+import { motion, AnimatePresence } from 'framer-motion';
 import projectsConfig from '../config/projects.config.json';
 
 // Base path for all gallery images
