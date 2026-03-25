@@ -21,7 +21,7 @@ const ROOM_CATEGORIES = [
   "Home Office", "Bathroom", "Outdoor", "Commercial", "Other",
 ];
 
-// ─── Axios instance with credentials ─────────────────────────────────────────
+// ─── Axios instance ───────────────────────────────────────────────────────────
 const api = axios.create({ baseURL: API_URL, withCredentials: true });
 
 // ─── API helpers ──────────────────────────────────────────────────────────────
@@ -40,10 +40,15 @@ const enquiryAPI = {
   update: (id, d) => api.patch(`/api/enquiry/${id}`, d),
 };
 
+// FIX: encode each path segment so Cloudinary public_ids with slashes survive in the URL
+// e.g. "interior-designer-portfolio/abc123" → "interior-designer-portfolio%2Fabc123"
+const encodeFileId = (fileId) =>
+  (fileId || "").split("/").map(encodeURIComponent).join("/");
+
 const mediaAPI = {
   getAll: () => api.get("/api/upload"),
   upload: (fd) => api.post("/api/upload", fd, { headers: { "Content-Type": "multipart/form-data" } }),
-  delete: (name) => api.delete(`/api/upload/${name}`),
+  delete: (fileId) => api.delete(`/api/upload/${encodeFileId(fileId)}`),
 };
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -65,7 +70,7 @@ const Ic = {
   Star: () => <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>,
 };
 
-// ─── Reusable UI bits ─────────────────────────────────────────────────────────
+// ─── Reusable UI ──────────────────────────────────────────────────────────────
 const Card = ({ children, className = "", style = {} }) => (
   <div className={`rounded-[2rem] ${className}`}
     style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 4px 24px rgba(44,26,14,0.06)", ...style }}>
@@ -174,7 +179,11 @@ const HouseModal = ({ editing, onClose, onSaved }) => {
       const res = await housesAPI.upload(fd);
       const names = res.data.filenames || [];
       setGallery(prev => [...names, ...prev]);
-      setImages(prev => { const next = [...prev, ...names]; if (!cover && names[0]) setCover(names[0]); return next; });
+      setImages(prev => {
+        const next = [...prev, ...names];
+        if (!cover && names[0]) setCover(names[0]);
+        return next;
+      });
     } catch (e) { alert("Upload failed: " + (e.response?.data?.error || e.message)); }
     setUploading(false);
   };
@@ -212,7 +221,6 @@ const HouseModal = ({ editing, onClose, onSaved }) => {
         className="w-full max-w-4xl max-h-[90vh] flex flex-col rounded-[2rem] overflow-hidden"
         style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.2)", boxShadow: "0 40px 80px rgba(0,0,0,0.45)" }}>
 
-        {/* Header */}
         <div className="flex items-center justify-between px-10 py-6 flex-shrink-0"
           style={{ background: G.beige2, borderBottom: "1px solid rgba(200,150,62,0.12)" }}>
           <div>
@@ -232,14 +240,12 @@ const HouseModal = ({ editing, onClose, onSaved }) => {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {/* Name + location */}
           <div className="px-10 py-7 grid grid-cols-1 md:grid-cols-2 gap-6"
             style={{ borderBottom: "1px solid rgba(200,150,62,0.1)" }}>
             <Input label="House Name *" value={title} onChange={e => setTitle(e.target.value)} placeholder="Villa Razia" />
             <Input label="Location" value={location} onChange={e => setLocation(e.target.value)} placeholder="Banjara Hills, Hyderabad" />
           </div>
 
-          {/* Photos */}
           <div className="px-10 py-7">
             <div className="flex items-center justify-between mb-5">
               <div>
@@ -260,7 +266,6 @@ const HouseModal = ({ editing, onClose, onSaved }) => {
               </div>
             </div>
 
-            {/* Upload tab */}
             {tab === "upload" && (
               <div className="mb-4">
                 <div className="rounded-2xl flex flex-col items-center justify-center gap-3 py-10 cursor-pointer transition-all mb-4"
@@ -281,7 +286,6 @@ const HouseModal = ({ editing, onClose, onSaved }) => {
               </div>
             )}
 
-            {/* Search (existing tab) */}
             {tab === "existing" && (
               <div className="relative mb-4">
                 <input type="text" placeholder="Search gallery…" value={search} onChange={e => setSearch(e.target.value)}
@@ -293,7 +297,6 @@ const HouseModal = ({ editing, onClose, onSaved }) => {
               </div>
             )}
 
-            {/* Photo grid */}
             {gallery.length === 0 && tab === "existing" ? (
               <div className="py-14 text-center rounded-2xl" style={{ background: G.beige, border: "1px dashed rgba(200,150,62,0.2)" }}>
                 <p className="font-bold uppercase tracking-widest text-[10px]" style={{ color: "#c8b99a" }}>No photos yet — switch to Upload New</p>
@@ -326,7 +329,6 @@ const HouseModal = ({ editing, onClose, onSaved }) => {
           </div>
         </div>
 
-        {/* Footer */}
         <div className="flex items-center justify-between px-10 py-5 flex-shrink-0"
           style={{ background: G.beige2, borderTop: "1px solid rgba(200,150,62,0.12)" }}>
           <p className="text-[11px]" style={{ color: "#b5a080" }}>
@@ -391,12 +393,10 @@ const EnquiryModal = ({ enquiry, onClose, onUpdate }) => {
               <span className="text-sm font-medium" style={{ color: G.dark }}>{val}</span>
             </div>
           ))}
-
           <div className="rounded-2xl p-5 mt-2" style={{ background: G.beige, border: "1px solid rgba(200,150,62,0.12)" }}>
             <p className="font-bold uppercase tracking-widest text-[10px] mb-3" style={{ color: "#8a7660" }}>Message</p>
             <p className="text-sm leading-relaxed italic" style={{ color: G.dark }}>"{enquiry.message}"</p>
           </div>
-
           <div className="flex items-center gap-3 pt-2">
             <Badge status={status} />
             <div className="flex gap-3 ml-auto">
@@ -437,7 +437,6 @@ const DashboardTab = ({ houses, bookings, enquiries, onNav }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Recent enquiries */}
         <Card className="p-8">
           <SectionHeader title="Recent Enquiries"
             action={<button onClick={() => onNav("contacts")} className="font-bold uppercase tracking-widest text-[10px]" style={{ color: G.gold }}>View All →</button>} />
@@ -456,7 +455,6 @@ const DashboardTab = ({ houses, bookings, enquiries, onNav }) => {
           </div>
         </Card>
 
-        {/* Recent bookings */}
         <Card className="p-8">
           <SectionHeader title="Recent Bookings"
             action={<button onClick={() => onNav("bookings")} className="font-bold uppercase tracking-widest text-[10px]" style={{ color: G.gold }}>View All →</button>} />
@@ -485,7 +483,7 @@ const DashboardTab = ({ houses, bookings, enquiries, onNav }) => {
 const HousesTab = () => {
   const [houses, setHouses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [modal, setModal] = useState(null); // null | 'new' | house-object
+  const [modal, setModal] = useState(null);
   const [search, setSearch] = useState("");
 
   const load = useCallback(async () => {
@@ -554,14 +552,11 @@ const HousesTab = () => {
                     onError={e => { e.target.src = "https://via.placeholder.com/600x400?text=No+Image"; }} />
                   : <div className="w-full h-full flex items-center justify-center"
                     style={{ background: G.beige, color: "rgba(200,150,62,0.3)" }}><Ic.Houses /></div>}
-
                 <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(30,16,6,0.65) 0%, transparent 55%)", opacity: 0.7 }} />
-
                 <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full"
                   style={{ background: "rgba(15,10,5,0.72)", backdropFilter: "blur(6px)", border: "1px solid rgba(200,150,62,0.3)" }}>
                   <span className="text-[10px] font-bold tracking-widest" style={{ color: G.gold }}>{house.images?.length || 0} PHOTOS</span>
                 </div>
-
                 <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-all duration-300"
                   style={{ background: "rgba(255,253,248,0.93)", backdropFilter: "blur(6px)" }}>
                   <GoldBtn small onClick={() => setModal(house)}><Ic.Edit /> Edit</GoldBtn>
@@ -604,7 +599,7 @@ const HousesTab = () => {
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
-// TAB: GALLERY (media upload)
+// TAB: GALLERY
 // ══════════════════════════════════════════════════════════════════════════════
 const GalleryTab = () => {
   const [files, setFiles] = useState([]);
@@ -628,28 +623,48 @@ const GalleryTab = () => {
   const handleSelect = (e) => {
     const selected = Array.from(e.target.files || []);
     setPending(prev => [...prev, ...selected.map(file => ({
-      file, preview: URL.createObjectURL(file), category: cat, id: `${Date.now()}-${Math.random()}`
+      file, preview: URL.createObjectURL(file), category: cat,
+      id: `${Date.now()}-${Math.random()}`,
     }))]);
     e.target.value = "";
   };
 
+  // FIX: after upload, push full fileId into state so delete works immediately
   const confirmUpload = async () => {
     setUploading(true);
     for (const item of pending) {
       const fd = new FormData();
       fd.append("file", item.file);
       fd.append("category", item.category);
-      try { await mediaAPI.upload(fd); } catch (e) { console.error("upload failed", e); }
+      fd.append("roomType", item.category); // uploadRoutes reads roomType for Cloudinary context
+      try {
+        const res = await mediaAPI.upload(fd);
+        setFiles(prev => [{
+          fileId: res.data.fileId,                          // full Cloudinary public_id
+          name: res.data.name || item.file.name,
+          url: res.data.fileUrl,
+          thumbnailUrl: res.data.thumbnailUrl || res.data.fileUrl,
+          category: item.category,
+          title: item.file.name,
+        }, ...prev]);
+      } catch (e) {
+        console.error("upload failed", e);
+        alert("Upload failed: " + (e.response?.data?.error || e.message));
+      }
     }
     setPending([]);
-    await load();
     setUploading(false);
   };
 
-  const del = async (name, idx) => {
+  // FIX: use file.fileId (full Cloudinary public_id) not file.name
+  const del = async (fileId, idx) => {
     if (!window.confirm("Delete this photo from gallery?")) return;
-    try { await mediaAPI.delete(name); setFiles(p => p.filter((_, i) => i !== idx)); }
-    catch (e) { alert("Delete failed: " + e.message); }
+    try {
+      await mediaAPI.delete(fileId);
+      setFiles(p => p.filter((_, i) => i !== idx));
+    } catch (e) {
+      alert("Delete failed: " + (e.response?.data?.error || e.message));
+    }
   };
 
   const cats = ["All", ...Array.from(new Set(files.map(f => f.category).filter(Boolean)))];
@@ -659,7 +674,6 @@ const GalleryTab = () => {
 
   return (
     <div className="space-y-8">
-      {/* Upload panel */}
       <Card className="p-8">
         <SectionHeader title="Upload Photos" />
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -702,7 +716,6 @@ const GalleryTab = () => {
         </AnimatePresence>
       </Card>
 
-      {/* Filter + search */}
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
         <div className="flex flex-wrap gap-2">
           {cats.map(c => (
@@ -725,7 +738,6 @@ const GalleryTab = () => {
         </div>
       </div>
 
-      {/* Grid */}
       {loading ? (
         <div className="flex justify-center py-20"><Spinner /></div>
       ) : shown.length === 0 ? (
@@ -739,7 +751,8 @@ const GalleryTab = () => {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
           <AnimatePresence>
             {shown.map((file, idx) => (
-              <motion.div key={`${file.name}-${idx}`} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+              <motion.div key={`${file.fileId || file.name}-${idx}`}
+                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.25, delay: idx * 0.02 }}
                 className="group relative rounded-2xl overflow-hidden"
                 style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.12)" }}
@@ -755,10 +768,9 @@ const GalleryTab = () => {
                     <span className="font-bold uppercase tracking-widest text-[9px]" style={{ color: G.gold }}>{file.category}</span>
                   </div>
                 )}
-                {/* Delete overlay */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300"
                   style={{ background: "rgba(255,253,248,0.92)", backdropFilter: "blur(4px)" }}>
-                  <button onClick={() => del(file.name, idx)}
+                  <button onClick={() => del(file.fileId, idx)}
                     className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
                     style={{ background: "rgba(220,50,50,0.1)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.2)" }}
                     onMouseEnter={e => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.color = "#fff"; }}
@@ -776,7 +788,7 @@ const GalleryTab = () => {
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
-// TAB: CONTACT FORM SUBMISSIONS
+// TAB: CONTACTS
 // ══════════════════════════════════════════════════════════════════════════════
 const ContactsTab = () => {
   const [items, setItems] = useState([]);
@@ -801,13 +813,17 @@ const ContactsTab = () => {
   };
 
   const markRead = async (id) => {
-    try { await enquiryAPI.update(id, { status: "read" }); setItems(p => p.map(x => x._id === id ? { ...x, status: "read" } : x)); }
-    catch { alert("Update failed"); }
+    try {
+      await enquiryAPI.update(id, { status: "read" });
+      setItems(p => p.map(x => x._id === id ? { ...x, status: "read" } : x));
+    } catch { alert("Update failed"); }
   };
 
   const shown = items
     .filter(e => filter === "all" || (filter === "unread" ? (!e.status || e.status === "unread") : e.status === "read"))
-    .filter(e => !search || (e.name || e.clientName || "").toLowerCase().includes(search.toLowerCase()) || (e.email || "").toLowerCase().includes(search.toLowerCase()));
+    .filter(e => !search ||
+      (e.name || e.clientName || "").toLowerCase().includes(search.toLowerCase()) ||
+      (e.email || "").toLowerCase().includes(search.toLowerCase()));
 
   const unread = items.filter(e => !e.status || e.status === "unread").length;
 
@@ -817,7 +833,6 @@ const ContactsTab = () => {
         {selected && <EnquiryModal enquiry={selected} onClose={() => setSelected(null)} onUpdate={load} />}
       </AnimatePresence>
 
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
         <div className="flex gap-2">
           {[["all", "All"], ["unread", `Unread (${unread})`], ["read", "Read"]].map(([id, lbl]) => (
@@ -858,13 +873,11 @@ const ContactsTab = () => {
                 style={{
                   background: isUnread ? `linear-gradient(135deg, ${G.cream}, rgba(200,150,62,0.04))` : G.cream,
                   border: `1px solid ${isUnread ? "rgba(200,150,62,0.25)" : "rgba(200,150,62,0.12)"}`,
-                  boxShadow: isUnread ? "0 4px 20px rgba(200,150,62,0.07)" : "none"
+                  boxShadow: isUnread ? "0 4px 20px rgba(200,150,62,0.07)" : "none",
                 }}
                 onClick={() => setSelected(e)}>
-                {/* Unread dot */}
                 <div className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                   style={{ background: isUnread ? G.gold : "transparent", boxShadow: isUnread ? `0 0 8px ${G.gold}` : "none" }} />
-
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-1">
                     <p className="font-bold text-base" style={{ color: G.dark }}>{e.name || e.clientName}</p>
@@ -874,7 +887,6 @@ const ContactsTab = () => {
                   <p className="text-[11px] font-bold uppercase tracking-widest mb-1" style={{ color: "#b5a080" }}>{e.email}</p>
                   <p className="text-sm truncate italic" style={{ color: "#8a7660" }}>"{e.message}"</p>
                 </div>
-
                 <div className="flex flex-col items-end gap-2 flex-shrink-0">
                   <p className="text-[10px]" style={{ color: "#c8b99a" }}>
                     {e.createdAt ? new Date(e.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : ""}
@@ -927,8 +939,10 @@ const BookingsTab = () => {
   useEffect(() => { load(); }, [load]);
 
   const setStatus = async (id, status) => {
-    try { await bookingsAPI.updateStatus(id, status); setItems(p => p.map(x => x._id === id ? { ...x, status } : x)); }
-    catch { alert("Failed to update status"); }
+    try {
+      await bookingsAPI.updateStatus(id, status);
+      setItems(p => p.map(x => x._id === id ? { ...x, status } : x));
+    } catch { alert("Failed to update status"); }
   };
 
   const del = async (id) => {
@@ -940,11 +954,12 @@ const BookingsTab = () => {
   const pending = items.filter(b => b.status === "pending").length;
   const shown = items
     .filter(b => filter === "all" || b.status === filter)
-    .filter(b => !search || (b.clientName || "").toLowerCase().includes(search.toLowerCase()) || (b.email || "").toLowerCase().includes(search.toLowerCase()));
+    .filter(b => !search ||
+      (b.clientName || "").toLowerCase().includes(search.toLowerCase()) ||
+      (b.email || "").toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="space-y-8">
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
         <div className="flex gap-2 flex-wrap">
           {[["all", "All"], ["pending", `Pending (${pending})`], ["confirmed", "Confirmed"], ["rejected", "Rejected"]].map(([id, lbl]) => (
@@ -1011,26 +1026,23 @@ const BookingsTab = () => {
                   )}
                 </div>
 
-                {/* Action buttons */}
                 <div className="flex gap-3 flex-shrink-0">
-                  {b.status === "pending" && (
-                    <>
-                      <button onClick={() => setStatus(b._id, "confirmed")}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
-                        style={{ background: "rgba(74,222,128,0.1)", color: "#16a34a", border: "1px solid rgba(74,222,128,0.25)" }}
-                        onMouseEnter={e => { e.currentTarget.style.background = "#16a34a"; e.currentTarget.style.color = "#fff"; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = "rgba(74,222,128,0.1)"; e.currentTarget.style.color = "#16a34a"; }}>
-                        <Ic.Check /> Accept
-                      </button>
-                      <button onClick={() => setStatus(b._id, "rejected")}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
-                        style={{ background: "rgba(220,50,50,0.08)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.2)" }}
-                        onMouseEnter={e => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.color = "#fff"; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = "rgba(220,50,50,0.08)"; e.currentTarget.style.color = "#dc2626"; }}>
-                        <Ic.Close /> Reject
-                      </button>
-                    </>
-                  )}
+                  {b.status === "pending" && (<>
+                    <button onClick={() => setStatus(b._id, "confirmed")}
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
+                      style={{ background: "rgba(74,222,128,0.1)", color: "#16a34a", border: "1px solid rgba(74,222,128,0.25)" }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "#16a34a"; e.currentTarget.style.color = "#fff"; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "rgba(74,222,128,0.1)"; e.currentTarget.style.color = "#16a34a"; }}>
+                      <Ic.Check /> Accept
+                    </button>
+                    <button onClick={() => setStatus(b._id, "rejected")}
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
+                      style={{ background: "rgba(220,50,50,0.08)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.2)" }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.color = "#fff"; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "rgba(220,50,50,0.08)"; e.currentTarget.style.color = "#dc2626"; }}>
+                      <Ic.Close /> Reject
+                    </button>
+                  </>)}
                   {b.status === "confirmed" && (
                     <button onClick={() => setStatus(b._id, "rejected")}
                       className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
@@ -1077,8 +1089,6 @@ export default function Admin() {
   const [tab, setTab] = useState("dashboard");
   const [mobileOpen, setMobile] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
-  // Data for dashboard overview
   const [houses, setHouses] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [enquiries, setEnquiries] = useState([]);
@@ -1096,12 +1106,13 @@ export default function Admin() {
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  // Load dashboard data when on overview tab
   useEffect(() => {
-    if (!authed || tab !== "dashboard") return;
-    housesAPI.getAll().then(r => setHouses(r.data || [])).catch(() => { });
-    bookingsAPI.getAll().then(r => setBookings(r.data || [])).catch(() => { });
-    enquiryAPI.getAll().then(r => setEnquiries(r.data || [])).catch(() => { });
+    if (!authed) return;
+    if (tab === "dashboard" || tab === "bookings" || tab === "contacts") {
+      housesAPI.getAll().then(r => setHouses(r.data || [])).catch(() => { });
+      bookingsAPI.getAll().then(r => setBookings(r.data || [])).catch(() => { });
+      enquiryAPI.getAll().then(r => setEnquiries(r.data || [])).catch(() => { });
+    }
   }, [authed, tab]);
 
   const login = async (e) => {
@@ -1124,18 +1135,15 @@ export default function Admin() {
 
   if (initialLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#1a1208]">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#1a1208" }}>
         <div className="flex flex-col items-center gap-4">
           <Spinner />
-          <p className="font-accent text-[10px] uppercase tracking-[0.3em]" style={{ color: G.gold }}>
-            Authenticating...
-          </p>
+          <p className="font-accent text-[10px] uppercase tracking-[0.3em]" style={{ color: G.gold }}>Authenticating…</p>
         </div>
       </div>
     );
   }
 
-  // ── Login ──────────────────────────────────────────────────────────────────
   if (!authed) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden"
@@ -1149,7 +1157,6 @@ export default function Admin() {
           transition={{ duration: 0.7 }}
           className="relative z-10 w-full max-w-md rounded-[2.5rem] p-10 md:p-14"
           style={{ background: "rgba(255,253,248,0.98)", border: "1px solid rgba(200,150,62,0.2)", boxShadow: "0 50px 100px rgba(0,0,0,0.5)" }}>
-
           <div className="text-center mb-12">
             <div className="w-20 h-20 rounded-[1.5rem] mx-auto mb-5 flex items-center justify-center font-display font-bold text-3xl"
               style={{ background: `linear-gradient(135deg, ${G.dark}, ${G.dark2})`, color: G.gold, boxShadow: "0 12px 40px rgba(44,26,14,0.35)" }}>
@@ -1163,7 +1170,6 @@ export default function Admin() {
               <div className="h-px w-10" style={{ background: `linear-gradient(90deg, ${G.gold}, transparent)` }} />
             </div>
           </div>
-
           <form onSubmit={login} className="space-y-5">
             <Input label="Email / Username" type="text" value={creds.username}
               onChange={e => setCreds({ ...creds, username: e.target.value })}
@@ -1188,7 +1194,6 @@ export default function Admin() {
               Open Studio
             </button>
           </form>
-
           <p className="text-center mt-8">
             <Link to="/" className="font-accent text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: "#b5a080" }}>
               ← Back to Portfolio
@@ -1199,12 +1204,10 @@ export default function Admin() {
     );
   }
 
-  // ── Dashboard shell ────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen flex flex-col lg:flex-row" style={{ background: G.beige }}>
       <div className="fixed inset-0 bg-luxury-pattern opacity-[0.035] pointer-events-none" />
 
-      {/* Mobile top bar */}
       <div className="lg:hidden flex items-center justify-between px-6 py-5 sticky top-0 z-[60] border-b backdrop-blur-md"
         style={{ background: "rgba(30,16,6,0.96)", borderColor: "rgba(200,150,62,0.2)" }}>
         <span className="font-display font-bold text-lg" style={{ color: G.beige2 }}>Italian Interiors</span>
@@ -1213,7 +1216,6 @@ export default function Admin() {
         </button>
       </div>
 
-      {/* Sidebar */}
       <AnimatePresence>
         {(mobileOpen || (typeof window !== "undefined" && window.innerWidth >= 1024)) && (
           <>
@@ -1221,7 +1223,6 @@ export default function Admin() {
               onClick={() => setMobile(false)}
               className="lg:hidden fixed inset-0 z-[50]"
               style={{ background: "rgba(10,6,2,0.82)", backdropFilter: "blur(4px)" }} />
-
             <motion.aside initial={{ x: -288 }} animate={{ x: 0 }} exit={{ x: -288 }}
               transition={{ type: "spring", damping: 26, stiffness: 220 }}
               className="w-72 flex flex-col fixed top-0 left-0 h-screen z-[55]"
@@ -1232,22 +1233,16 @@ export default function Admin() {
               }}>
               <div className="absolute top-0 right-0 w-full h-56 pointer-events-none"
                 style={{ background: "radial-gradient(ellipse at top right, rgba(200,150,62,0.1) 0%, transparent 70%)", filter: "blur(30px)" }} />
-
-              {/* Brand */}
-              <div className="hidden lg:block relative z-10 px-8 py-10 border-b text-center"
-                style={{ borderColor: "rgba(200,150,62,0.1)" }}>
+              <div className="hidden lg:block relative z-10 px-8 py-10 border-b text-center" style={{ borderColor: "rgba(200,150,62,0.1)" }}>
                 <p className="font-display font-bold text-xl mb-2" style={{ color: G.beige2 }}>Italian Interiors</p>
                 <div className="h-0.5 w-8 rounded-full mx-auto mb-2" style={{ background: G.gold }} />
                 <p style={{ fontSize: "0.52rem", letterSpacing: "0.32em", color: "rgba(200,150,62,0.5)", fontWeight: "bold", textTransform: "uppercase" }}>
                   Studio Dashboard
                 </p>
               </div>
-
-              {/* Nav */}
               <nav className="relative z-10 flex-1 px-5 py-8 space-y-1.5">
                 {TABS.map(t => (
-                  <button key={t.id}
-                    onClick={() => { setTab(t.id); setMobile(false); }}
+                  <button key={t.id} onClick={() => { setTab(t.id); setMobile(false); }}
                     className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300 relative group"
                     style={tab === t.id
                       ? { background: "rgba(200,150,62,0.14)", border: "1px solid rgba(200,150,62,0.28)", color: G.gold }
@@ -1258,8 +1253,6 @@ export default function Admin() {
                   </button>
                 ))}
               </nav>
-
-              {/* Logout */}
               <div className="relative z-10 px-6 py-7 border-t" style={{ borderColor: "rgba(200,150,62,0.1)", background: "rgba(0,0,0,0.18)" }}>
                 <button onClick={logout}
                   className="flex items-center justify-center gap-3 w-full py-4 px-6 rounded-2xl font-bold text-[10px] uppercase tracking-[0.3em] transition-all"
@@ -1274,9 +1267,7 @@ export default function Admin() {
         )}
       </AnimatePresence>
 
-      {/* Main */}
       <main className="flex-1 lg:ml-72 p-6 md:p-10 lg:p-14 relative z-10">
-        {/* Header */}
         <header className={`flex items-start justify-between gap-6 mb-14 sticky top-0 z-40 py-5 -mx-6 px-6 md:-mx-10 md:px-10 lg:-mx-14 lg:px-14 transition-all duration-300 ${scrolled ? "backdrop-blur-xl border-b shadow-sm" : ""}`}
           style={{ background: scrolled ? "rgba(237,228,211,0.92)" : "transparent", borderColor: scrolled ? "rgba(200,150,62,0.15)" : "transparent" }}>
           <div>

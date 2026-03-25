@@ -2,14 +2,27 @@
   "users": [
     {
       "username": "italianinteriors93@gmail.com",
-      "password": "$2b$10$8jRrFERrsPcg6jntBh..xeVgQobzi8sGNni5Bbxr1SLVGrT3Ax0zy",
+      "password": "$2b$10$bo.B.Hn78CELUstZfNNTm.nB2O7voE3x943Hh9FGysYlGM6CYSQ8C",
       "role": "admin",
       "_id": "user-1774171750024",
       "createdAt": "2026-03-22T09:29:10.024Z"
     }
   ],
   "enquiries": [],
-  "bookings": [],
+  "bookings": [
+    {
+      "clientName": "Subagent Tester",
+      "email": "tester@test.com",
+      "phone": "9999999999",
+      "serviceType": "Residential",
+      "message": "",
+      "bookingDate": "2026-03-30",
+      "bookingTime": "10:00",
+      "status": "confirmed",
+      "_id": "1774425120841",
+      "createdAt": "2026-03-25T07:52:00.841Z"
+    }
+  ],
   "projects": [],
   "testimonials": [],
   "visitors": {

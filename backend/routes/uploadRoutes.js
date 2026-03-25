@@ -66,18 +66,19 @@ router.post('/', auth, upload.single('file'), async (req, res) => {
     // Cloudinary (Handles upload automatically via storage)
     if (isCloudinaryConfigured()) {
       // If metadata is provided in body, update the asset after upload
-      const { title, roomType, description } = req.body;
+      const { title, roomType, category, description } = req.body;
       const fileId = req.file.filename || req.file.public_id;
+      const finalRoomType = roomType || category || 'Gallery';
 
-      if (title || roomType || description) {
+      if (title || finalRoomType || description) {
         try {
           await cloudinary.api.update(fileId, {
             context: {
               title: title || 'Untitled Project',
-              roomType: roomType || 'Gallery',
+              roomType: finalRoomType,
               description: description || 'Luxury interior design.'
             },
-            tags: ['featured', (roomType || 'gallery').toLowerCase()]
+            tags: ['featured', finalRoomType.toLowerCase().replace(/\s+/g, '-')]
           });
         } catch (metaErr) {
           console.warn('⚠️ Cloudinary Metadata update skipped:', metaErr.message);
@@ -174,7 +175,7 @@ router.patch('/:fileId', auth, async (req, res) => {
 });
 
 // ─── DELETE /api/upload/:fileId ───────────────────────────────────────────────
-router.delete('/:fileId', auth, async (req, res) => {
+router.delete('/:fileId(*)', auth, async (req, res) => {
   try {
     const { fileId } = req.params;
 

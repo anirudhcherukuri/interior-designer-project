@@ -27,12 +27,24 @@ const globalLimiter = rateLimit({
 });
 app.use("/api", globalLimiter);
 
-const allowedOrigins = [
-  process.env.FRONTEND_URL || "http://localhost:3000",
-  "https://interior-designer-frontend-nyf6.onrender.com"
-];
 app.use(cors({
-  origin: true, // Allow all origins for local debugging
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    const allowed = [
+      "http://localhost:3000",
+      "https://interior-designer-frontend-zhjl.onrender.com",
+      "https://interior-designer-frontend-nyf6.onrender.com",
+      "https://interior-designer-project-9ae0.onrender.com"
+    ];
+
+    if (allowed.indexOf(origin) !== -1 || origin.endsWith(".onrender.com")) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
 }));
 

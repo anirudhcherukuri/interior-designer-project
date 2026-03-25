@@ -4,13 +4,11 @@ import axios from 'axios';
 export const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 export const USE_MOCK = false;
 
-// Single axios instance — withCredentials sends cookies on every request
 const api = axios.create({
   baseURL: API_URL,
   withCredentials: true,
 });
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 export const formatUrl = (url) => {
   if (!url) return '';
   if (url.startsWith('http')) return url;
@@ -25,7 +23,6 @@ export const authAPI = {
 };
 
 // ─── Bookings ─────────────────────────────────────────────────────────────────
-// PATCH /:id  expects { status: "confirmed" | "rejected" | "pending" }
 export const bookingsAPI = {
   getAll: () => api.get('/api/bookings'),
   create: (data) => api.post('/api/bookings', data),
@@ -34,7 +31,6 @@ export const bookingsAPI = {
 };
 
 // ─── Enquiries ────────────────────────────────────────────────────────────────
-// PATCH /:id  expects { status: "read" | "unread" }
 export const enquiryAPI = {
   getAll: () => api.get('/api/enquiry'),
   create: (data) => api.post('/api/enquiry', data),
@@ -42,16 +38,15 @@ export const enquiryAPI = {
   delete: (id) => api.delete(`/api/enquiry/${id}`),
 };
 
-// ─── Projects (legacy MongoDB route — kept for compatibility) ─────────────────
+// ─── Projects ─────────────────────────────────────────────────────────────────
 export const projectsAPI = {
   getAll: () => api.get('/api/projects'),
-  getById: (id) => api.get(`/api/projects/${id}`),
   create: (data) => api.post('/api/projects', data),
   update: (id, data) => api.put(`/api/projects/${id}`, data),
   delete: (id) => api.delete(`/api/projects/${id}`),
 };
 
-// ─── Houses (projects.config.json via /api/houses) ───────────────────────────
+// ─── Houses (projects.config.json) ───────────────────────────────────────────
 export const housesAPI = {
   getAll: () => api.get('/api/houses'),
   create: (data) => api.post('/api/houses', data),
@@ -63,13 +58,25 @@ export const housesAPI = {
   }),
 };
 
-// ─── Media upload (general gallery) ──────────────────────────────────────────
+// ─── Media (Cloudinary / local uploads) ──────────────────────────────────────
+// DELETE uses fileId (full Cloudinary public_id e.g. "interior-designer-portfolio/abc123")
+// The route is DELETE /api/upload/:fileId(*) — the (*) means it accepts slashes
 export const uploadAPI = {
   getAll: () => api.get('/api/upload'),
+
   upload: (fd) => api.post('/api/upload', fd, {
     headers: { 'Content-Type': 'multipart/form-data' },
   }),
-  delete: (name) => api.delete(`/api/upload/${name}`),
+
+  // fileId is the full public_id — encode each segment so slashes survive in the URL
+  delete: (fileId) => api.delete(
+    `/api/upload/${fileId.split('/').map(encodeURIComponent).join('/')}`
+  ),
+
+  updateMetadata: (fileId, data) => api.patch(
+    `/api/upload/${fileId.split('/').map(encodeURIComponent).join('/')}`,
+    data
+  ),
 };
 
 export default api;
