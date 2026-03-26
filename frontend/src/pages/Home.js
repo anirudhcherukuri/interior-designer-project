@@ -56,7 +56,7 @@ function Home() {
   const testimonials = [
     {
       id: 1,
-      clientName: 'Dr. Arjun Reddy',
+      clientName: 'Aditya Varma',
       rating: 5,
       review: 'Italian Interiors transformed our villa into a masterpiece. The blend of traditional elegance with modern luxury is exactly what we wanted. Truly the best in Hyderabad.',
       project: 'Villa in Jubilee Hills',

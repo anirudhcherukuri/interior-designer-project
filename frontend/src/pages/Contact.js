@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { bookingsAPI } from '../api/config';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Contact = () => {
   const [form, setForm] = useState({
@@ -227,14 +229,14 @@ const Contact = () => {
                 <div>
                   <label style={labelStyle}>Full Name</label>
                   <input type="text" name="clientName" value={form.clientName} onChange={handleChange} required
-                    placeholder="Ex: Dr. Arjun Reddy" style={inputStyle}
+                    placeholder="Enter your full name" style={inputStyle}
                     onFocus={e => e.target.style.borderColor = '#C8963E'}
                     onBlur={e => e.target.style.borderColor = 'rgba(200,150,62,0.25)'} />
                 </div>
                 <div>
                   <label style={labelStyle}>Email Address</label>
                   <input type="email" name="email" value={form.email} onChange={handleChange} required
-                    placeholder="arjun@example.com" style={inputStyle}
+                    placeholder="yourname@example.com" style={inputStyle}
                     onFocus={e => e.target.style.borderColor = '#C8963E'}
                     onBlur={e => e.target.style.borderColor = 'rgba(200,150,62,0.25)'} />
                 </div>
@@ -252,7 +254,7 @@ const Contact = () => {
                 <div>
                   <label style={labelStyle}>Property Location</label>
                   <input type="text" name="location" value={form.location} onChange={handleChange} required
-                    placeholder="Ex: Jubilee Hills, Hyderabad" style={inputStyle}
+                    placeholder="e.g. Jubilee Hills, Hyderabad" style={inputStyle}
                     onFocus={e => e.target.style.borderColor = '#C8963E'}
                     onBlur={e => e.target.style.borderColor = 'rgba(200,150,62,0.25)'} />
                 </div>
@@ -292,13 +294,15 @@ const Contact = () => {
               <div>
                 <label style={labelStyle}>Preferred Consultation Date</label>
                 <div style={{ position: 'relative' }}>
-                  <input type="date" name="bookingDate"
-                    min={new Date().toISOString().split('T')[0]}
-                    value={form.bookingDate} onChange={handleChange} required
-                    style={{ ...inputStyle, paddingRight: '3rem', cursor: 'pointer' }}
-                    onFocus={e => e.target.style.borderColor = '#C8963E'}
-                    onBlur={e => e.target.style.borderColor = 'rgba(200,150,62,0.25)'} />
-                  <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: '#C8963E' }}>
+                  <DatePicker
+                    selected={form.bookingDate ? new Date(form.bookingDate) : null}
+                    onChange={(date) => setForm(f => ({ ...f, bookingDate: date ? date.toISOString().split('T')[0] : '' }))}
+                    minDate={new Date()}
+                    dateFormat="MMMM d, yyyy"
+                    placeholderText="Select a consultation date"
+                    className="custom-datepicker"
+                  />
+                  <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: '#C8963E', zIndex: 10 }}>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>

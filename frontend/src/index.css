@@ -309,4 +309,79 @@ h6 {
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
+}
+
+/* ── Custom DatePicker Luxury Styling ──────────────────────────── */
+.custom-datepicker {
+  width: 100% !important;
+  padding: 1rem 1.25rem !important;
+  background: #F5EFE6 !important;
+  border: 1px solid rgba(200, 150, 62, 0.25) !important;
+  border-radius: 8px !important;
+  outline: none !important;
+  font-size: 0.875rem !important;
+  color: #2C1A0E !important;
+  font-family: inherit !important;
+  transition: border-color 0.25s !important;
+  cursor: pointer !important;
+}
+
+.custom-datepicker:focus {
+  border-color: #C8963E !important;
+  box-shadow: 0 0 0 2px rgba(200, 150, 62, 0.1) !important;
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker {
+  font-family: 'Inter', sans-serif !important;
+  border: 1px solid rgba(200, 150, 62, 0.2) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(44, 26, 14, 0.15) !important;
+  background-color: #FAFAF9 !important;
+}
+
+.react-datepicker__header {
+  background-color: #F5EFE6 !important;
+  border-bottom: 1px solid rgba(200, 150, 62, 0.1) !important;
+  border-top-left-radius: 12px !important;
+  border-top-right-radius: 12px !important;
+  padding-top: 15px !important;
+}
+
+.react-datepicker__current-month {
+  color: #2C1A0E !important;
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  margin-bottom: 10px !important;
+}
+
+.react-datepicker__day-name {
+  color: #8a7660 !important;
+  font-weight: 600 !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+}
+
+.react-datepicker__day--selected, 
+.react-datepicker__day--keyboard-selected {
+  background-color: #C8963E !important;
+  color: white !important;
+  border-radius: 8px !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: rgba(200, 150, 62, 0.1) !important;
+  border-radius: 8px !important;
+}
+
+.react-datepicker__day--disabled {
+  color: #ccc !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: #C8963E !important;
+}
