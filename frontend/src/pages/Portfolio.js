@@ -35,14 +35,14 @@ const Lightbox = ({ project, startIndex = 0, onClose }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-[999] flex flex-col"
-      style={{ background: 'rgba(8,5,2,0.97)', backdropFilter: 'blur(16px)' }}
+      className="fixed inset-0 z-[2000] flex flex-col"
+      style={{ background: 'rgba(8,5,2,0.98)', backdropFilter: 'blur(20px)' }}
       onClick={onClose}
     >
-      {/* Top bar — Now only for text/info */}
+      {/* Info bar — Simple and non-intrusive */}
       <div
         className="flex items-center justify-between px-8 py-6 flex-shrink-0"
-        style={{ background: 'rgba(8,5,2,0.4)', borderBottom: '1px solid rgba(197,160,89,0.1)' }}
+        style={{ borderBottom: '1px solid rgba(197,160,89,0.05)' }}
         onClick={e => e.stopPropagation()}
       >
         <div>
@@ -55,29 +55,9 @@ const Lightbox = ({ project, startIndex = 0, onClose }) => {
         </div>
 
         <div className="flex items-center gap-8">
-          <span className="font-accent text-sm tracking-[0.2em]" style={{ color: 'rgba(250,248,244,0.5)' }}>
+          <span className="font-accent text-sm tracking-[0.2em]" style={{ color: 'rgba(250,248,244,0.3)' }}>
             {current + 1} / {images.length}
           </span>
-          
-          {/* Close is now more prominent and isolated */}
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            className="flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300"
-            style={{ 
-              background: 'rgba(197,160,89,0.15)', 
-              border: '2px solid rgba(197,160,89,0.6)', 
-              color: '#C5A059',
-              boxShadow: '0 0 20px rgba(197,160,89,0.1)'
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; e.currentTarget.style.transform = 'scale(1.1)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.15)'; e.currentTarget.style.color = '#C5A059'; e.currentTarget.style.transform = 'scale(1)'; }}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
         </div>
       </div>
 
@@ -101,7 +81,7 @@ const Lightbox = ({ project, startIndex = 0, onClose }) => {
           </button>
         </div>
 
-        <div className="flex-1 flex items-center justify-center p-2 max-h-full">
+        <div className="flex-1 flex items-center justify-center p-2 max-h-full relative">
           <AnimatePresence mode="wait">
             <motion.img
               key={current}
@@ -113,13 +93,31 @@ const Lightbox = ({ project, startIndex = 0, onClose }) => {
               transition={{ duration: 0.2 }}
               className="object-contain rounded-lg"
               style={{ 
-                maxHeight: 'calc(100vh - 280px)', 
+                maxHeight: '70vh', 
                 maxWidth: '100%',
                 boxShadow: '0 30px 90px rgba(0,0,0,0.8), 0 0 0 1px rgba(197,160,89,0.15)'
               }}
               onError={e => { e.target.src = 'https://via.placeholder.com/1200x800?text=Image+Not+Found'; }}
             />
           </AnimatePresence>
+
+          {/* Floating Close Button Beside Image (Desktop Top-Right) */}
+          <button
+            onClick={onClose}
+            className="absolute -top-6 -right-6 hidden lg:flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 z-[2100] shadow-2xl"
+            style={{ 
+              background: '#C5A059', 
+              border: '2px solid #fff', 
+              color: '#1a1208'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1) rotate(90deg)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1) rotate(0deg)'; }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
         </div>
 
         {/* Navigation Button Beside Image (Right) */}
@@ -136,6 +134,15 @@ const Lightbox = ({ project, startIndex = 0, onClose }) => {
             </svg>
           </button>
         </div>
+        
+        {/* Mobile Close Button (Floating Top-Right) */}
+        <button
+          onClick={onClose}
+          className="lg:hidden absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center pointer-events-auto"
+          style={{ background: 'rgba(197,160,89,0.9)', color: '#1a1208', border: '2px solid white' }}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+        </button>
         
         {/* Mobile-only float buttons */}
         <div className="md:hidden absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-2 pointer-events-none">

@@ -396,13 +396,13 @@ const Gallery = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex flex-col"
+            className="fixed inset-0 z-[2000] flex flex-col"
             style={{ background: 'rgba(10,8,5,0.98)', backdropFilter: 'blur(20px)' }}
             onClick={() => setSelectedItemIndex(null)}
           >
-            {/* Top Bar for Close & Info */}
+            {/* Top Bar (Info only) */}
             <div className="flex items-center justify-between px-8 py-6 flex-shrink-0 relative z-[110]"
-              style={{ background: 'rgba(10,8,5,0.4)', borderBottom: '1px solid rgba(197,160,89,0.1)' }}
+              style={{ borderBottom: '1px solid rgba(197,160,89,0.05)' }}
               onClick={e => e.stopPropagation()}
             >
               <div className="hidden md:block text-left">
@@ -418,17 +418,6 @@ const Gallery = () => {
                 <span className="font-accent text-sm tracking-widest text-white/40">
                   {selectedItemIndex + 1} / {filtered.length}
                 </span>
-                <button
-                  className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-xl"
-                  style={{ background: 'rgba(197,160,89,0.15)', border: '2px solid rgba(197,160,89,0.6)', color: '#C5A059' }}
-                  onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; e.currentTarget.style.transform = 'scale(1.1)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.15)'; e.currentTarget.style.color = '#C5A059'; e.currentTarget.style.transform = 'scale(1)'; }}
-                  onClick={() => setSelectedItemIndex(null)}
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
               </div>
             </div>
 
@@ -454,13 +443,13 @@ const Gallery = () => {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="flex-1 flex items-center justify-center p-4 max-h-full"
+                className="flex-1 flex items-center justify-center p-4 max-h-full relative"
               >
                 {filtered[selectedItemIndex].type === 'image' ? (
                   <img
                     src={filtered[selectedItemIndex].url}
                     alt={filtered[selectedItemIndex].projectTitle}
-                    className="max-w-full max-h-full object-contain rounded-xl"
+                    className="max-w-full max-h-[75vh] object-contain rounded-xl"
                     style={{ 
                       boxShadow: '0 40px 100px rgba(0,0,0,0.8), 0 0 0 1px rgba(197,160,89,0.1)'
                     }}
@@ -468,11 +457,29 @@ const Gallery = () => {
                 ) : (
                   <video
                     src={filtered[selectedItemIndex].url}
-                    className="max-w-full max-h-full rounded-xl"
+                    className="max-w-full max-h-[75vh] rounded-xl"
                     style={{ border: '1px solid rgba(197,160,89,0.2)' }}
                     controls autoPlay
                   />
                 )}
+
+                {/* Desktop Floating Close Button (Top-Right of Image) */}
+                <button
+                  onClick={() => setSelectedItemIndex(null)}
+                  className="absolute -top-6 -right-6 hidden lg:flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 z-[2100] shadow-2xl"
+                  style={{ 
+                    background: '#C5A059', 
+                    border: '2px solid #fff', 
+                    color: '#1a1208'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1) rotate(90deg)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1) rotate(0deg)'; }}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
               </motion.div>
 
               {/* Next Button */}
@@ -487,6 +494,15 @@ const Gallery = () => {
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                 </button>
               </div>
+
+              {/* Mobile Close Button (Floating Top-Right) */}
+              <button
+                onClick={() => setSelectedItemIndex(null)}
+                className="lg:hidden absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center pointer-events-auto shadow-2xl"
+                style={{ background: 'rgba(197,160,89,0.95)', color: '#1a1208', border: '2px solid white', zIndex: 2200 }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+              </button>
 
               {/* Mobile Arrows */}
               <div className="md:hidden absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 pointer-events-none">
