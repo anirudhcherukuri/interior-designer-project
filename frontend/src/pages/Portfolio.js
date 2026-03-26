@@ -39,36 +39,41 @@ const Lightbox = ({ project, startIndex = 0, onClose }) => {
       style={{ background: 'rgba(8,5,2,0.97)', backdropFilter: 'blur(16px)' }}
       onClick={onClose}
     >
-      {/* Top bar */}
+      {/* Top bar — Now only for text/info */}
       <div
-        className="flex items-center justify-between px-6 py-4 flex-shrink-0"
-        style={{ borderBottom: '1px solid rgba(197,160,89,0.15)' }}
+        className="flex items-center justify-between px-8 py-6 flex-shrink-0"
+        style={{ background: 'rgba(8,5,2,0.4)', borderBottom: '1px solid rgba(197,160,89,0.1)' }}
         onClick={e => e.stopPropagation()}
       >
         <div>
-          <p className="font-accent text-[10px] tracking-[0.3em] uppercase mb-0.5" style={{ color: '#C5A059' }}>
+          <p className="font-accent text-[10px] tracking-[0.4em] uppercase mb-1" style={{ color: '#C5A059' }}>
             {project.location}
           </p>
-          <h3 className="font-display text-lg font-semibold" style={{ color: '#faf8f4' }}>
+          <h3 className="font-display text-2xl font-semibold" style={{ color: '#faf8f4', letterSpacing: '0.02em' }}>
             {project.title}
           </h3>
         </div>
 
-        <div className="flex items-center gap-5">
-          <span className="font-accent text-xs tracking-widest" style={{ color: 'rgba(250,248,244,0.35)' }}>
+        <div className="flex items-center gap-8">
+          <span className="font-accent text-sm tracking-[0.2em]" style={{ color: 'rgba(250,248,244,0.5)' }}>
             {current + 1} / {images.length}
           </span>
-
-          {/* Close — always visible, high contrast */}
+          
+          {/* Close is now more prominent and isolated */}
           <button
             onClick={onClose}
             aria-label="Close"
-            className="flex items-center justify-center w-11 h-11 rounded-full transition-all duration-200"
-            style={{ background: 'rgba(197,160,89,0.15)', border: '1.5px solid rgba(197,160,89,0.5)', color: '#C5A059' }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.15)'; e.currentTarget.style.color = '#C5A059'; }}
+            className="flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300"
+            style={{ 
+              background: 'rgba(197,160,89,0.15)', 
+              border: '2px solid rgba(197,160,89,0.6)', 
+              color: '#C5A059',
+              boxShadow: '0 0 20px rgba(197,160,89,0.1)'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; e.currentTarget.style.transform = 'scale(1.1)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.15)'; e.currentTarget.style.color = '#C5A059'; e.currentTarget.style.transform = 'scale(1)'; }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -76,49 +81,71 @@ const Lightbox = ({ project, startIndex = 0, onClose }) => {
         </div>
       </div>
 
-      {/* Main image */}
+      {/* Main image area with side content */}
       <div
-        className="flex-1 flex items-center justify-center relative min-h-0 px-16"
+        className="flex-1 flex items-center justify-between relative min-h-0 px-4 md:px-12"
         onClick={e => e.stopPropagation()}
       >
-        <button
-          onClick={prev}
-          className="absolute left-4 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200"
-          style={{ background: 'rgba(197,160,89,0.1)', border: '1px solid rgba(197,160,89,0.35)', color: '#C5A059' }}
-          onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.1)'; e.currentTarget.style.color = '#C5A059'; }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </button>
+        {/* Navigation Button Beside Image (Left) */}
+        <div className="flex-shrink-0 hidden md:flex items-center justify-center w-24">
+          <button
+            onClick={prev}
+            className="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 group"
+            style={{ background: 'rgba(197,160,89,0.08)', border: '1.5px solid rgba(197,160,89,0.3)', color: '#C5A059' }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; e.currentTarget.style.transform = 'translateX(-4px)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.08)'; e.currentTarget.style.color = '#C5A059'; e.currentTarget.style.transform = 'translateX(0)'; }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+        </div>
 
-        <AnimatePresence mode="wait">
-          <motion.img
-            key={current}
-            src={img(images[current])}
-            alt={`${project.title} — ${current + 1}`}
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.02 }}
-            transition={{ duration: 0.25 }}
-            className="object-contain rounded-sm"
-            style={{ maxHeight: 'calc(100vh - 210px)', maxWidth: '100%' }}
-            onError={e => { e.target.src = 'https://via.placeholder.com/1200x800?text=Image+Not+Found'; }}
-          />
-        </AnimatePresence>
+        <div className="flex-1 flex items-center justify-center p-2 max-h-full">
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={current}
+              src={img(images[current])}
+              alt={`${project.title} — ${current + 1}`}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.01 }}
+              transition={{ duration: 0.2 }}
+              className="object-contain rounded-lg"
+              style={{ 
+                maxHeight: 'calc(100vh - 280px)', 
+                maxWidth: '100%',
+                boxShadow: '0 30px 90px rgba(0,0,0,0.8), 0 0 0 1px rgba(197,160,89,0.15)'
+              }}
+              onError={e => { e.target.src = 'https://via.placeholder.com/1200x800?text=Image+Not+Found'; }}
+            />
+          </AnimatePresence>
+        </div>
 
-        <button
-          onClick={next}
-          className="absolute right-4 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200"
-          style={{ background: 'rgba(197,160,89,0.1)', border: '1px solid rgba(197,160,89,0.35)', color: '#C5A059' }}
-          onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.1)'; e.currentTarget.style.color = '#C5A059'; }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-        </button>
+        {/* Navigation Button Beside Image (Right) */}
+        <div className="flex-shrink-0 hidden md:flex items-center justify-center w-24">
+          <button
+            onClick={next}
+            className="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 group"
+            style={{ background: 'rgba(197,160,89,0.08)', border: '1.5px solid rgba(197,160,89,0.3)', color: '#C5A059' }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; e.currentTarget.style.transform = 'translateX(4px)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.08)'; e.currentTarget.style.color = '#C5A059'; e.currentTarget.style.transform = 'translateX(0)'; }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+        
+        {/* Mobile-only float buttons */}
+        <div className="md:hidden absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-2 pointer-events-none">
+          <button onClick={prev} className="w-10 h-10 rounded-full flex items-center justify-center pointer-events-auto shadow-lg" style={{ background: 'rgba(10,8,6,0.8)', color: '#C5A059', border: '1px solid #C5A059' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="15 18 9 12 15 6" /></svg>
+          </button>
+          <button onClick={next} className="w-10 h-10 rounded-full flex items-center justify-center pointer-events-auto shadow-lg" style={{ background: 'rgba(10,8,6,0.8)', color: '#C5A059', border: '1px solid #C5A059' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6" /></svg>
+          </button>
+        </div>
       </div>
 
       {/* Thumbnail strip */}

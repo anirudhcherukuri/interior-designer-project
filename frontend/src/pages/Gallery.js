@@ -57,7 +57,7 @@ const Gallery = () => {
   const [filter, setFilter] = useState('all');
   const [roomFilter, setRoomFilter] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItemIndex, setSelectedItemIndex] = useState(null);
 
   const roomTypes = ['All', 'Bedroom', 'Living Room', 'Kitchen', 'Dining Room', 'Home Office', 'Bathroom', 'Outdoor', 'Commercial'];
 
@@ -297,7 +297,7 @@ const Gallery = () => {
                   >
                     {/* Media */}
                     <div className="aspect-[4/3] overflow-hidden relative"
-                      onClick={() => setSelectedItem(item)}>
+                      onClick={() => setSelectedItemIndex(index)}>
                       {item.type === 'image' ? (
                         <img
                           src={item.url}
@@ -391,75 +391,119 @@ const Gallery = () => {
 
       {/* ── Lightbox ── */}
       <AnimatePresence>
-        {selectedItem && (
+        {selectedItemIndex !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-6"
-            style={{ background: 'rgba(15,11,5,0.96)', backdropFilter: 'blur(16px)' }}
-            onClick={() => setSelectedItem(null)}
+            className="fixed inset-0 z-[100] flex flex-col"
+            style={{ background: 'rgba(10,8,5,0.98)', backdropFilter: 'blur(20px)' }}
+            onClick={() => setSelectedItemIndex(null)}
           >
-            {/* Close */}
-            <button
-              className="absolute top-8 right-8 z-[110] w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300"
-              style={{ background: 'rgba(197,160,89,0.1)', border: '1px solid rgba(197,160,89,0.3)', color: '#C5A059' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.2)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.1)'; }}
-              onClick={() => setSelectedItem(null)}
+            {/* Top Bar for Close & Info */}
+            <div className="flex items-center justify-between px-8 py-6 flex-shrink-0 relative z-[110]"
+              style={{ background: 'rgba(10,8,5,0.4)', borderBottom: '1px solid rgba(197,160,89,0.1)' }}
+              onClick={e => e.stopPropagation()}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="relative max-w-5xl w-full flex flex-col items-center"
-              style={{ maxHeight: '85vh' }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {selectedItem.type === 'image' ? (
-                <img
-                  src={selectedItem.url}
-                  alt={selectedItem.projectTitle}
-                  className="max-w-full max-h-full object-contain rounded-2xl"
-                  style={{ border: '1px solid rgba(197,160,89,0.2)', boxShadow: '0 32px 80px rgba(0,0,0,0.6)' }}
-                />
-              ) : (
-                <video
-                  src={selectedItem.url}
-                  className="max-w-full max-h-full rounded-2xl"
-                  style={{ border: '1px solid rgba(197,160,89,0.2)' }}
-                  controls autoPlay
-                />
-              )}
-
-              <div className="mt-8 text-center">
-                <span className="font-accent text-xs font-bold uppercase tracking-[0.25em] block mb-2"
-                  style={{ color: '#C5A059' }}>
-                  {selectedItem.roomType}
-                </span>
-                <h3 className="font-display text-2xl font-light tracking-tight mb-3"
-                  style={{ color: '#faf8f4' }}>
-                  {selectedItem.projectTitle}
+              <div className="hidden md:block text-left">
+                <p className="font-accent text-[10px] tracking-[0.4em] uppercase mb-1" style={{ color: '#C5A059' }}>
+                  {filtered[selectedItemIndex].roomType}
+                </p>
+                <h3 className="font-display text-xl font-light" style={{ color: '#faf8f4' }}>
+                  {filtered[selectedItemIndex].projectTitle}
                 </h3>
-                {selectedItem.projectId && (
-                  <Link
-                    to={selectedItem.link}
-                    className="font-accent text-xs tracking-widest uppercase border-b pb-0.5 transition-all"
-                    style={{ color: 'rgba(197,160,89,0.6)', borderColor: 'rgba(197,160,89,0.2)' }}
-                    onMouseEnter={e => { e.target.style.color = '#C5A059'; e.target.style.borderColor = '#C5A059'; }}
-                    onMouseLeave={e => { e.target.style.color = 'rgba(197,160,89,0.6)'; e.target.style.borderColor = 'rgba(197,160,89,0.2)'; }}
-                  >
-                    View Complete Project
-                  </Link>
-                )}
               </div>
-            </motion.div>
+              
+              <div className="flex items-center gap-6">
+                <span className="font-accent text-sm tracking-widest text-white/40">
+                  {selectedItemIndex + 1} / {filtered.length}
+                </span>
+                <button
+                  className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-xl"
+                  style={{ background: 'rgba(197,160,89,0.15)', border: '2px solid rgba(197,160,89,0.6)', color: '#C5A059' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; e.currentTarget.style.transform = 'scale(1.1)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.15)'; e.currentTarget.style.color = '#C5A059'; e.currentTarget.style.transform = 'scale(1)'; }}
+                  onClick={() => setSelectedItemIndex(null)}
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Main Navigation Area */}
+            <div className="flex-1 flex items-center justify-between px-4 md:px-12 relative" onClick={e => e.stopPropagation()}>
+              
+              {/* Prev Button */}
+              <div className="hidden md:flex flex-shrink-0 w-24 justify-center">
+                <button
+                  onClick={() => setSelectedItemIndex(prev => (prev - 1 + filtered.length) % filtered.length)}
+                  className="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300"
+                  style={{ background: 'rgba(197,160,89,0.1)', border: '1.5px solid rgba(197,160,89,0.3)', color: '#C5A059' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; e.currentTarget.style.transform = 'translateX(-4px)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.1)'; e.currentTarget.style.color = '#C5A059'; e.currentTarget.style.transform = 'translateX(0)'; }}
+                >
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6" /></svg>
+                </button>
+              </div>
+
+              <motion.div
+                key={selectedItemIndex}
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="flex-1 flex items-center justify-center p-4 max-h-full"
+              >
+                {filtered[selectedItemIndex].type === 'image' ? (
+                  <img
+                    src={filtered[selectedItemIndex].url}
+                    alt={filtered[selectedItemIndex].projectTitle}
+                    className="max-w-full max-h-full object-contain rounded-xl"
+                    style={{ 
+                      boxShadow: '0 40px 100px rgba(0,0,0,0.8), 0 0 0 1px rgba(197,160,89,0.1)'
+                    }}
+                  />
+                ) : (
+                  <video
+                    src={filtered[selectedItemIndex].url}
+                    className="max-w-full max-h-full rounded-xl"
+                    style={{ border: '1px solid rgba(197,160,89,0.2)' }}
+                    controls autoPlay
+                  />
+                )}
+              </motion.div>
+
+              {/* Next Button */}
+              <div className="hidden md:flex flex-shrink-0 w-24 justify-center">
+                <button
+                  onClick={() => setSelectedItemIndex(next => (next + 1) % filtered.length)}
+                  className="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300"
+                  style={{ background: 'rgba(197,160,89,0.1)', border: '1.5px solid rgba(197,160,89,0.3)', color: '#C5A059' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#C5A059'; e.currentTarget.style.color = '#1a1208'; e.currentTarget.style.transform = 'translateX(4px)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(197,160,89,0.1)'; e.currentTarget.style.color = '#C5A059'; e.currentTarget.style.transform = 'translateX(0)'; }}
+                >
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
+                </button>
+              </div>
+
+              {/* Mobile Arrows */}
+              <div className="md:hidden absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 pointer-events-none">
+                <button onClick={() => setSelectedItemIndex(prev => (prev - 1 + filtered.length) % filtered.length)} className="w-10 h-10 rounded-full flex items-center justify-center pointer-events-auto bg-black/80 text-[#C5A059] border border-[#C5A059]/50">
+                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="15 18 9 12 15 6" /></svg>
+                </button>
+                <button onClick={() => setSelectedItemIndex(next => (next + 1) % filtered.length)} className="w-10 h-10 rounded-full flex items-center justify-center pointer-events-auto bg-black/80 text-[#C5A059] border border-[#C5A059]/50">
+                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6" /></svg>
+                </button>
+              </div>
+            </div>
+
+            <div className="py-6 text-center flex-shrink-0">
+               <span className="font-accent text-[9px] tracking-[0.4em] uppercase text-white/20">
+                 ← → NAVIGATE &nbsp;·&nbsp; ESC CLOSE
+               </span>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
