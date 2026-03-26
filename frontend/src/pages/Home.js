@@ -114,7 +114,7 @@ function Home() {
         <div className="absolute top-20 left-10 w-80 h-80 rounded-full"
           style={{ background: 'rgba(200,150,62,0.06)', filter: 'blur(50px)' }} />
 
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-32 relative z-10">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-20 md:py-32 relative z-10">
           <div className="max-w-5xl">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
@@ -128,7 +128,7 @@ function Home() {
                 </span>
               </div>
 
-              <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-bold leading-none mb-8"
+              <h1 className="font-display text-[clamp(2.75rem,14vw,8rem)] font-bold leading-[1.1] mb-8"
                 style={{ color: '#F5EFE6' }}>
                 Crafting
                 <span className="block mt-2 italic" style={{ color: '#C8963E' }}>Timeless</span>
@@ -137,9 +137,9 @@ function Home() {
 
               {/* Gold ornament bar */}
               <div className="flex items-center gap-3 mb-10">
-                <div className="h-1 w-32 rounded-full"
+                <div className="h-0.5 w-24 md:w-32 rounded-full"
                   style={{ background: 'linear-gradient(90deg, #C8963E, rgba(200,150,62,0.2))' }} />
-                <div className="w-2 h-2 rounded-full" style={{ background: '#C8963E' }} />
+                <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#C8963E' }} />
               </div>
 
               <p className="text-xl md:text-2xl mb-8 leading-relaxed max-w-3xl font-body italic"
@@ -207,7 +207,7 @@ function Home() {
       {/* ══════════════════════════════════════════════════
           SERVICES — dark brown bg, keeps your gallery images
       ══════════════════════════════════════════════════ */}
-      <section className="py-32 relative overflow-hidden" style={{ background: '#EDE4D3' }}>
+      <section className="py-20 md:py-32 relative overflow-hidden" style={{ background: '#EDE4D3' }}>
         {/* Subtle texture */}
         <div className="absolute inset-0 bg-luxury-pattern opacity-[0.04]" />
         {/* Gold bokeh top-right */}
@@ -334,7 +334,7 @@ function Home() {
       {/* ══════════════════════════════════════════════════
           TESTIMONIALS — beige bg, white cards with gold accent
       ══════════════════════════════════════════════════ */}
-      <section className="py-32 relative" style={{ background: '#F5EFE6' }}>
+      <section className="py-20 md:py-32 relative" style={{ background: '#F5EFE6' }}>
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="text-center mb-20">
             <motion.div
@@ -348,7 +348,7 @@ function Home() {
                 Client Stories
               </span>
               <h2 className="font-display font-bold mb-8 tracking-tight"
-                style={{ fontSize: 'clamp(3rem,8vw,6rem)', color: '#2C1A0E' }}>
+                style={{ fontSize: 'clamp(2.5rem,10vw,5rem)', color: '#2C1A0E' }}>
                 What They <span style={{ color: '#C8963E', fontStyle: 'italic' }}>Say</span>
               </h2>
               <div className="flex items-center justify-center gap-3">

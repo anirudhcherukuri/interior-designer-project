@@ -150,11 +150,11 @@ const Lightbox = ({ project, startIndex = 0, onClose }) => {
 
       {/* Thumbnail strip */}
       <div
-        className="flex-shrink-0 py-3 px-4 overflow-x-auto"
+        className="flex-shrink-0 py-3 px-4 overflow-x-auto scrollbar-hide"
         style={{ borderTop: '1px solid rgba(197,160,89,0.1)' }}
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex gap-2 justify-center" style={{ minWidth: 'max-content', margin: '0 auto' }}>
+        <div className="flex gap-2 justify-start md:justify-center" style={{ minWidth: 'max-content', margin: '0 auto' }}>
           {images.map((file, i) => (
             <button
               key={i}
@@ -381,7 +381,7 @@ const Portfolio = () => {
               Our Work
             </span>
             <h1 className="font-display font-bold mb-8 leading-tight"
-              style={{ fontSize: 'clamp(3rem, 10vw, 6rem)', color: '#faf8f4', letterSpacing: '-0.02em' }}>
+              style={{ fontSize: 'clamp(2.5rem, 12vw, 6rem)', color: '#faf8f4', letterSpacing: '-0.02em' }}>
               Portfolio
             </h1>
             <div className="flex items-center justify-center gap-4 mb-8">

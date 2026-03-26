@@ -159,7 +159,7 @@ const Gallery = () => {
             </span>
 
             <h1 className="font-display font-bold mb-8 leading-tight"
-              style={{ fontSize: 'clamp(3rem, 10vw, 6rem)', color: '#faf8f4', letterSpacing: '-0.02em' }}>
+              style={{ fontSize: 'clamp(2.5rem, 12vw, 6rem)', color: '#faf8f4', letterSpacing: '-0.02em' }}>
               Gallery
             </h1>
 

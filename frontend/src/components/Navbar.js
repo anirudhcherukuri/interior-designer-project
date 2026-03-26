@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -46,7 +47,7 @@ function Navbar() {
         }}>
           {/* Brand */}
           <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{
+            <span className="navbar-logo-text" style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
               fontSize: '1.4rem', fontWeight: 800,
               color: '#F5EFE6', letterSpacing: '-0.01em', lineHeight: 1,
@@ -115,46 +116,94 @@ function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 999,
-          background: 'rgba(30,16,6,0.98)',
-          backdropFilter: 'blur(16px)',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2.5rem',
-        }}>
-          {/* Close button inside mobile menu */}
-          <button
-            onClick={() => setMenuOpen(false)}
-            style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'none', border: 'none', color: '#F5EFE6', cursor: 'pointer' }}>
-            <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-
-          {[...links, { label: 'STUDIO LOGIN', path: '/admin' }].map(link => (
-            <Link key={link.path} to={link.path}
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: '2.5rem', fontWeight: 700,
-                color: location.pathname === link.path ? '#C8963E' : '#F5EFE6',
-                textDecoration: 'none', letterSpacing: '-0.01em',
-                transition: 'color 0.2s',
-              }}
+      {/* Mobile menu Overlay */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 999,
+              background: '#1a1006',
+              backdropFilter: 'blur(20px)',
+              display: 'flex', flexDirection: 'column',
+              padding: '6rem 2rem 4rem',
+            }}
+          >
+            {/* Elegant Background Texture */}
+            <div className="absolute inset-0 bg-luxury-pattern opacity-[0.05] pointer-events-none" />
+            
+            {/* Close button inside mobile menu */}
+            <button
               onClick={() => setMenuOpen(false)}
-              onMouseEnter={e => e.target.style.color = '#C8963E'}
-              onMouseLeave={e => e.target.style.color = location.pathname === link.path ? '#C8963E' : '#F5EFE6'}>
-              {link.label}
-            </Link>
-          ))}
-        </div>
-      )}
+              style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'none', border: 'none', color: '#F5EFE6', cursor: 'pointer', zIndex: 100 }}>
+              <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            <div className="flex flex-col h-full relative z-10">
+              {/* Decorative side line */}
+              <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#C8963E]/30 to-transparent" />
+
+              <div className="flex flex-col gap-6 mb-auto">
+                {[...links, { label: 'STUDIO LOGIN', path: '/admin' }].map((link, idx) => (
+                  <motion.div
+                    key={link.path}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + idx * 0.05 }}
+                  >
+                    <Link to={link.path}
+                      style={{
+                        fontFamily: "'Cormorant Garamond', serif",
+                        fontSize: '2.4rem', fontWeight: 600,
+                        color: location.pathname === link.path ? '#C8963E' : '#faf8f4',
+                        textDecoration: 'none', letterSpacing: '-0.01em',
+                        display: 'flex', alignItems: 'center', gap: '1rem',
+                      }}
+                      onClick={() => setMenuOpen(false)}>
+                      <span>{link.label}</span>
+                      {location.pathname === link.path && (
+                        <motion.div layoutId="nav-dot" className="w-2 h-2 rounded-full bg-[#C8963E]" />
+                      )}
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Bottom Mobile info */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="mt-12 pt-12 border-t border-[#C8963E]/10"
+              >
+                <p className="font-accent text-[9px] tracking-[0.4em] uppercase text-[#C8963E] mb-6">Contact Us</p>
+                <div className="space-y-4">
+                  <p className="text-[#faf8f4]/60 text-sm font-light">info@italianinteriors.design</p>
+                  <p className="text-[#faf8f4]/60 text-sm font-light">+91 98765 43210</p>
+                </div>
+                
+                <div className="flex gap-6 mt-10">
+                  {['Instagram', 'Facebook', 'LinkedIn'].map(s => (
+                    <span key={s} className="font-accent text-[9px] tracking-widest uppercase text-[#C8963E]/60">{s}</span>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <style>{`
         @media (max-width: 768px) {
           .desktop-links { display: none !important; }
           .mobile-toggle { display: flex !important; }
           .nav-container { padding: 0 1.25rem !important; height: 64px !important; }
+          .navbar-logo-text { fontSize: 1.15rem !important; }
         }
       `}</style>
     </>
