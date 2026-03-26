@@ -145,12 +145,14 @@ const Lightbox = ({ project, startIndex = 0, onClose }) => {
         </button>
         
         {/* Mobile-only float buttons */}
-        <div className="md:hidden absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-2 pointer-events-none">
-          <button onClick={prev} className="w-10 h-10 rounded-full flex items-center justify-center pointer-events-auto shadow-lg" style={{ background: 'rgba(10,8,6,0.8)', color: '#C5A059', border: '1px solid #C5A059' }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="15 18 9 12 15 6" /></svg>
+        <div className="md:hidden absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 pointer-events-none">
+          <button onClick={prev} className="w-12 h-12 rounded-full flex items-center justify-center pointer-events-auto shadow-2xl" 
+            style={{ backdropFilter: 'blur(8px)', background: 'rgba(10,8,6,0.6)', color: '#C5A059', border: '1px solid rgba(197,160,89,0.4)' }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="15 18 9 12 15 6" /></svg>
           </button>
-          <button onClick={next} className="w-10 h-10 rounded-full flex items-center justify-center pointer-events-auto shadow-lg" style={{ background: 'rgba(10,8,6,0.8)', color: '#C5A059', border: '1px solid #C5A059' }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6" /></svg>
+          <button onClick={next} className="w-12 h-12 rounded-full flex items-center justify-center pointer-events-auto shadow-2xl" 
+            style={{ backdropFilter: 'blur(8px)', background: 'rgba(10,8,6,0.6)', color: '#C5A059', border: '1px solid rgba(197,160,89,0.4)' }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6" /></svg>
           </button>
         </div>
       </div>

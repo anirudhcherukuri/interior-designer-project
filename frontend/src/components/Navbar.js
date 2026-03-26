@@ -149,7 +149,7 @@ function Navbar() {
               <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#C8963E]/30 to-transparent" />
 
               <div className="flex flex-col gap-6 mb-auto">
-                {[...links, { label: 'STUDIO LOGIN', path: '/admin' }].map((link, idx) => (
+                {[...links, { label: 'Studio Login', path: '/admin' }].map((link, idx) => (
                   <motion.div
                     key={link.path}
                     initial={{ opacity: 0, x: 20 }}
@@ -159,15 +159,15 @@ function Navbar() {
                     <Link to={link.path}
                       style={{
                         fontFamily: "'Cormorant Garamond', serif",
-                        fontSize: '2.4rem', fontWeight: 600,
+                        fontSize: '2rem', fontWeight: 500,
                         color: location.pathname === link.path ? '#C8963E' : '#faf8f4',
-                        textDecoration: 'none', letterSpacing: '-0.01em',
-                        display: 'flex', alignItems: 'center', gap: '1rem',
+                        textDecoration: 'none', letterSpacing: '0.01em',
+                        display: 'flex', alignItems: 'center', gap: '0.75rem',
                       }}
                       onClick={() => setMenuOpen(false)}>
                       <span>{link.label}</span>
                       {location.pathname === link.path && (
-                        <motion.div layoutId="nav-dot" className="w-2 h-2 rounded-full bg-[#C8963E]" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#C8963E] flex-shrink-0" />
                       )}
                     </Link>
                   </motion.div>

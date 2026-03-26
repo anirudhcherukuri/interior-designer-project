@@ -139,9 +139,9 @@ const StatCard = ({ title, value, icon, accent, delay = 0 }) => (
     <div className="flex items-center justify-between mb-6">
       <div className="w-14 h-14 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
         style={{ background: `linear-gradient(135deg, ${accent}, ${accent}88)`, color: "#fff" }}>{icon}</div>
-      <div className="text-right">
-        <p className="text-[10px] font-bold uppercase tracking-[0.25em] mb-1" style={{ color: "#8a7660" }}>{title}</p>
-        <p className="text-4xl font-display font-bold" style={{ color: G.dark }}>{value}</p>
+      <div className="text-right flex-1 min-w-0">
+        <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest mb-1 truncate" style={{ color: "#8a7660" }}>{title}</p>
+        <p className="text-2xl md:text-4xl font-display font-bold" style={{ color: G.dark }}>{value}</p>
       </div>
     </div>
     <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(200,150,62,0.1)" }}>
@@ -429,7 +429,7 @@ const DashboardTab = ({ houses, bookings, enquiries, onNav }) => {
 
   return (
     <div className="space-y-10">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         <StatCard title="House Projects" value={houses.length} icon={<Ic.Houses />} accent={G.gold} delay={0.05} />
         <StatCard title="Gallery Photos" value="—" icon={<Ic.Gallery />} accent="#B8832A" delay={0.1} />
         <StatCard title="Unread Enquiries" value={unread} icon={<Ic.Contact />} accent="#7A5020" delay={0.15} />
@@ -1319,9 +1319,9 @@ export default function Admin() {
               onClick={() => setMobile(false)}
               className="lg:hidden fixed inset-0 z-[50]"
               style={{ background: "rgba(10,6,2,0.82)", backdropFilter: "blur(4px)" }} />
-            <motion.aside initial={{ x: -288 }} animate={{ x: 0 }} exit={{ x: -288 }}
+            <motion.aside initial={{ x: -320 }} animate={{ x: 0 }} exit={{ x: -320 }}
               transition={{ type: "spring", damping: 26, stiffness: 220 }}
-              className="w-72 flex flex-col fixed top-0 left-0 h-screen z-[55]"
+              className="w-full max-w-[280px] lg:w-72 flex flex-col fixed top-16 lg:top-0 left-0 h-[calc(100vh-64px)] lg:h-screen z-[55]"
               style={{
                 background: `linear-gradient(180deg, ${G.darkest} 0%, ${G.dark} 55%, ${G.dark2} 100%)`,
                 borderRight: "1px solid rgba(200,150,62,0.1)",

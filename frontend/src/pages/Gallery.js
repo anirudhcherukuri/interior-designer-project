@@ -506,11 +506,13 @@ const Gallery = () => {
 
               {/* Mobile Arrows */}
               <div className="md:hidden absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 pointer-events-none">
-                <button onClick={() => setSelectedItemIndex(prev => (prev - 1 + filtered.length) % filtered.length)} className="w-10 h-10 rounded-full flex items-center justify-center pointer-events-auto bg-black/80 text-[#C5A059] border border-[#C5A059]/50">
-                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="15 18 9 12 15 6" /></svg>
+                <button onClick={() => setSelectedItemIndex(prev => (prev - 1 + filtered.length) % filtered.length)} 
+                  className="w-12 h-12 rounded-full flex items-center justify-center pointer-events-auto bg-black/60 text-[#C5A059] border border-[#C5A059]/40 backdrop-blur-md shadow-2xl">
+                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="15 18 9 12 15 6" /></svg>
                 </button>
-                <button onClick={() => setSelectedItemIndex(next => (next + 1) % filtered.length)} className="w-10 h-10 rounded-full flex items-center justify-center pointer-events-auto bg-black/80 text-[#C5A059] border border-[#C5A059]/50">
-                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6" /></svg>
+                <button onClick={() => setSelectedItemIndex(next => (next + 1) % filtered.length)} 
+                  className="w-12 h-12 rounded-full flex items-center justify-center pointer-events-auto bg-black/60 text-[#C5A059] border border-[#C5A059]/40 backdrop-blur-md shadow-2xl">
+                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="9 18 15 12 9 6" /></svg>
                 </button>
               </div>
             </div>
