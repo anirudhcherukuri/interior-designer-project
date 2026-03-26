@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -7,6 +8,15 @@ import ProjectDetail from './pages/ProjectDetail';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import Admin from './pages/Admin';
+
+// Scroll to top on route change
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
 
 // Visitor tracking removed for streamlined performance
 const VisitorTracker = () => {
@@ -33,6 +43,7 @@ const Layout = ({ children }) => {
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <VisitorTracker />
       <Layout>
         <Routes>

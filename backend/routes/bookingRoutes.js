@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const jsonDb = require("../utils/jsonDb");
 const auth = require("../middleware/authMiddleware");
+const { sendBookingNotificationEmail } = require('../utils/mailer');
 
 // GET all bookings — Protected
 router.get("/", auth, (req, res) => {
@@ -22,6 +23,10 @@ router.post("/", (req, res) => {
       status: "pending", // always starts as pending — prevents IDOR
     });
     console.log("📅 NEW BOOKING REQUEST RECEIVED:", newBooking);
+    
+    // Send email notification to Admin
+    sendBookingNotificationEmail(newBooking).catch(err => console.error('Email notification failed', err));
+
     res.status(201).json(newBooking);
   } catch (err) {
     res.status(400).json({ error: "Invalid Data" });

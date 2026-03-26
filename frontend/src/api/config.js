@@ -20,6 +20,8 @@ export const authAPI = {
   login: (credentials) => api.post('/api/auth/login', credentials),
   me: () => api.get('/api/auth/me'),
   logout: () => api.post('/api/auth/logout'),
+  forgotPassword: (email) => api.post('/api/auth/forgot-password', { email }),
+  resetPassword: (token, newPassword) => api.post('/api/auth/reset-password', { token, newPassword }),
 };
 
 // ─── Bookings ─────────────────────────────────────────────────────────────────

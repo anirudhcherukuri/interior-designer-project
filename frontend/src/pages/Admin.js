@@ -894,17 +894,11 @@ const ContactsTab = () => {
                   <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     {isUnread && (
                       <button onClick={ev => { ev.stopPropagation(); markRead(e._id); }}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
-                        style={{ background: "rgba(74,222,128,0.1)", color: "#16a34a", border: "1px solid rgba(74,222,128,0.2)" }}
-                        onMouseEnter={ev => { ev.currentTarget.style.background = "#16a34a"; ev.currentTarget.style.color = "#fff"; }}
-                        onMouseLeave={ev => { ev.currentTarget.style.background = "rgba(74,222,128,0.1)"; ev.currentTarget.style.color = "#16a34a"; }}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center transition-all bg-[#4ade8015] text-[#16a34a] border border-[#16a34a40] hover:bg-[#16a34a] hover:text-white"
                         title="Mark as read"><Ic.Check /></button>
                     )}
                     <button onClick={ev => { ev.stopPropagation(); del(e._id); }}
-                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
-                      style={{ background: "rgba(220,50,50,0.08)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.15)" }}
-                      onMouseEnter={ev => { ev.currentTarget.style.background = "#dc2626"; ev.currentTarget.style.color = "#fff"; }}
-                      onMouseLeave={ev => { ev.currentTarget.style.background = "rgba(220,50,50,0.08)"; ev.currentTarget.style.color = "#dc2626"; }}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-all bg-[#dc262608] text-[#dc2626] border border-[#dc262625] hover:bg-[#dc2626] hover:text-white"
                       title="Delete"><Ic.Trash /></button>
                     <button className="w-8 h-8 rounded-lg flex items-center justify-center"
                       style={{ background: "rgba(200,150,62,0.1)", color: G.gold, border: "1px solid rgba(200,150,62,0.2)" }}
@@ -994,10 +988,8 @@ const BookingsTab = () => {
           {shown.map((b, i) => (
             <motion.div key={b._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: i * 0.04 }}
-              className="rounded-2xl p-6 transition-all duration-300"
-              style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 2px 12px rgba(44,26,14,0.05)" }}
-              onMouseEnter={e => e.currentTarget.style.boxShadow = "0 8px 32px rgba(44,26,14,0.1)"}
-              onMouseLeave={e => e.currentTarget.style.boxShadow = "0 2px 12px rgba(44,26,14,0.05)"}>
+              className="rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-[#2C1A0E10]"
+              style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 2px 12px rgba(44,26,14,0.05)" }}>
               <div className="flex flex-col md:flex-row md:items-center gap-5">
                 <div className="flex-1 min-w-0 space-y-2">
                   <div className="flex items-center gap-3 flex-wrap">
@@ -1027,45 +1019,32 @@ const BookingsTab = () => {
                 </div>
 
                 <div className="flex gap-3 flex-shrink-0">
-                  {b.status === "pending" && (<>
-                    <button onClick={() => setStatus(b._id, "confirmed")}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
-                      style={{ background: "rgba(74,222,128,0.1)", color: "#16a34a", border: "1px solid rgba(74,222,128,0.25)" }}
-                      onMouseEnter={e => { e.currentTarget.style.background = "#16a34a"; e.currentTarget.style.color = "#fff"; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = "rgba(74,222,128,0.1)"; e.currentTarget.style.color = "#16a34a"; }}>
-                      <Ic.Check /> Accept
-                    </button>
-                    <button onClick={() => setStatus(b._id, "rejected")}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
-                      style={{ background: "rgba(220,50,50,0.08)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.2)" }}
-                      onMouseEnter={e => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.color = "#fff"; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = "rgba(220,50,50,0.08)"; e.currentTarget.style.color = "#dc2626"; }}>
-                      <Ic.Close /> Reject
-                    </button>
-                  </>)}
+                  {b.status === "pending" && (
+                    <>
+                      <button onClick={() => setStatus(b._id, "confirmed")}
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all bg-[#4ade8015] text-[#16a34a] border border-[#16a34a40] hover:bg-[#16a34a] hover:text-white">
+                        <Ic.Check /> Accept
+                      </button>
+                      <button onClick={() => setStatus(b._id, "rejected")}
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all bg-[#dc262608] text-[#dc2626] border border-[#dc262625] hover:bg-[#dc2626] hover:text-white">
+                        <Ic.Close /> Reject
+                      </button>
+                    </>
+                  )}
                   {b.status === "confirmed" && (
                     <button onClick={() => setStatus(b._id, "rejected")}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
-                      style={{ background: "rgba(220,50,50,0.08)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.2)" }}
-                      onMouseEnter={e => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.color = "#fff"; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = "rgba(220,50,50,0.08)"; e.currentTarget.style.color = "#dc2626"; }}>
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all bg-[#dc262608] text-[#dc2626] border border-[#dc262625] hover:bg-[#dc2626] hover:text-white">
                       <Ic.Close /> Reject
                     </button>
                   )}
                   {b.status === "rejected" && (
                     <button onClick={() => setStatus(b._id, "confirmed")}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all"
-                      style={{ background: "rgba(74,222,128,0.1)", color: "#16a34a", border: "1px solid rgba(74,222,128,0.25)" }}
-                      onMouseEnter={e => { e.currentTarget.style.background = "#16a34a"; e.currentTarget.style.color = "#fff"; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = "rgba(74,222,128,0.1)"; e.currentTarget.style.color = "#16a34a"; }}>
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all bg-[#4ade8015] text-[#16a34a] border border-[#16a34a40] hover:bg-[#16a34a] hover:text-white">
                       <Ic.Check /> Approve
                     </button>
                   )}
                   <button onClick={() => del(b._id)}
-                    className="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
-                    style={{ background: "rgba(220,50,50,0.06)", color: "#dc2626", border: "1px solid rgba(220,50,50,0.12)" }}
-                    onMouseEnter={e => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.color = "#fff"; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(220,50,50,0.06)"; e.currentTarget.style.color = "#dc2626"; }}>
+                    className="w-10 h-10 rounded-xl flex items-center justify-center transition-all bg-[#dc262608] text-[#dc2626] border border-[#dc262615] hover:bg-[#dc2626] hover:text-white">
                     <Ic.Trash />
                   </button>
                 </div>
@@ -1093,7 +1072,23 @@ export default function Admin() {
   const [bookings, setBookings] = useState([]);
   const [enquiries, setEnquiries] = useState([]);
 
+  // Password Reset Flow State
+  const [view, setView] = useState("login"); // login, forgot, reset
+  const [resetToken, setResetToken] = useState("");
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [resetMsg, setResetMsg] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+
   useEffect(() => {
+    // Check for reset token in URL
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    if (token) {
+      setResetToken(token);
+      setView("reset");
+    }
+
     authAPI.me()
       .then(() => setAuthed(true))
       .catch(() => setAuthed(false))
@@ -1108,12 +1103,24 @@ export default function Admin() {
 
   useEffect(() => {
     if (!authed) return;
-    if (tab === "dashboard" || tab === "bookings" || tab === "contacts") {
-      housesAPI.getAll().then(r => setHouses(r.data || [])).catch(() => { });
-      bookingsAPI.getAll().then(r => setBookings(r.data || [])).catch(() => { });
-      enquiryAPI.getAll().then(r => setEnquiries(r.data || [])).catch(() => { });
+    
+    // Only fetch if we're on a tab that needs it and we don't have the data yet, or if it's the dashboard
+    const needsHouses = houses.length === 0;
+    const needsBookings = bookings.length === 0;
+    const needsEnquiries = enquiries.length === 0;
+
+    if (tab === "dashboard" || needsHouses || needsBookings || needsEnquiries) {
+       Promise.allSettled([
+         needsHouses && housesAPI.getAll(),
+         needsBookings && bookingsAPI.getAll(),
+         needsEnquiries && enquiryAPI.getAll()
+       ]).then((results) => {
+         if (results[0].status === 'fulfilled' && results[0].value) setHouses(results[0].value.data || []);
+         if (results[1].status === 'fulfilled' && results[1].value) setBookings(results[1].value.data || []);
+         if (results[2].status === 'fulfilled' && results[2].value) setEnquiries(results[2].value.data || []);
+       }).catch(err => console.error("Error fetching admin data", err));
     }
-  }, [authed, tab]);
+  }, [authed, tab]); // Keep tab here if we want to refresh on tab change, but the conditional fetch prevents flicker
 
   const login = async (e) => {
     e.preventDefault();
@@ -1170,30 +1177,119 @@ export default function Admin() {
               <div className="h-px w-10" style={{ background: `linear-gradient(90deg, ${G.gold}, transparent)` }} />
             </div>
           </div>
-          <form onSubmit={login} className="space-y-5">
-            <Input label="Email / Username" type="text" value={creds.username}
-              onChange={e => setCreds({ ...creds, username: e.target.value })}
-              placeholder="italianinteriors93@gmail.com" />
-            <Input label="Password" type="password" value={creds.password}
-              onChange={e => setCreds({ ...creds, password: e.target.value })}
-              placeholder="••••••••" />
-            <AnimatePresence>
-              {loginErr && (
-                <motion.p initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                  className="text-[10px] font-bold text-center uppercase tracking-wider py-3 rounded-xl"
-                  style={{ color: "#dc2626", background: "rgba(220,50,50,0.06)", border: "1px solid rgba(220,50,50,0.15)" }}>
-                  {loginErr}
-                </motion.p>
-              )}
-            </AnimatePresence>
-            <button type="submit"
-              className="w-full py-5 font-accent font-bold text-[11px] uppercase tracking-[0.3em] rounded-2xl transition-all duration-300"
-              style={{ background: `linear-gradient(135deg, ${G.gold}, ${G.gold2})`, color: G.dark, boxShadow: "0 8px 28px rgba(200,150,62,0.35)" }}
-              onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-              onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
-              Open Studio
-            </button>
-          </form>
+
+          {view === "login" && (
+            <form onSubmit={login} className="space-y-5">
+              <Input label="Email / Username" type="text" value={creds.username}
+                onChange={e => setCreds({ ...creds, username: e.target.value })}
+                placeholder="Admin username" />
+              <div className="space-y-1">
+                <Input label="Password" type="password" value={creds.password}
+                  onChange={e => setCreds({ ...creds, password: e.target.value })}
+                  placeholder="••••••••" />
+                <div className="flex justify-end pr-1">
+                  <button type="button" onClick={() => { setView("forgot"); setLoginErr(""); }}
+                    className="text-[10px] font-bold uppercase tracking-widest hover:text-brown-700 transition-colors"
+                    style={{ color: G.gold }}>
+                    Forgot Password?
+                  </button>
+                </div>
+              </div>
+              <AnimatePresence>
+                {loginErr && (
+                  <motion.p initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                    className="text-[10px] font-bold text-center uppercase tracking-wider py-3 rounded-xl"
+                    style={{ color: "#dc2626", background: "rgba(220,50,50,0.06)", border: "1px solid rgba(220,50,50,0.15)" }}>
+                    {loginErr}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+              <button type="submit"
+                className="w-full py-5 font-accent font-bold text-[11px] uppercase tracking-[0.3em] rounded-2xl transition-all duration-300"
+                style={{ background: `linear-gradient(135deg, ${G.gold}, ${G.gold2})`, color: G.dark, boxShadow: "0 8px 28px rgba(200,150,62,0.35)" }}
+                onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
+                onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
+                Open Studio
+              </button>
+            </form>
+          )}
+
+          {view === "forgot" && (
+            <div className="space-y-6">
+              <div className="text-center">
+                <h3 className="font-display font-bold text-xl mb-2" style={{ color: G.dark }}>Forgot Password</h3>
+                <p className="text-[10px] uppercase font-bold tracking-widest" style={{ color: "#b5a080" }}>Enter your admin email to receive a reset link</p>
+              </div>
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                setResetLoading(true);
+                try {
+                  const res = await authAPI.forgotPassword(forgotEmail);
+                  setResetMsg(res.data.message);
+                } catch (err) {
+                  setResetMsg(err.response?.data?.message || "Failed to send reset link");
+                }
+                setResetLoading(false);
+              }} className="space-y-5">
+                <Input label="Admin Email" type="email" value={forgotEmail}
+                  onChange={e => setForgotEmail(e.target.value)}
+                  placeholder="italianinteriors93@gmail.com" required />
+                {resetMsg && (
+                  <p className="text-[10px] font-bold text-center uppercase tracking-wider py-3 rounded-xl"
+                    style={{ color: resetMsg.includes("sent") ? "#16a34a" : "#dc2626", background: resetMsg.includes("sent") ? "rgba(74,222,128,0.1)" : "rgba(220,50,50,0.06)" }}>
+                    {resetMsg}
+                  </p>
+                )}
+                <GoldBtn onClick={() => { }} disabled={resetLoading} style={{ width: "100%" }}>
+                  {resetLoading ? <Spinner small /> : "Send Reset Link"}
+                </GoldBtn>
+                <button type="button" onClick={() => { setView("login"); setResetMsg(""); }}
+                  className="w-full text-center font-accent text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: "#b5a080" }}>
+                  Back to Login
+                </button>
+              </form>
+            </div>
+          )}
+
+          {view === "reset" && (
+            <div className="space-y-6">
+              <div className="text-center">
+                <h3 className="font-display font-bold text-xl mb-2" style={{ color: G.dark }}>Reset Password</h3>
+                <p className="text-[10px] uppercase font-bold tracking-widest" style={{ color: "#b5a080" }}>Secure your studio access</p>
+              </div>
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                setResetLoading(true);
+                try {
+                  const res = await authAPI.resetPassword(resetToken, newPassword);
+                  setResetMsg(res.data.message);
+                  setTimeout(() => {
+                    setView("login");
+                    setResetToken("");
+                    setResetMsg("");
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                  }, 3000);
+                } catch (err) {
+                  setResetMsg(err.response?.data?.message || "Reset failed. Link may have expired.");
+                }
+                setResetLoading(false);
+              }} className="space-y-5">
+                <Input label="New Password" type="password" value={newPassword}
+                  onChange={e => setNewPassword(e.target.value)}
+                  placeholder="••••••••" required />
+                {resetMsg && (
+                  <p className="text-[10px] font-bold text-center uppercase tracking-wider py-3 rounded-xl"
+                    style={{ color: resetMsg.includes("successful") ? "#16a34a" : "#dc2626", background: resetMsg.includes("successful") ? "rgba(74,222,128,0.1)" : "rgba(220,50,50,0.06)" }}>
+                    {resetMsg}
+                  </p>
+                )}
+                <GoldBtn onClick={() => { }} disabled={resetLoading} style={{ width: "100%" }}>
+                  {resetLoading ? <Spinner small /> : "Update Password"}
+                </GoldBtn>
+              </form>
+            </div>
+          )}
+
           <p className="text-center mt-8">
             <Link to="/" className="font-accent text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: "#b5a080" }}>
               ← Back to Portfolio

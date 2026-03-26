@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const jsonDb = require('../utils/jsonDb');
+const { sendResetEmail } = require('../utils/mailer');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key_123';
 
@@ -92,6 +93,46 @@ router.post('/login', loginLimiter, async (req, res) => {
 router.post('/logout', (req, res) => {
   res.clearCookie('token');
   res.json({ success: true, message: 'Logged out successfully' });
+});
+
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  const adminEmail = process.env.ADMIN_USERNAME || 'italianinteriors93@gmail.com';
+
+  if (!email || email !== adminEmail) {
+    return res.status(404).json({ success: false, message: 'Invalid admin email' });
+  }
+
+  try {
+    const resetToken = jwt.sign({ email: adminEmail }, JWT_SECRET, { expiresIn: '1h' });
+    await sendResetEmail(adminEmail, resetToken);
+    
+    res.json({ success: true, message: 'Reset link sent to your email' });
+  } catch (err) {
+    console.error('Forgot password error', err);
+    res.status(500).json({ success: false, message: 'Something went wrong while sending email' });
+  }
+});
+
+router.post('/reset-password', async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    return res.status(400).json({ success: false, message: 'Token and new password are required' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const adminEmail = decoded.email;
+
+    // Reset password in DB
+    await jsonDb.seedUser(adminEmail, newPassword);
+    
+    res.json({ success: true, message: 'Password reset successful. You can now login.' });
+  } catch (err) {
+    console.error('Reset password error', err);
+    res.status(400).json({ success: false, message: 'Invalid or expired token' });
+  }
 });
 
 router.get('/me', require('../middleware/authMiddleware'), (req, res) => {

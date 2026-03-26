@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jsonDb = require('../utils/jsonDb');
 const auth = require('../middleware/authMiddleware');
+const { sendContactNotificationEmail } = require('../utils/mailer');
 
 // GET all enquiries — Protected
 router.get('/', auth, (req, res) => {
@@ -22,6 +23,10 @@ router.post('/', (req, res) => {
       status: 'unread', // consistent with Admin badge system
     });
     console.log('📬 New Enquiry Received:', newEnquiry);
+    
+    // Send email notification to Admin
+    sendContactNotificationEmail(newEnquiry).catch(err => console.error('Email notification failed', err));
+
     res.status(201).json(newEnquiry);
   } catch (err) {
     res.status(400).json({ error: 'Invalid data' });
