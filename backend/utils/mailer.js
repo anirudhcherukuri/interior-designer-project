@@ -1,19 +1,21 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER || 'italianinteriors93@gmail.com',
-    pass: process.env.EMAIL_PASS // User should provide an App Password
-  }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Note: When using Resend "Onboarding" API keys, you can only send emails to yourself 
+// and the 'from' address must be 'onboarding@resend.dev'.
+const FROM_EMAIL = 'Italian Interiors <onboarding@resend.dev>';
+const ADMIN_EMAIL = process.env.ADMIN_USERNAME || 'italianinteriors93@gmail.com';
+
+/**
+ * Sends a password reset email using Resend
+ */
 const sendResetEmail = async (email, token) => {
   const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin?token=${token}`;
   
-  const mailOptions = {
-    from: `"Italian Interiors" <${process.env.EMAIL_USER || 'italianinteriors93@gmail.com'}>`,
-    to: email,
+  return await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email, // This will work since the admin email is the same as the Resend account email
     subject: 'Password Reset Request - Italian Interiors Dashboard',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #C8963E; border-radius: 10px;">
@@ -28,17 +30,16 @@ const sendResetEmail = async (email, token) => {
         <p style="font-size: 12px; color: #888;">Italian Interiors Dashboard - Studio Console</p>
       </div>
     `
-  };
-
-  return await transporter.sendMail(mailOptions);
+  });
 };
 
+/**
+ * Sends a notification email to the admin when a new enquiry is received
+ */
 const sendContactNotificationEmail = async (contactData) => {
-  const adminEmail = process.env.ADMIN_USERNAME || 'italianinteriors93@gmail.com';
-  
-  const mailOptions = {
-    from: `"Italian Interiors Website" <${process.env.EMAIL_USER || 'italianinteriors93@gmail.com'}>`,
-    to: adminEmail,
+  return await resend.emails.send({
+    from: FROM_EMAIL,
+    to: ADMIN_EMAIL,
     subject: `New Enquiry from ${contactData.name || contactData.clientName}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #2C1A0E;">
@@ -57,17 +58,16 @@ const sendContactNotificationEmail = async (contactData) => {
         </div>
       </div>
     `
-  };
-
-  return await transporter.sendMail(mailOptions);
+  });
 };
 
+/**
+ * Sends a notification email to the admin when a new booking is requested
+ */
 const sendBookingNotificationEmail = async (bookingData) => {
-  const adminEmail = process.env.ADMIN_USERNAME || 'italianinteriors93@gmail.com';
-  
-  const mailOptions = {
-    from: `"Italian Interiors Website" <${process.env.EMAIL_USER || 'italianinteriors93@gmail.com'}>`,
-    to: adminEmail,
+  return await resend.emails.send({
+    from: FROM_EMAIL,
+    to: ADMIN_EMAIL,
     subject: `New Booking Request: ${bookingData.clientName}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #2C1A0E;">
@@ -85,9 +85,7 @@ const sendBookingNotificationEmail = async (bookingData) => {
         </div>
       </div>
     `
-  };
-
-  return await transporter.sendMail(mailOptions);
+  });
 };
 
 module.exports = { 
