@@ -79,9 +79,9 @@ const Card = ({ children, className = "", style = {} }) => (
 );
 
 const SectionHeader = ({ title, action }) => (
-  <div className="flex items-center justify-between mb-8 pb-5" style={{ borderBottom: "1px solid rgba(200,150,62,0.1)" }}>
-    <h3 className="font-bold uppercase tracking-[0.3em] text-[11px]" style={{ color: G.dark }}>{title}</h3>
-    {action}
+  <div className="flex items-center justify-between mb-6 md:mb-8 pb-3 md:pb-5" style={{ borderBottom: "1px solid rgba(200,150,62,0.1)" }}>
+    <h3 className="font-bold uppercase tracking-widest md:tracking-[0.3em] text-[9px] md:text-[11px]" style={{ color: G.dark }}>{title}</h3>
+    <div className="flex-shrink-0 ml-4">{action}</div>
   </div>
 );
 
@@ -132,16 +132,18 @@ const Input = ({ label, ...props }) => (
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 const StatCard = ({ title, value, icon, accent, delay = 0 }) => (
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay }}
-    className="p-8 rounded-[2rem] group relative overflow-hidden"
+    className="p-5 md:p-8 rounded-[1.5rem] md:rounded-[2rem] group relative overflow-hidden"
     style={{ background: G.cream, border: "1px solid rgba(200,150,62,0.15)", boxShadow: "0 4px 20px rgba(44,26,14,0.07)" }}>
     <div className="absolute top-0 right-0 w-32 h-32 -mr-8 -mt-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"
       style={{ background: `radial-gradient(circle, ${accent}25 0%, transparent 70%)` }} />
-    <div className="flex items-center justify-between mb-6">
-      <div className="w-14 h-14 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
-        style={{ background: `linear-gradient(135deg, ${accent}, ${accent}88)`, color: "#fff" }}>{icon}</div>
-      <div className="text-right flex-1 min-w-0">
-        <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest mb-1 truncate" style={{ color: "#8a7660" }}>{title}</p>
-        <p className="text-2xl md:text-4xl font-display font-bold" style={{ color: G.dark }}>{value}</p>
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
+      <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0"
+        style={{ background: `linear-gradient(135deg, ${accent}, ${accent}88)`, color: "#fff" }}>
+        <div className="scale-75 md:scale-100">{icon}</div>
+      </div>
+      <div className="text-left sm:text-right flex-1 min-w-0">
+        <p className="text-[8px] md:text-[10px] font-bold uppercase tracking-wider md:tracking-widest mb-0.5 md:mb-1 leading-tight" style={{ color: "#8a7660" }}>{title}</p>
+        <p className="text-xl md:text-4xl font-display font-bold" style={{ color: G.dark }}>{value}</p>
       </div>
     </div>
     <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(200,150,62,0.1)" }}>

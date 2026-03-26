@@ -187,7 +187,7 @@ const Lightbox = ({ project, startIndex = 0, onClose }) => {
         </div>
       </div>
 
-      <div className="text-center pb-3 flex-shrink-0" onClick={e => e.stopPropagation()}>
+      <div className="hidden md:block text-center pb-3 flex-shrink-0" onClick={e => e.stopPropagation()}>
         <span className="font-accent text-[9px] tracking-[0.3em] uppercase" style={{ color: 'rgba(250,248,244,0.18)' }}>
           ← → navigate &nbsp;·&nbsp; ESC close
         </span>

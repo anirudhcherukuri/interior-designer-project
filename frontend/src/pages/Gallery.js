@@ -517,7 +517,7 @@ const Gallery = () => {
               </div>
             </div>
 
-            <div className="py-6 text-center flex-shrink-0">
+            <div className="hidden md:block py-6 text-center flex-shrink-0">
                <span className="font-accent text-[9px] tracking-[0.4em] uppercase text-white/20">
                  ← → NAVIGATE &nbsp;·&nbsp; ESC CLOSE
                </span>
